@@ -1,0 +1,88 @@
+/* DatePicker — white text on dark cell hover (cellHoverBg has no text-color token) */
+.ant-picker-cell:hover:not(.ant-picker-cell-in-view):not(
+    .ant-picker-cell-disabled
+  )
+  .ant-picker-cell-inner,
+.ant-picker-cell:hover:not(.ant-picker-cell-selected):not(
+    .ant-picker-cell-range-start
+  ):not(.ant-picker-cell-range-end):not(.ant-picker-cell-disabled)
+  .ant-picker-cell-inner {
+  color: var(--naturalWhite);
+}
+
+.ant-picker-time-panel-cell:not(.ant-picker-time-panel-cell-disabled)
+  .ant-picker-time-panel-cell-inner:hover {
+  color: var(--naturalWhite);
+}
+
+.ant-picker-date-panel .ant-picker-header {
+  align-items: center;
+  border-bottom: none;
+  display: flex;
+  padding-block: 8px;
+}
+
+.ant-picker-date-panel .ant-picker-header .ant-picker-header-super-next-btn,
+.ant-picker-date-panel .ant-picker-header .ant-picker-header-super-prev-btn,
+.ant-picker-week-panel .ant-picker-header .ant-picker-header-super-next-btn,
+.ant-picker-week-panel .ant-picker-header .ant-picker-header-super-prev-btn {
+  display: none;
+}
+
+.ant-picker-panel .ant-picker-header > .ant-picker-header-prev-btn,
+.ant-picker-panel .ant-picker-header > .ant-picker-header-next-btn {
+  align-items: center;
+  background-color: var(--naturalWhite);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px 0 color-mix(in srgb, var(--Grey900) 10%, transparent);
+  color: var(--Grey800);
+  display: inline-flex;
+  height: 32px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 32px;
+  padding: 0;
+  transition:
+    box-shadow 0.2s,
+    color 0.2s;
+  width: 32px;
+}
+
+.ant-picker-panel
+  .ant-picker-header
+  > .ant-picker-header-prev-btn:hover:not(:disabled),
+.ant-picker-panel
+  .ant-picker-header
+  > .ant-picker-header-next-btn:hover:not(:disabled) {
+  background-color: var(--naturalWhite);
+  box-shadow: 0 2px 8px 0 color-mix(in srgb, var(--Grey900) 14%, transparent);
+  color: var(--Grey900);
+}
+
+.ant-picker-panel
+  .ant-picker-header
+  > .ant-picker-header-prev-btn:active:not(:disabled),
+.ant-picker-panel
+  .ant-picker-header
+  > .ant-picker-header-next-btn:active:not(:disabled) {
+  box-shadow: 0 1px 3px 0 color-mix(in srgb, var(--Grey900) 8%, transparent);
+}
+
+.ant-picker-footer .ant-picker-ranges .ant-picker-now .ant-picker-now-btn {
+  color: var(--Primary400);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.ant-picker-panel
+  .ant-picker-month-panel
+  .ant-picker-body
+  .ant-picker-content
+  .ant-picker-cell-in-view
+  .ant-picker-cell-inner {
+  border: 2px solid var(--Grey400);
+  width: 85px;
+  height: fit-content;
+}

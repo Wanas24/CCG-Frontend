@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "CCG",
+    "loading": "جارٍ التحميل...",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "back": "رجوع",
+    "continue": "متابعة",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "language": "اللغة",
+    "english": "English",
+    "arabic": "العربية",
+    "darkMode": "داكن",
+    "lightMode": "فاتح"
+  },
+  "auth": {
+    "login": {
+      "title": "مرحبًا بعودتك",
+      "subtitle": "سجّل الدخول للمتابعة إلى حسابك",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "rememberMe": "تذكرني",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "noAccount": "ليس لديك حساب؟",
+      "signupLink": "إنشاء حساب"
+    },
+    "signup": {
+      "title": "إنشاء حساب",
+      "subtitle": "ابدأ رحلتك مع CCG",
+      "fullNameLabel": "الاسم الكامل",
+      "fullNamePlaceholder": "اسمك الكامل",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "أنشئ كلمة مرور",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
+      "acceptTerms": "أوافق على الشروط والأحكام",
+      "submit": "إنشاء حساب",
+      "hasAccount": "لديك حساب بالفعل؟",
+      "loginLink": "تسجيل الدخول"
+    },
+    "forgotPassword": {
+      "title": "نسيت كلمة المرور",
+      "subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "name@company.com",
+      "submit": "إرسال رابط إعادة التعيين",
+      "backToLogin": "العودة لتسجيل الدخول"
+    },
+    "resetPassword": {
+      "title": "إعادة تعيين كلمة المرور",
+      "subtitle": "اختر كلمة مرور جديدة لحسابك",
+      "passwordLabel": "كلمة المرور الجديدة",
+      "passwordPlaceholder": "أدخل كلمة مرور جديدة",
+      "confirmPasswordLabel": "تأكيد كلمة المرور الجديدة",
+      "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور الجديدة",
+      "submit": "تحديث كلمة المرور",
+      "missingParamsTitle": "رابط إعادة التعيين غير صالح",
+      "missingParamsDescription": "هذا الرابط يفتقد معلومات مطلوبة. اطلب إعادة تعيين جديدة ثم حاول مرة أخرى.",
+      "requestNewLink": "طلب رابط جديد",
+      "backToLogin": "العودة لتسجيل الدخول"
+    }
+  },
+  "home": {
+    "title": "الرئيسية",
+    "subtitle": "صفحة رئيسية مؤقتة. سيتم إضافة وظائف العمل في مهام لاحقة.",
+    "welcome": "مرحبًا بك في CCG"
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "description": "الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.",
+    "goHome": "العودة للرئيسية"
+  },
+
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "email": "أدخل بريدًا إلكترونيًا صالحًا",
+    "passwordMin": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+    "passwordMatch": "كلمتا المرور غير متطابقتين"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "CCG",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "back": "Back",
+    "continue": "Continue",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "language": "Language",
+    "english": "English",
+    "arabic": "Arabic",
+    "darkMode": "Dark",
+    "lightMode": "Light"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to continue to your account",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Create account"
+    },
+    "signup": {
+      "title": "Create account",
+      "subtitle": "Start your journey with CCG",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Your full name",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Create a password",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat your password",
+      "acceptTerms": "I agree to the terms and conditions",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email and we'll send you a reset link",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@company.com",
+      "submit": "Send reset link",
+      "backToLogin": "Back to sign in"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "subtitle": "Choose a new password for your account",
+      "passwordLabel": "New password",
+      "passwordPlaceholder": "Enter a new password",
+      "confirmPasswordLabel": "Confirm new password",
+      "confirmPasswordPlaceholder": "Repeat your new password",
+      "submit": "Update password",
+      "missingParamsTitle": "Invalid reset link",
+      "missingParamsDescription": "This reset link is missing required information. Request a new password reset and try again.",
+      "requestNewLink": "Request a new link",
+      "backToLogin": "Back to sign in"
+    }
+  },
+  "home": {
+    "title": "Home",
+    "subtitle": "Application home placeholder. Business features will be added in later tasks.",
+    "welcome": "Welcome to CCG"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or may have been moved.",
+    "goHome": "Back to home"
+  },
+
+  "validation": {
+    "required": "This field is required",
+    "email": "Enter a valid email address",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMatch": "Passwords do not match"
+  }
+}

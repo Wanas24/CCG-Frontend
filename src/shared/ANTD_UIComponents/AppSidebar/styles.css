@@ -1,0 +1,53 @@
+.sidebar-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+
+  /* Hide scrollbar for IE & Edge */
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Chrome, Safari */
+.sidebar-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── All menu rules scoped to .app-sidebar ──────────────────────────────────
+   Portal popups (collapsed flyouts) render outside this element in the body,
+   so they are never matched and keep their natural Ant Design sizing.        */
+
+.app-sidebar .ant-menu {
+  width: 95% !important;
+  margin: auto !important;
+}
+
+.app-sidebar .ant-menu-item.ant-menu-item-selected {
+  border: 2px solid var(--Primary300) !important;
+  margin-inline: 0px !important;
+  width: 90% !important;
+  margin: auto !important;
+}
+
+.app-sidebar .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open {
+  border: 2px solid var(--Primary300) !important;
+  background-color: var(--sidebarActiveContainerColor) !important;
+  margin-bottom: 10px !important;
+}
+
+/* Sidebar Vertical Menu */
+.ant-menu.ant-menu-sub.ant-menu-vertical {
+  background: var(--Primary400) !important;
+}
+
+.app-sidebar .ant-menu-item.ant-menu-item-selected {
+  padding-inline-start: 16px !important;
+}
+
+.app-sidebar
+  .ant-menu.ant-menu-inline-collapsed
+  .ant-menu-item.ant-menu-item-selected {
+  justify-content: center !important;
+  padding: 0px !important;
+}

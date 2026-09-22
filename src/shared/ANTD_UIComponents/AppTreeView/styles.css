@@ -1,0 +1,52 @@
+.my-tree.ant-tree {
+  background: transparent;
+}
+
+.my-tree.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--Grey500) var(--Grey100);
+}
+
+.my-tree.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.my-tree.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--Grey100);
+  border-radius: 9999px;
+}
+
+.my-tree.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--Grey500);
+  border-radius: 9999px;
+  border: 2px solid var(--Grey100);
+}
+
+.my-tree.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--Grey600);
+}
+
+.my-tree .ant-tree-node-content-wrapper {
+  border-radius: 6px;
+}
+
+.my-tree .ant-tree-switcher {
+  color: var(--Grey700);
+}
+
+.my-tree .ant-tree-title {
+  color: var(--naturalBlack);
+  font-size: 14px;
+}
+
+.ant-tree-switcher.ant-tree-switcher_close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ant-tree-switcher.ant-tree-switcher_open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

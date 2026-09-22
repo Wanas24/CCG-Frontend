@@ -1,0 +1,160 @@
+.app-table .ant-table .ant-table-container .ant-table-body,
+.app-table .ant-table .ant-table-container .ant-table-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--Grey300) transparent;
+}
+
+/* Resizable column headers (react-resizable) */
+.app-table .react-resizable {
+  position: relative;
+  background-clip: padding-box;
+}
+
+/* Let handle/sorter children receive pointer events above the th hit target */
+.app-table th.react-resizable {
+  pointer-events: none;
+}
+
+.app-table th.react-resizable > * {
+  pointer-events: auto;
+}
+
+/* Ant Design's full-header sorter tooltip overlay blocks resize drag events */
+.app-table th.react-resizable .ant-table-column-sorters::after {
+  content: none;
+}
+
+.app-table .app-table-resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 10;
+  width: 10px;
+  height: 100%;
+  cursor: col-resize;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.app-table .app-table-resize-handle::after {
+  content: "";
+  position: absolute;
+  top: 25%;
+  bottom: 25%;
+  width: 1px;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.app-table .app-table-resize-handle:hover::after,
+.app-table .app-table-resize-handle:active::after {
+  background-color: var(--Primary400);
+}
+
+/* LTR — handle on the trailing (right) edge */
+.app-table:not(.ant-table-wrapper-rtl) .app-table-resize-handle {
+  right: -5px;
+  left: auto;
+}
+
+.app-table:not(.ant-table-wrapper-rtl) .app-table-resize-handle::after {
+  right: 4px;
+  left: auto;
+}
+
+/* RTL — handle on the trailing (left) edge */
+.app-table.ant-table-wrapper-rtl .app-table-resize-handle,
+.app-table .ant-table-rtl .app-table-resize-handle {
+  left: -5px;
+  right: auto;
+}
+
+.app-table.ant-table-wrapper-rtl .app-table-resize-handle::after,
+.app-table .ant-table-rtl .app-table-resize-handle::after {
+  left: 4px;
+  right: auto;
+}
+
+/* Column header search */
+.app-table-column-searchable-header {
+  cursor: pointer;
+}
+
+.app-table-column-search {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  width: 100%;
+}
+
+.app-table-column-search__title-wrap,
+.app-table-column-search__input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.app-table-column-search--active {
+  cursor: text;
+}
+
+.app-table-column-search__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-table-column-search .ant-input-affix-wrapper {
+  min-width: 0;
+}
+
+.app-table-column-search__sorter {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--Grey500);
+  cursor: pointer;
+}
+
+.app-table-column-search__sorter-inner {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.app-table-column-search__sorter-up,
+.app-table-column-search__sorter-down {
+  font-size: 11px;
+  color: var(--Grey400);
+}
+
+.app-table-column-search__sorter-up {
+  margin-bottom: -0.2em;
+}
+
+.app-table-column-search__sorter-active {
+  color: var(--Primary400);
+}
+
+.app-table th.app-table-column-searchable-header .ant-table-column-sorters {
+  padding-inline: 0;
+}
+
+.app-table
+  th.app-table-column-searchable-header
+  .ant-table-column-sorters
+  .ant-table-column-title {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+}

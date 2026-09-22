@@ -9,7 +9,6 @@ lerna-debug.log*
 
 node_modules
 dist
-build
 dist-ssr
 *.local
 
@@ -17,9 +16,13 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .idea
+.cursor
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Docs
+docs/

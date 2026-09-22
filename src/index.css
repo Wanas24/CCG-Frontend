@@ -1,1 +1,121 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/fonts/IBMPlexSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Arabic";
+  src: url("/fonts/IBMPlexSansArabic-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fallback CSS variables (overridden by theme providers at runtime). */
+:root {
+  --Primary100: #e8eef5;
+  --Primary300: #3d5a80;
+  --Primary400: #1b3a5f;
+  --Secondary300: #f0e6c8;
+  --Grey100: #f7f8fa;
+  --Grey200: #eef0f3;
+  --Grey300: #d9dee5;
+  --Grey400: #c0c7d1;
+  --Grey500: #9aa3b0;
+  --Grey600: #6b7585;
+  --Grey700: #4a5565;
+  --Grey800: #2f3744;
+  --Grey900: #1a1f29;
+  --naturalBlack: #0a0a0a;
+  --naturalWhite: #ffffff;
+  --statusR100: #fdecec;
+  --statusR200: #d92d20;
+  --statusG100: #e8f7ef;
+  --statusG200: #039855;
+  --statusG300: #027a48;
+  --statusB100: #e8f1fb;
+  --statusB200: #1570ef;
+  --statusY100: #fef6e7;
+  --statusY200: #dc6803;
+  --app-bg: #f5f6f8;
+  --app-surface: #ffffff;
+  --app-text: #0a0a0a;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--Primary300) 55%, transparent) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--Primary300) 55%, transparent);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--Primary300) 80%, transparent);
+}
+
+html[lang="ar"] body {
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+
+@keyframes notFoundRise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes notFoundFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.75rem);
+  }
+}
+
+@keyframes notFoundGlow {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: translateX(-50%) scale(1.08);
+  }
+}
