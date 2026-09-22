@@ -10,10 +10,11 @@ const TestPage = lazy(() => import("../pages/TestPage"));
 
 const appRouteConfig: AppRouteObject[] = [
   {
-    Component: AppLayout,
+    // Guard first so AppLayout never paints for unauthenticated users.
+    Component: ProtectedRoute,
     children: [
       {
-        Component: ProtectedRoute,
+        Component: AppLayout,
         children: [
           {
             path: APP_ROUTES.home,
@@ -23,11 +24,11 @@ const appRouteConfig: AppRouteObject[] = [
             path: APP_ROUTES.test,
             Component: TestPage,
           },
+          {
+            path: "*",
+            Component: NotFound,
+          },
         ],
-      },
-      {
-        path: "*",
-        Component: NotFound,
       },
     ],
   },

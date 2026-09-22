@@ -6,7 +6,10 @@ import type { AppRouteObject } from "./types";
 const routes: AppRouteObject[] = [
   {
     index: true,
-    loader: () => redirect("/home"),
+    loader: () => {
+      const token = localStorage.getItem("CCG_TOKEN");
+      return redirect(token ? "/home" : "/auth/login");
+    },
   },
   ...authRouteConfig,
   ...appRouteConfig,
