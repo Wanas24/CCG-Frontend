@@ -65,37 +65,37 @@ export const darkCssVariables: CssVariableMap = {
 };
 
 /**
- * Fixed black-based authentication appearance.
- * Auth pages always use this set and do not follow light/dark switching.
+ * Fixed auth appearance from public/authLayout.jpg
+ * (forest green brand + white form). Does not follow light/dark switching.
  */
 export const authCssVariables: CssVariableMap = {
-  "--Primary100": "#1A1A1A",
-  "--Primary300": "#4A4A4A",
-  "--Primary400": "#FFFFFF",
-  "--Secondary300": "#E8D5A3",
-  "--Grey100": "#111111",
-  "--Grey200": "#1A1A1A",
-  "--Grey300": "#2A2A2A",
-  "--Grey400": "#3A3A3A",
-  "--Grey500": "#6B6B6B",
-  "--Grey600": "#9A9A9A",
-  "--Grey700": "#C0C0C0",
-  "--Grey800": "#DEDEDE",
-  "--Grey900": "#F0F0F0",
-  "--naturalBlack": "#FFFFFF",
-  "--naturalWhite": "#0B0B0B",
-  "--statusR100": "#3A1515",
-  "--statusR200": "#F97066",
-  "--statusG100": "#0F2B1E",
-  "--statusG200": "#32D583",
-  "--statusG300": "#6CE9A6",
-  "--statusB100": "#102A43",
-  "--statusB200": "#84CAFF",
-  "--statusY100": "#3A2A10",
-  "--statusY200": "#FDB022",
-  "--app-bg": "#050505",
-  "--app-surface": "#121212",
-  "--app-text": "#F5F5F5",
+  "--Primary100": "#E6F4EA",
+  "--Primary300": "#4A7A68",
+  "--Primary400": "#34594C",
+  "--Secondary300": "#1A2C26",
+  "--Grey100": "#F7F8FA",
+  "--Grey200": "#EEF0F3",
+  "--Grey300": "#D9D9D9",
+  "--Grey400": "#C0C7D1",
+  "--Grey500": "#BFBFBF",
+  "--Grey600": "#666666",
+  "--Grey700": "#4A5565",
+  "--Grey800": "#2F3744",
+  "--Grey900": "#1F1F1F",
+  "--naturalBlack": "#1F1F1F",
+  "--naturalWhite": "#FFFFFF",
+  "--statusR100": "#FDECEC",
+  "--statusR200": "#D92D20",
+  "--statusG100": "#E6F4EA",
+  "--statusG200": "#039855",
+  "--statusG300": "#027A48",
+  "--statusB100": "#E8F1FB",
+  "--statusB200": "#1570EF",
+  "--statusY100": "#FEF6E7",
+  "--statusY200": "#DC6803",
+  "--app-bg": "#FFFFFF",
+  "--app-surface": "#FFFFFF",
+  "--app-text": "#1F1F1F",
 };
 
 export const themeCssVariables: Record<ThemeMode, CssVariableMap> = {

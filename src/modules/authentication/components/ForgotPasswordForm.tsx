@@ -1,30 +1,13 @@
 import { Link } from "react-router";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import {
-  createForgotPasswordSchema,
-  type ForgotPasswordFormValues,
-} from "@/modules/authentication/schemas";
+import { useForgotPasswordForm } from "../hooks/useForgotPasswordForm";
 
 const ForgotPasswordForm = () => {
   const { t } = useTranslation();
-  const schema = createForgotPasswordSchema(t);
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgotPasswordFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: { email: "" },
-  });
-
-  const onSubmit = (_values: ForgotPasswordFormValues) => {
-    // Authentication API integration is out of ST-01 scope.
-  };
+  const { control, handleSubmit, errors, onSubmit } = useForgotPasswordForm();
 
   return (
     <form

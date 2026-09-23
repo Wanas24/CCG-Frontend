@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "CCG",
+    "appName": "Alharmeen",
     "loading": "جارٍ التحميل...",
     "submit": "إرسال",
     "cancel": "إلغاء",
@@ -18,14 +18,15 @@
   "auth": {
     "login": {
       "title": "مرحبًا بعودتك",
-      "subtitle": "سجّل الدخول للمتابعة إلى حسابك",
+      "subtitle": "سجّل الدخول بحساب مسؤول المنصة.",
       "emailLabel": "البريد الإلكتروني",
-      "emailPlaceholder": "name@company.com",
+      "emailPlaceholder": "admin@company.com",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "أدخل كلمة المرور",
-      "rememberMe": "تذكرني",
+      "rememberMe": "إبقائي متصلاً",
       "forgotPassword": "نسيت كلمة المرور؟",
-      "submit": "تسجيل الدخول",
+      "submit": "فتح لوحة المسؤول",
+      "credentialsNote": "يتم إرسال بيانات الاعتماد مباشرةً إلى واجهة برمجة التطبيقات المُهيَّأة.",
       "noAccount": "ليس لديك حساب؟",
       "signupLink": "إنشاء حساب"
     },
@@ -65,6 +66,28 @@
       "missingParamsDescription": "هذا الرابط يفتقد معلومات مطلوبة. اطلب إعادة تعيين جديدة ثم حاول مرة أخرى.",
       "requestNewLink": "طلب رابط جديد",
       "backToLogin": "العودة لتسجيل الدخول"
+    },
+    "showcase": {
+      "badge": "التحكم",
+      "eyebrow": "عمليات المنصة",
+      "headline": "أبقِ كل\nشركة\nفي حركة.",
+      "description": "مركز قيادة مركّز للأشخاص والحدود والأدوار المشتركة ووصول الشركات الذي يحافظ على صحة منصتك.",
+      "features": {
+        "people": {
+          "title": "الأشخاص",
+          "description": "عمليات الحسابات"
+        },
+        "companies": {
+          "title": "الشركات",
+          "description": "الحدود والوصول"
+        },
+        "liveControl": {
+          "title": "تحكم مباشر",
+          "description": "تدخلات سريعة"
+        }
+      },
+      "footerAccess": "وصول المسؤولين فقط",
+      "footerClient": "عميل ويب مستقل"
     }
   },
   "home": {

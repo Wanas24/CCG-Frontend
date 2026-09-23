@@ -6,11 +6,12 @@ import { authCssVariables } from "../cssVariables";
 /**
  * Fixed authentication appearance. Auth pages always use this theme
  * and must not participate in light/dark switching.
+ * Palette matches public/authLayout.jpg (forest green + white form).
  */
 export const authTheme: ThemeConfig = {
-  algorithm: theme.darkAlgorithm,
+  algorithm: theme.defaultAlgorithm,
   token: {
-    colorPrimary: "#FFFFFF",
+    colorPrimary: authCssVariables["--Primary400"],
     colorInfo: authCssVariables["--statusB200"],
     colorSuccess: authCssVariables["--statusG200"],
     colorWarning: authCssVariables["--statusY200"],
@@ -19,6 +20,8 @@ export const authTheme: ThemeConfig = {
     colorBgBase: authCssVariables["--app-bg"],
     colorBgContainer: authCssVariables["--app-surface"],
     colorBorder: authCssVariables["--Grey300"],
+    colorTextSecondary: authCssVariables["--Grey600"],
+    colorTextPlaceholder: authCssVariables["--Grey500"],
     borderRadius: DesignTokens.radius.md,
     fontFamily: DesignTokens.fontFamily.sans,
   },
@@ -26,7 +29,7 @@ export const authTheme: ThemeConfig = {
     Button: {
       controlHeight: 44,
       borderRadius: DesignTokens.radius.md,
-      primaryColor: "#0B0B0B",
+      primaryColor: authCssVariables["--naturalWhite"],
       defaultBg: "transparent",
       defaultColor: authCssVariables["--app-text"],
       defaultBorderColor: authCssVariables["--Grey400"],
@@ -34,13 +37,13 @@ export const authTheme: ThemeConfig = {
     Input: {
       controlHeight: 44,
       borderRadius: DesignTokens.radius.md,
-      colorBgContainer: "#0F0F0F",
-      activeBorderColor: "#FFFFFF",
-      hoverBorderColor: authCssVariables["--Grey500"],
+      colorBgContainer: authCssVariables["--app-surface"],
+      activeBorderColor: authCssVariables["--Primary400"],
+      hoverBorderColor: authCssVariables["--Grey400"],
     },
     Checkbox: {
-      colorPrimary: "#FFFFFF",
-      colorText: authCssVariables["--app-text"],
+      colorPrimary: authCssVariables["--Primary400"],
+      colorText: authCssVariables["--Grey600"],
     },
   },
 };

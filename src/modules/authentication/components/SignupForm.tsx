@@ -1,36 +1,13 @@
 import { Link } from "react-router";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppCheckBox, AppInput } from "@/shared/ANTD_UIComponents";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import {
-  createSignupSchema,
-  type SignupFormValues,
-} from "@/modules/authentication/schemas";
+import { useSignupForm } from "../hooks/useSignupForm";
 
 const SignupForm = () => {
   const { t } = useTranslation();
-  const schema = createSignupSchema(t);
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      acceptTerms: false,
-    },
-  });
-
-  const onSubmit = (_values: SignupFormValues) => {
-    // Authentication API integration is out of ST-01 scope.
-  };
+  const { control, handleSubmit, errors, onSubmit } = useSignupForm();
 
   return (
     <form

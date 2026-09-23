@@ -1,38 +1,19 @@
 import { Link } from "react-router";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import {
-  createResetPasswordSchema,
-  type ResetPasswordFormValues,
-} from "@/modules/authentication/schemas";
 import type { ResetPasswordParams } from "@/modules/authentication/types/auth";
+import { useResetPasswordForm } from "../hooks/useResetPasswordForm";
 
 type Props = ResetPasswordParams;
 
 const ResetPasswordForm = ({ userId, token }: Props) => {
   const { t } = useTranslation();
-  const schema = createResetPasswordSchema(t);
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ResetPasswordFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      password: "",
-      confirmPassword: "",
-    },
+  const { control, handleSubmit, errors, onSubmit } = useResetPasswordForm({
+    userId,
+    token,
   });
-
-  const onSubmit = (_values: ResetPasswordFormValues) => {
-    // userId + token are available for the future API call.
-    void userId;
-    void token;
-  };
 
   return (
     <form

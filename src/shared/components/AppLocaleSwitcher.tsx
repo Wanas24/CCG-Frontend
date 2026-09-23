@@ -26,7 +26,7 @@ const AppLocaleSwitcher = () => {
       <AppButton
         variant="default"
         aria-label={t("common.language")}
-        icon={<Languages size={18} />}
+        icon={<Languages color="white" size={18} />}
       />
     </Dropdown>
   );

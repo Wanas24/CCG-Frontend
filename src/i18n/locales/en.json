@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "CCG",
+    "appName": "Alharmeen",
     "loading": "Loading...",
     "submit": "Submit",
     "cancel": "Cancel",
@@ -18,14 +18,15 @@
   "auth": {
     "login": {
       "title": "Welcome back",
-      "subtitle": "Sign in to continue to your account",
+      "subtitle": "Sign in with your platform administrator account.",
       "emailLabel": "Email address",
-      "emailPlaceholder": "name@company.com",
+      "emailPlaceholder": "admin@company.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
-      "rememberMe": "Remember me",
+      "rememberMe": "Keep me signed in",
       "forgotPassword": "Forgot password?",
-      "submit": "Sign in",
+      "submit": "Open admin console",
+      "credentialsNote": "Credentials are sent directly to your configured API.",
       "noAccount": "Don't have an account?",
       "signupLink": "Create account"
     },
@@ -65,6 +66,28 @@
       "missingParamsDescription": "This reset link is missing required information. Request a new password reset and try again.",
       "requestNewLink": "Request a new link",
       "backToLogin": "Back to sign in"
+    },
+    "showcase": {
+      "badge": "Control",
+      "eyebrow": "Platform Operations",
+      "headline": "Keep every\ncompany\nmoving.",
+      "description": "A focused command center for the people, limits, shared roles, and company access that keep your platform healthy.",
+      "features": {
+        "people": {
+          "title": "People",
+          "description": "Account operations"
+        },
+        "companies": {
+          "title": "Companies",
+          "description": "Limits and access"
+        },
+        "liveControl": {
+          "title": "Live control",
+          "description": "Fast interventions"
+        }
+      },
+      "footerAccess": "Administrator access only",
+      "footerClient": "Independent web client"
     }
   },
   "home": {
