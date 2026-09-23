@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Alharmeen",
+    "appName": "Construct Code Group",
     "loading": "Loading...",
     "submit": "Submit",
     "cancel": "Cancel",
@@ -65,30 +65,28 @@
       "backToLogin": "Back to sign in"
     },
     "showcase": {
-      "badge": "CCG ERP",
-      "eyebrow": "Construction Operations",
-      "headline": "Build better.\nManage\nsmarter.",
-      "description": "One platform connecting projects, procurement, stock, finance, and teams — so construction businesses run from a single source of truth.",
-      "features": {
-        "projects": {
-          "title": "Projects",
-          "description": "From contract to handover"
+      "badge": "Construction Management ERP",
+      "eyebrow": "Construction Management ERP",
+      "headline": "Manage every construction project from one platform.",
+      "description": "Construct Code Group provides a comprehensive construction management ERP that centralizes projects, procurement, inventory, workforce, and financial operations in one secure platform—helping teams deliver projects on time and within budget.",
+      "contact": {
+        "info": {
+          "title": "Info",
+          "subtitle": "General inquiries and support",
+          "email": "Info@construct-code.com"
         },
-        "procurement": {
-          "title": "Procurement",
-          "description": "Buy, stock, and supply"
+        "sales": {
+          "title": "Sales",
+          "subtitle": "Product demos and pricing",
+          "email": "Sales@construct-code.com"
         },
-        "finance": {
-          "title": "Finance",
-          "description": "Costs under control"
+        "hr": {
+          "title": "HR",
+          "subtitle": "Careers and recruitment",
+          "email": "Hr@construct-code.com"
         }
       }
     }
-  },
-  "home": {
-    "title": "Home",
-    "subtitle": "Application home placeholder. Business features will be added in later tasks.",
-    "welcome": "Welcome to Alharmeen"
   },
   "notFound": {
     "title": "Page not found",

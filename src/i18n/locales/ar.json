@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Alharmeen",
+    "appName": "Construct Code Group",
     "loading": "جارٍ التحميل...",
     "submit": "إرسال",
     "cancel": "إلغاء",
@@ -65,30 +65,28 @@
       "backToLogin": "العودة لتسجيل الدخول"
     },
     "showcase": {
-      "badge": "CCG ERP",
-      "eyebrow": "عمليات الإنشاء",
-      "headline": "ابنِ أفضل.\nأدِر\nبذكاء.",
-      "description": "منصة واحدة تربط المشاريع والمشتريات والمخزون والمالية والفرق — لإدارة أعمال الإنشاء من مصدر حقيقة واحد.",
-      "features": {
-        "projects": {
-          "title": "المشاريع",
-          "description": "من العقد حتى التسليم"
+      "badge": "نظام إدارة الإنشاءات ERP",
+      "eyebrow": "نظام إدارة الإنشاءات ERP",
+      "headline": "أدِر كل مشروع إنشائي من منصة واحدة.",
+      "description": "توفر Construct Code Group نظام ERP شاملًا لإدارة الإنشاءات يمركز المشاريع والمشتريات والمخزون والقوى العاملة والعمليات المالية في منصة آمنة واحدة—لمساعدة الفرق على تسليم المشاريع في الوقت المحدد وضمن الميزانية.",
+      "contact": {
+        "info": {
+          "title": "المعلومات",
+          "subtitle": "الاستفسارات العامة والدعم",
+          "email": "Info@construct-code.com"
         },
-        "procurement": {
-          "title": "المشتريات",
-          "description": "الشراء والمخزون والتوريد"
+        "sales": {
+          "title": "المبيعات",
+          "subtitle": "عروض المنتج والتسعير",
+          "email": "Sales@construct-code.com"
         },
-        "finance": {
-          "title": "المالية",
-          "description": "تكاليف تحت السيطرة"
+        "hr": {
+          "title": "الموارد البشرية",
+          "subtitle": "الوظائف والتوظيف",
+          "email": "Hr@construct-code.com"
         }
       }
     }
-  },
-  "home": {
-    "title": "الرئيسية",
-    "subtitle": "صفحة رئيسية مؤقتة. سيتم إضافة وظائف العمل في مهام لاحقة.",
-    "welcome": "مرحبًا بك في الحرمين"
   },
   "notFound": {
     "title": "الصفحة غير موجودة",
