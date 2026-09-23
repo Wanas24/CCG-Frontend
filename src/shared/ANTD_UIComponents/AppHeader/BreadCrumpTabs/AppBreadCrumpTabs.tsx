@@ -10,7 +10,7 @@ const DEMO_TABS: AppBreadcrumbTab[] = [
   { path: "/dropdowns", title: "Dropdowns" },
 ];
 
-const AppBreadCrumpTabs = () => {
+const AppBreadcrumpTabs = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { tabs, handleTabClose, handleClearAll } = useBreadcrumbTabs(
@@ -52,4 +52,4 @@ const AppBreadCrumpTabs = () => {
   );
 };
 
-export default AppBreadCrumpTabs;
+export default AppBreadcrumpTabs;

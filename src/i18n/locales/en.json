@@ -96,6 +96,11 @@
     "goHome": "Back to home"
   },
 
+  "upload": {
+    "dragText": "Click or drag file to this area to upload",
+    "dragHint": "Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files."
+  },
+
   "validation": {
     "required": "This field is required",
     "email": "Enter a valid email address",

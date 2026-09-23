@@ -50,13 +50,6 @@ const ResizableHeaderCell = ({
       const startX = event.clientX;
       const startWidth = resolvedWidth;
 
-      if (import.meta.env.DEV) {
-        console.log("[AppTable resize] start", {
-          startWidth,
-          isRtl,
-        });
-      }
-
       onResizeStart?.(event, buildResizeData(startWidth, isRtl));
 
       const handleMouseMove = (moveEvent: globalThis.MouseEvent) => {
@@ -90,10 +83,6 @@ const ResizableHeaderCell = ({
           MIN_COLUMN_WIDTH,
           Math.round(startWidth + deltaX),
         );
-
-        if (import.meta.env.DEV) {
-          console.log("[AppTable resize] stop", { nextWidth });
-        }
 
         onResizeStop?.(
           upEvent as unknown as SyntheticEvent,
