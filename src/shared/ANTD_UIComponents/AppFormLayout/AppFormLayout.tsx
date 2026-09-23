@@ -22,7 +22,7 @@ export const AppFormHeader = ({
     <div className={clsx("flex items-center justify-between", className)}>
       {title &&
         (typeof title === "string" ? (
-          <span className={clsx("text-(--naturalBlack)", titleClassName)}>
+          <span className={clsx("text-(--app-text)", titleClassName)}>
             {title}
           </span>
         ) : (
@@ -147,7 +147,7 @@ export const AppFormPage = ({
     <AppRoundedContainer
       className={clsx(
         "h-full w-full",
-        elevated && "bg-(--naturalWhite) shadow",
+        elevated && "bg-(--app-surface) shadow",
         className,
       )}
     >

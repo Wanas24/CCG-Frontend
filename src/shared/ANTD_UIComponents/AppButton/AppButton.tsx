@@ -25,7 +25,7 @@ const variantConfig: Record<
     color: "default",
     variant: "outlined",
     className:
-      "cursor-pointer! bg-(--naturalWhite)! border-2! border-(--Grey300)!",
+      "cursor-pointer! bg-(--app-surface)! border-2! border-(--Grey300)!",
   },
   tertiary: {
     color: "default",

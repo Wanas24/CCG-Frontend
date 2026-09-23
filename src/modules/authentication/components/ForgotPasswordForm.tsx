@@ -2,11 +2,13 @@ import { Link } from "react-router";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
+import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { useForgotPasswordForm } from "../hooks/useForgotPasswordForm";
 
 const ForgotPasswordForm = () => {
   const { t } = useTranslation();
+  const translateError = useTranslatedFormError();
   const { control, handleSubmit, errors, onSubmit } = useForgotPasswordForm();
 
   return (
@@ -16,7 +18,7 @@ const ForgotPasswordForm = () => {
       noValidate
     >
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold text-(--naturalBlack)">
+        <h1 className="text-2xl font-semibold text-(--app-text)">
           {t("auth.forgotPassword.title")}
         </h1>
         <p className="text-sm text-(--Grey600)">
@@ -35,7 +37,7 @@ const ForgotPasswordForm = () => {
             label={t("auth.forgotPassword.emailLabel")}
             placeholder={t("auth.forgotPassword.emailPlaceholder")}
             required
-            errorMsg={errors.email?.message}
+            errorMsg={translateError(errors.email?.message)}
           />
         )}
       />

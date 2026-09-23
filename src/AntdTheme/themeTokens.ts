@@ -12,8 +12,6 @@ export type ThemeColorTokens = {
   Grey700: string;
   Grey800: string;
   Grey900: string;
-  naturalBlack: string;
-  naturalWhite: string;
   statusR100: string;
   statusR200: string;
   statusG100: string;
@@ -34,7 +32,6 @@ const sharedLightSurface = {
   Grey400: "#C0C7D1",
   Grey700: "#4A5565",
   Grey800: "#2F3744",
-  naturalWhite: "#FFFFFF",
 } as const;
 
 const sharedStatus = {
@@ -59,7 +56,6 @@ export const lightColorTokens: ThemeColorTokens = {
   Grey500: "#9AA3B0",
   Grey600: "#6B7585",
   Grey900: "#1A1F29",
-  naturalBlack: "#0A0A0A",
   statusG100: "#E8F7EF",
   "app-bg": "#F5F6F8",
   "app-surface": "#FFFFFF",
@@ -80,8 +76,6 @@ export const darkColorTokens: ThemeColorTokens = {
   Grey700: "#C0C7D1",
   Grey800: "#D9DEE5",
   Grey900: "#EEF0F3",
-  naturalBlack: "#F5F6F8",
-  naturalWhite: "#0F1218",
   statusR100: "#3A1515",
   statusR200: "#F97066",
   statusG100: "#0F2B1E",
@@ -107,7 +101,6 @@ export const authColorTokens: ThemeColorTokens = {
   Grey500: "#BFBFBF",
   Grey600: "#666666",
   Grey900: "#1F1F1F",
-  naturalBlack: "#1F1F1F",
   statusG100: "#E6F4EA",
   "app-bg": "#FFFFFF",
   "app-surface": "#FFFFFF",

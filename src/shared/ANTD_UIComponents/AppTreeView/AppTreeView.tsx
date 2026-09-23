@@ -330,7 +330,7 @@ export const AppTreeView = ({
       {...restTreeProps}
       className={
         className ??
-        "max-h-[500px] overflow-y-auto custom-scrollbar my-tree p-3! bg-(--naturalWhite)! rounded-xl!"
+        "max-h-[500px] overflow-y-auto custom-scrollbar my-tree p-3! bg-(--app-surface)! rounded-xl!"
       }
       showLine
       showIcon

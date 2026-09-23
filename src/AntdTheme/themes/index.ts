@@ -27,7 +27,7 @@ export const authTheme = createAntdTheme(authCssVariables, {
   },
   componentOverrides: {
     Button: {
-      primaryColor: authCssVariables["--naturalWhite"],
+      primaryColor: authCssVariables["--app-surface"],
       defaultBg: "transparent",
       defaultColor: authCssVariables["--app-text"],
       defaultBorderColor: authCssVariables["--Grey400"],

@@ -44,7 +44,7 @@ export const AppTreeViewSection = ({
   emptyStateText,
   skeletonComponent,
   className = "bg-(--Grey200) w-full rounded-2xl p-4",
-  treeClassName = "bg-(--naturalWhite) rounded-xl p-4",
+  treeClassName = "bg-(--app-surface) rounded-xl p-4",
   renderNodeContent,
   renderIcon,
   mainIcon,

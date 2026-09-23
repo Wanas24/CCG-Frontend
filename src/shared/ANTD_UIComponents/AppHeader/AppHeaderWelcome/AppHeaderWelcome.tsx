@@ -10,7 +10,7 @@ const AppHeaderWelcome = () => {
           className="size-[17px] shrink-0"
         />
       </p>
-      <p className="text-base text-(--naturalBlack)">USER</p>
+      <p className="text-base text-(--app-text)">USER</p>
     </div>
   );
 };

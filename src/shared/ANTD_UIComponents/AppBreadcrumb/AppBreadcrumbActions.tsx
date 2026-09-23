@@ -1,7 +1,7 @@
 import { Bookmark, BookmarkPlus } from "lucide-react";
 
 const actionButtonClassName =
-  "flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-(--Grey900) transition-colors hover:bg-(--Grey200) hover:text-(--naturalBlack)";
+  "flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-(--Grey900) transition-colors hover:bg-(--Grey200) hover:text-(--app-text)";
 
 const AppBreadcrumbActions = () => {
   return (

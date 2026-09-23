@@ -3,12 +3,13 @@ import { Link } from "react-router";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppCheckBox, AppInput } from "@/shared/ANTD_UIComponents";
+import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-
 import { useLoginForm } from "../hooks/useLoginForm";
 
 const LoginForm = () => {
   const { t } = useTranslation();
+  const translateError = useTranslatedFormError();
   const { control, handleSubmit, errors, onSubmit } = useLoginForm();
 
   return (
@@ -23,7 +24,7 @@ const LoginForm = () => {
       </div>
 
       <div>
-        <h1 className="text-2xl font-semibold text-(--naturalBlack)">
+        <h1 className="text-2xl font-semibold text-(--app-text)">
           {t("auth.login.title")}
         </h1>
       </div>
@@ -40,7 +41,7 @@ const LoginForm = () => {
             label={t("auth.login.emailLabel")}
             placeholder={t("auth.login.emailPlaceholder")}
             required
-            errorMsg={errors.email?.message}
+            errorMsg={translateError(errors.email?.message)}
           />
         )}
       />
@@ -57,7 +58,7 @@ const LoginForm = () => {
             label={t("auth.login.passwordLabel")}
             placeholder={t("auth.login.passwordPlaceholder")}
             required
-            errorMsg={errors.password?.message}
+            errorMsg={translateError(errors.password?.message)}
           />
         )}
       />
@@ -90,13 +91,13 @@ const LoginForm = () => {
       <div className="flex items-center justify-between text-sm">
         <Link
           to={AUTH_ROUTES.forgotPassword}
-          className="text-(--Grey600) underline underline-offset-4 hover:text-(--naturalBlack) transition-colors"
+          className="text-(--Grey600) underline underline-offset-4 hover:text-(--app-text) transition-colors"
         >
           {t("auth.login.forgotPassword")}
         </Link>
         <Link
           to={AUTH_ROUTES.signup}
-          className="font-medium text-(--naturalBlack) underline underline-offset-4 hover:text-(--Grey700) transition-colors"
+          className="font-medium text-(--app-text) underline underline-offset-4 hover:text-(--Grey700) transition-colors"
         >
           {t("auth.login.signupLink")}
         </Link>

@@ -4,8 +4,8 @@ const AppNotification = () => {
     <div className="relative">
       {notification && (
         <>
-          <div className="absolute top-[4px] right-[2px] w-2 h-2 bg-(--naturalWhite) rounded-full border border-(--naturalWhite)" />
-          <div className="absolute top-[4px] right-[2px] w-2 h-2 bg-(--statusR200) rounded-full border border-(--naturalWhite) animate-pulse" />
+          <div className="absolute top-[4px] right-[2px] w-2 h-2 bg-(--app-surface) rounded-full border border-(--app-surface)" />
+          <div className="absolute top-[4px] right-[2px] w-2 h-2 bg-(--statusR200) rounded-full border border-(--app-surface) animate-pulse" />
         </>
       )}
       <img

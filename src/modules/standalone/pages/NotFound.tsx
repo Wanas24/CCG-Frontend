@@ -31,7 +31,7 @@ const NotFound = () => {
           <h1 className="text-5xl font-semibold tracking-wide text-(--Primary400) sm:text-6xl">
             {t("common.appName")}
           </h1>
-          <p className="text-xl font-medium text-(--naturalBlack) sm:text-2xl">
+          <p className="text-xl font-medium text-(--app-text) sm:text-2xl">
             {t("notFound.title")}
           </p>
           <p className="text-base text-(--Grey600) sm:text-lg">

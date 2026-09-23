@@ -32,7 +32,7 @@ const DetailsViewHeader = ({
 }: DetailsViewHeaderProps) => {
   return (
     <div className="w-full flex justify-between items-center mb-4">
-      <span className="text-base font-normal text-(--naturalBlack)">
+      <span className="text-base font-normal text-(--app-text)">
         {detailsText}
       </span>
       <div className="flex items-center gap-3">

@@ -35,7 +35,7 @@
 }
 
 .my-tree .ant-tree-title {
-  color: var(--naturalBlack);
+  color: var(--app-text);
   font-size: 14px;
 }
 

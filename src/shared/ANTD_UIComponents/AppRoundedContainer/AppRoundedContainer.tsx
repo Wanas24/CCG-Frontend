@@ -13,7 +13,7 @@ const AppRoundedContainer = ({
     <div
       className={clsx(
         "border border-(--Grey300) rounded-xl p-4",
-        whiteBG ? "bg-(--naturalWhite)" : "bg-(--Grey200)",
+        whiteBG ? "bg-(--app-surface)" : "bg-(--Grey200)",
         className,
       )}
     >

@@ -1,16 +1,10 @@
+export { loginSchema, type LoginFormValues } from "./loginSchema";
+export { signupSchema, type SignupFormValues } from "./signupSchema";
 export {
-  createLoginSchema,
-  type LoginFormValues,
-} from "./loginSchema";
-export {
-  createSignupSchema,
-  type SignupFormValues,
-} from "./signupSchema";
-export {
-  createForgotPasswordSchema,
+  forgotPasswordSchema,
   type ForgotPasswordFormValues,
 } from "./forgotPasswordSchema";
 export {
-  createResetPasswordSchema,
+  resetPasswordSchema,
   type ResetPasswordFormValues,
 } from "./resetPasswordSchema";

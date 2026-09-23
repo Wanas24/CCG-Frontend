@@ -1,23 +1,21 @@
-import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  createResetPasswordSchema,
+  resetPasswordSchema,
   type ResetPasswordFormValues,
 } from "../schemas";
 import type { ResetPasswordParams } from "../types/auth";
 
-export const useResetPasswordForm = ({ userId, token }: ResetPasswordParams) => {
-  const { t } = useTranslation();
-
-  const schema = createResetPasswordSchema(t);
-
+export const useResetPasswordForm = ({
+  userId,
+  token,
+}: ResetPasswordParams) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<ResetPasswordFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
@@ -25,7 +23,6 @@ export const useResetPasswordForm = ({ userId, token }: ResetPasswordParams) => 
   });
 
   const onSubmit = (_values: ResetPasswordFormValues) => {
-    // userId + token are available for the future API call.
     void userId;
     void token;
   };

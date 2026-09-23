@@ -2,11 +2,13 @@ import { Link } from "react-router";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppCheckBox, AppInput } from "@/shared/ANTD_UIComponents";
+import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { useSignupForm } from "../hooks/useSignupForm";
 
 const SignupForm = () => {
   const { t } = useTranslation();
+  const translateError = useTranslatedFormError();
   const { control, handleSubmit, errors, onSubmit } = useSignupForm();
 
   return (
@@ -16,7 +18,7 @@ const SignupForm = () => {
       noValidate
     >
       <div>
-        <h1 className="text-2xl font-semibold text-(--naturalBlack)">
+        <h1 className="text-2xl font-semibold text-(--app-text)">
           {t("auth.signup.title")}
         </h1>
       </div>
@@ -31,7 +33,7 @@ const SignupForm = () => {
             label={t("auth.signup.fullNameLabel")}
             placeholder={t("auth.signup.fullNamePlaceholder")}
             required
-            errorMsg={errors.fullName?.message}
+            errorMsg={translateError(errors.fullName?.message)}
           />
         )}
       />
@@ -47,7 +49,7 @@ const SignupForm = () => {
             label={t("auth.signup.emailLabel")}
             placeholder={t("auth.signup.emailPlaceholder")}
             required
-            errorMsg={errors.email?.message}
+            errorMsg={translateError(errors.email?.message)}
           />
         )}
       />
@@ -63,7 +65,7 @@ const SignupForm = () => {
             label={t("auth.signup.passwordLabel")}
             placeholder={t("auth.signup.passwordPlaceholder")}
             required
-            errorMsg={errors.password?.message}
+            errorMsg={translateError(errors.password?.message)}
           />
         )}
       />
@@ -79,7 +81,7 @@ const SignupForm = () => {
             label={t("auth.signup.confirmPasswordLabel")}
             placeholder={t("auth.signup.confirmPasswordPlaceholder")}
             required
-            errorMsg={errors.confirmPassword?.message}
+            errorMsg={translateError(errors.confirmPassword?.message)}
           />
         )}
       />
@@ -91,7 +93,7 @@ const SignupForm = () => {
           <AppCheckBox
             checked={field.value}
             onChange={(event) => field.onChange(event.target.checked)}
-            errorMsg={errors.acceptTerms?.message}
+            errorMsg={translateError(errors.acceptTerms?.message)}
           >
             {t("auth.signup.acceptTerms")}
           </AppCheckBox>
@@ -106,7 +108,7 @@ const SignupForm = () => {
         {t("auth.signup.hasAccount")}{" "}
         <Link
           to={AUTH_ROUTES.login}
-          className="font-medium text-(--naturalBlack) underline underline-offset-4"
+          className="font-medium text-(--app-text) underline underline-offset-4"
         >
           {t("auth.signup.loginLink")}
         </Link>

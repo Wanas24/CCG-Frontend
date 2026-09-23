@@ -1,18 +1,16 @@
 import { z } from "zod";
+import { VALIDATION } from "@/shared/validation";
 
-type Translate = (key: string) => string;
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, VALIDATION.required)
+    .email(VALIDATION.email),
+  password: z
+    .string()
+    .min(1, VALIDATION.required)
+    .min(8, VALIDATION.passwordMin),
+  rememberMe: z.boolean(),
+});
 
-export const createLoginSchema = (t: Translate) =>
-  z.object({
-    email: z
-      .string()
-      .min(1, t("validation.required"))
-      .email(t("validation.email")),
-    password: z
-      .string()
-      .min(1, t("validation.required"))
-      .min(8, t("validation.passwordMin")),
-    rememberMe: z.boolean(),
-  });
-
-export type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
+export type LoginFormValues = z.infer<typeof loginSchema>;
