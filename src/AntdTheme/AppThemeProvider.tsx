@@ -1,9 +1,8 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import { ConfigProvider } from "antd";
 import { applyCssVariables, themeCssVariables } from "./cssVariables";
 import { useThemeStore } from "./themeStore";
-import { lightTheme } from "./themes/lightTheme";
-import { darkTheme } from "./themes/darkTheme";
+import { darkTheme, lightTheme } from "./themes";
 import { useLocale } from "@/i18n/useLocale";
 import { DesignTokens } from "./DesignTokens";
 
@@ -16,10 +15,6 @@ const antdThemes = {
   dark: darkTheme,
 } as const;
 
-/**
- * Root theme provider for application surfaces.
- * Auth layouts nest their own ConfigProvider with the fixed auth theme.
- */
 export const AppThemeProvider = ({ children }: AppThemeProviderProps) => {
   const mode = useThemeStore((state) => state.mode);
   const { direction, antdLocale } = useLocale();
@@ -29,21 +24,21 @@ export const AppThemeProvider = ({ children }: AppThemeProviderProps) => {
     document.documentElement.dataset.theme = mode;
   }, [mode]);
 
-  const activeTheme = antdThemes[mode];
-  const fontFamily =
-    direction === "rtl"
-      ? DesignTokens.fontFamily.arabic
-      : DesignTokens.fontFamily.sans;
+  const theme = useMemo(() => {
+    const activeTheme = antdThemes[mode];
+    const fontFamily =
+      direction === "rtl"
+        ? DesignTokens.fontFamily.arabic
+        : DesignTokens.fontFamily.sans;
+
+    return {
+      ...activeTheme,
+      token: { ...activeTheme.token, fontFamily },
+    };
+  }, [mode, direction]);
 
   return (
-    <ConfigProvider
-      theme={{
-        ...activeTheme,
-        token: { ...activeTheme.token, fontFamily },
-      }}
-      direction={direction}
-      locale={antdLocale}
-    >
+    <ConfigProvider theme={theme} direction={direction} locale={antdLocale}>
       {children}
     </ConfigProvider>
   );

@@ -20,7 +20,7 @@ const AppNavbar = () => {
           className="underline underline-offset-1"
           variant="default"
           onClick={() => {
-            localStorage.removeItem("CCG_TOKEN");
+            localStorage.removeItem("ALHARMEEN_TOKEN");
             navigate(AUTH_ROUTES.login);
           }}
         >

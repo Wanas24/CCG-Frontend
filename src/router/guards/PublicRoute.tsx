@@ -8,7 +8,7 @@ interface PublicRouteProps {
 }
 
 const PublicRoute = ({ children }: PublicRouteProps) => {
-  const token = localStorage.getItem("CCG_TOKEN");
+  const token = localStorage.getItem("ALHARMEEN_TOKEN");
   if (token) {
     return <Navigate to={APP_ROUTES.home} replace />;
   }

@@ -16,37 +16,6 @@
   font-display: swap;
 }
 
-/* Fallback CSS variables (overridden by theme providers at runtime). */
-:root {
-  --Primary100: #e8eef5;
-  --Primary300: #3d5a80;
-  --Primary400: #1b3a5f;
-  --Secondary300: #f0e6c8;
-  --Grey100: #f7f8fa;
-  --Grey200: #eef0f3;
-  --Grey300: #d9dee5;
-  --Grey400: #c0c7d1;
-  --Grey500: #9aa3b0;
-  --Grey600: #6b7585;
-  --Grey700: #4a5565;
-  --Grey800: #2f3744;
-  --Grey900: #1a1f29;
-  --naturalBlack: #0a0a0a;
-  --naturalWhite: #ffffff;
-  --statusR100: #fdecec;
-  --statusR200: #d92d20;
-  --statusG100: #e8f7ef;
-  --statusG200: #039855;
-  --statusG300: #027a48;
-  --statusB100: #e8f1fb;
-  --statusB200: #1570ef;
-  --statusY100: #fef6e7;
-  --statusY200: #dc6803;
-  --app-bg: #f5f6f8;
-  --app-surface: #ffffff;
-  --app-text: #0a0a0a;
-}
-
 html,
 body,
 #root {
@@ -85,6 +54,21 @@ body {
 
 html[lang="ar"] body {
   font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+
+#nprogress .bar {
+  background: var(--Primary400);
+  height: 2px;
+}
+
+#nprogress .peg {
+  box-shadow:
+    0 0 10px var(--Primary400),
+    0 0 5px var(--Primary400);
+}
+
+#nprogress .spinner {
+  display: none;
 }
 
 @keyframes notFoundRise {

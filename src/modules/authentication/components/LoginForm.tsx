@@ -1,4 +1,4 @@
-import { KeyRound, ShieldCheck } from "lucide-react";
+import { KeyRound } from "lucide-react";
 import { Link } from "react-router";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -22,12 +22,10 @@ const LoginForm = () => {
         <KeyRound className="w-6 h-6 text-[#3D7A6A]" />
       </div>
 
-      {/* Title + subtitle */}
-      <div className="flex flex-col gap-1.5">
+      <div>
         <h1 className="text-2xl font-semibold text-(--naturalBlack)">
           {t("auth.login.title")}
         </h1>
-        <p className="text-sm text-(--Grey600)">{t("auth.login.subtitle")}</p>
       </div>
 
       {/* Email field */}
@@ -84,13 +82,6 @@ const LoginForm = () => {
       <AppButton htmlType="submit" variant="primary" block>
         {t("auth.login.submit")} →
       </AppButton>
-
-      {/* Credentials info */}
-      <div className="flex items-center justify-center gap-2 text-xs text-(--Grey600)">
-        {/* Shield icon placeholder — replace with actual icon */}
-        <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
-        <span>{t("auth.login.credentialsNote")}</span>
-      </div>
 
       {/* Divider */}
       <hr className="border-t border-(--Grey200)" />

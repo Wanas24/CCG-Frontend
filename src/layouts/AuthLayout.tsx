@@ -18,12 +18,10 @@ const AuthLayout = () => {
   return (
     <ConfigProvider theme={authTheme} direction={direction} locale={antdLocale}>
       <div ref={shellRef} className="flex min-h-dvh w-full text-(--app-text)">
-        {/* Left panel — dark green showcase (hidden on small screens) */}
         <div className="hidden lg:flex lg:w-[55%] flex-shrink-0">
           <LayoutShowcase />
         </div>
 
-        {/* Right panel — white form area */}
         <div className="flex flex-1 flex-col items-center justify-center bg-(--app-surface) px-8 py-12">
           <div className="w-full max-w-xl p-5 rounded-xl">
             <ViewTransition>

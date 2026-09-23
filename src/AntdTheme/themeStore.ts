@@ -10,10 +10,6 @@ type ThemeState = {
   toggleMode: () => void;
 };
 
-/**
- * Application theme preference (light/dark).
- * Auth routes ignore this store and always use the fixed auth theme.
- */
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
@@ -23,7 +19,7 @@ export const useThemeStore = create<ThemeState>()(
         set({ mode: get().mode === "light" ? "dark" : "light" }),
     }),
     {
-      name: "ccg-theme-mode",
+      name: "alharmeen-theme-mode",
     },
   ),
 );

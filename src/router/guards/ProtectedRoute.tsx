@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const token = localStorage.getItem("CCG_TOKEN");
+  const token = localStorage.getItem("ALHARMEEN_TOKEN");
   if (!token) {
     return <Navigate to={AUTH_ROUTES.login} replace />;
   }

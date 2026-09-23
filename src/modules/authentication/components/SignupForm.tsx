@@ -15,11 +15,10 @@ const SignupForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       noValidate
     >
-      <div className="flex flex-col gap-1">
+      <div>
         <h1 className="text-2xl font-semibold text-(--naturalBlack)">
           {t("auth.signup.title")}
         </h1>
-        <p className="text-sm text-(--Grey600)">{t("auth.signup.subtitle")}</p>
       </div>
 
       <Controller

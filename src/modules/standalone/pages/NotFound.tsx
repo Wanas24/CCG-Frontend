@@ -9,7 +9,7 @@ const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="relative flex w-full flex-1 flex-col overflow-hidden">
+    <main className="relative flex w-full flex-1 flex-col h-screen overflow-hidden">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_10%,var(--Primary100)_0%,transparent_55%),radial-gradient(ellipse_at_85%_90%,var(--Secondary300)_0%,transparent_45%),linear-gradient(165deg,var(--app-bg)_0%,var(--Grey100)_100%)]"

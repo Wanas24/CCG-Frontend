@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import { type AppLocale, useLocale } from "../../i18n/useLocale";
 
-const AppLocaleSwitcher = () => {
+const AppLocaleSwitcher = ({ whiteIcon = false }: { whiteIcon?: boolean }) => {
   const { t } = useTranslation();
   const { locale, setLocale } = useLocale();
 
@@ -26,7 +26,12 @@ const AppLocaleSwitcher = () => {
       <AppButton
         variant="default"
         aria-label={t("common.language")}
-        icon={<Languages color="white" size={18} />}
+        icon={
+          <Languages
+            color={whiteIcon ? "white" : "currentColor"}
+            size={18}
+          />
+        }
       />
     </Dropdown>
   );

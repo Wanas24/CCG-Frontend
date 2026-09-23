@@ -1,102 +1,19 @@
+import { createTheme, type ThemeCssVariables } from "./themeFactory";
+import {
+  authColorTokens,
+  darkColorTokens,
+  lightColorTokens,
+} from "./themeTokens";
+
 export type ThemeMode = "light" | "dark" | "auth";
 
-export type CssVariableMap = Record<string, string>;
+export type CssVariableMap = ThemeCssVariables;
 
-/** Light application theme (default). */
-export const lightCssVariables: CssVariableMap = {
-  "--Primary100": "#E8EEF5",
-  "--Primary300": "#3D5A80",
-  "--Primary400": "#1B3A5F",
-  "--Secondary300": "#F0E6C8",
-  "--Grey100": "#F7F8FA",
-  "--Grey200": "#EEF0F3",
-  "--Grey300": "#D9DEE5",
-  "--Grey400": "#C0C7D1",
-  "--Grey500": "#9AA3B0",
-  "--Grey600": "#6B7585",
-  "--Grey700": "#4A5565",
-  "--Grey800": "#2F3744",
-  "--Grey900": "#1A1F29",
-  "--naturalBlack": "#0A0A0A",
-  "--naturalWhite": "#FFFFFF",
-  "--statusR100": "#FDECEC",
-  "--statusR200": "#D92D20",
-  "--statusG100": "#E8F7EF",
-  "--statusG200": "#039855",
-  "--statusG300": "#027A48",
-  "--statusB100": "#E8F1FB",
-  "--statusB200": "#1570EF",
-  "--statusY100": "#FEF6E7",
-  "--statusY200": "#DC6803",
-  "--app-bg": "#F5F6F8",
-  "--app-surface": "#FFFFFF",
-  "--app-text": "#0A0A0A",
-};
+export const lightCssVariables: CssVariableMap = createTheme(lightColorTokens);
 
-/** Dark application theme (prepared for future switching). */
-export const darkCssVariables: CssVariableMap = {
-  "--Primary100": "#1E2A3A",
-  "--Primary300": "#6B8AB0",
-  "--Primary400": "#8FB4DE",
-  "--Secondary300": "#E8D5A3",
-  "--Grey100": "#12151A",
-  "--Grey200": "#1A1F27",
-  "--Grey300": "#2A313C",
-  "--Grey400": "#3D4654",
-  "--Grey500": "#6B7585",
-  "--Grey600": "#9AA3B0",
-  "--Grey700": "#C0C7D1",
-  "--Grey800": "#D9DEE5",
-  "--Grey900": "#EEF0F3",
-  "--naturalBlack": "#F5F6F8",
-  "--naturalWhite": "#0F1218",
-  "--statusR100": "#3A1515",
-  "--statusR200": "#F97066",
-  "--statusG100": "#0F2B1E",
-  "--statusG200": "#32D583",
-  "--statusG300": "#6CE9A6",
-  "--statusB100": "#102A43",
-  "--statusB200": "#84CAFF",
-  "--statusY100": "#3A2A10",
-  "--statusY200": "#FDB022",
-  "--app-bg": "#0B0D11",
-  "--app-surface": "#151922",
-  "--app-text": "#F5F6F8",
-};
+export const darkCssVariables: CssVariableMap = createTheme(darkColorTokens);
 
-/**
- * Fixed auth appearance from public/authLayout.jpg
- * (forest green brand + white form). Does not follow light/dark switching.
- */
-export const authCssVariables: CssVariableMap = {
-  "--Primary100": "#E6F4EA",
-  "--Primary300": "#4A7A68",
-  "--Primary400": "#34594C",
-  "--Secondary300": "#1A2C26",
-  "--Grey100": "#F7F8FA",
-  "--Grey200": "#EEF0F3",
-  "--Grey300": "#D9D9D9",
-  "--Grey400": "#C0C7D1",
-  "--Grey500": "#BFBFBF",
-  "--Grey600": "#666666",
-  "--Grey700": "#4A5565",
-  "--Grey800": "#2F3744",
-  "--Grey900": "#1F1F1F",
-  "--naturalBlack": "#1F1F1F",
-  "--naturalWhite": "#FFFFFF",
-  "--statusR100": "#FDECEC",
-  "--statusR200": "#D92D20",
-  "--statusG100": "#E6F4EA",
-  "--statusG200": "#039855",
-  "--statusG300": "#027A48",
-  "--statusB100": "#E8F1FB",
-  "--statusB200": "#1570EF",
-  "--statusY100": "#FEF6E7",
-  "--statusY200": "#DC6803",
-  "--app-bg": "#FFFFFF",
-  "--app-surface": "#FFFFFF",
-  "--app-text": "#1F1F1F",
-};
+export const authCssVariables: CssVariableMap = createTheme(authColorTokens);
 
 export const themeCssVariables: Record<ThemeMode, CssVariableMap> = {
   light: lightCssVariables,

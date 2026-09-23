@@ -18,21 +18,18 @@
   "auth": {
     "login": {
       "title": "مرحبًا بعودتك",
-      "subtitle": "سجّل الدخول بحساب مسؤول المنصة.",
       "emailLabel": "البريد الإلكتروني",
       "emailPlaceholder": "admin@company.com",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "أدخل كلمة المرور",
       "rememberMe": "إبقائي متصلاً",
       "forgotPassword": "نسيت كلمة المرور؟",
-      "submit": "فتح لوحة المسؤول",
-      "credentialsNote": "يتم إرسال بيانات الاعتماد مباشرةً إلى واجهة برمجة التطبيقات المُهيَّأة.",
+      "submit": "تسجيل الدخول",
       "noAccount": "ليس لديك حساب؟",
       "signupLink": "إنشاء حساب"
     },
     "signup": {
       "title": "إنشاء حساب",
-      "subtitle": "ابدأ رحلتك مع CCG",
       "fullNameLabel": "الاسم الكامل",
       "fullNamePlaceholder": "اسمك الكامل",
       "emailLabel": "البريد الإلكتروني",
@@ -68,32 +65,30 @@
       "backToLogin": "العودة لتسجيل الدخول"
     },
     "showcase": {
-      "badge": "التحكم",
-      "eyebrow": "عمليات المنصة",
-      "headline": "أبقِ كل\nشركة\nفي حركة.",
-      "description": "مركز قيادة مركّز للأشخاص والحدود والأدوار المشتركة ووصول الشركات الذي يحافظ على صحة منصتك.",
+      "badge": "CCG ERP",
+      "eyebrow": "عمليات الإنشاء",
+      "headline": "ابنِ أفضل.\nأدِر\nبذكاء.",
+      "description": "منصة واحدة تربط المشاريع والمشتريات والمخزون والمالية والفرق — لإدارة أعمال الإنشاء من مصدر حقيقة واحد.",
       "features": {
-        "people": {
-          "title": "الأشخاص",
-          "description": "عمليات الحسابات"
+        "projects": {
+          "title": "المشاريع",
+          "description": "من العقد حتى التسليم"
         },
-        "companies": {
-          "title": "الشركات",
-          "description": "الحدود والوصول"
+        "procurement": {
+          "title": "المشتريات",
+          "description": "الشراء والمخزون والتوريد"
         },
-        "liveControl": {
-          "title": "تحكم مباشر",
-          "description": "تدخلات سريعة"
+        "finance": {
+          "title": "المالية",
+          "description": "تكاليف تحت السيطرة"
         }
-      },
-      "footerAccess": "وصول المسؤولين فقط",
-      "footerClient": "عميل ويب مستقل"
+      }
     }
   },
   "home": {
     "title": "الرئيسية",
     "subtitle": "صفحة رئيسية مؤقتة. سيتم إضافة وظائف العمل في مهام لاحقة.",
-    "welcome": "مرحبًا بك في CCG"
+    "welcome": "مرحبًا بك في الحرمين"
   },
   "notFound": {
     "title": "الصفحة غير موجودة",

@@ -1,4 +1,4 @@
-const DEVICE_ID_KEY = "ccg-device-id";
+const DEVICE_ID_KEY = "alharmeen-device-id";
 
 const createDeviceId = (): string => {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {

@@ -18,21 +18,18 @@
   "auth": {
     "login": {
       "title": "Welcome back",
-      "subtitle": "Sign in with your platform administrator account.",
       "emailLabel": "Email address",
       "emailPlaceholder": "admin@company.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
       "rememberMe": "Keep me signed in",
       "forgotPassword": "Forgot password?",
-      "submit": "Open admin console",
-      "credentialsNote": "Credentials are sent directly to your configured API.",
+      "submit": "Login",
       "noAccount": "Don't have an account?",
       "signupLink": "Create account"
     },
     "signup": {
       "title": "Create account",
-      "subtitle": "Start your journey with CCG",
       "fullNameLabel": "Full name",
       "fullNamePlaceholder": "Your full name",
       "emailLabel": "Email address",
@@ -68,32 +65,30 @@
       "backToLogin": "Back to sign in"
     },
     "showcase": {
-      "badge": "Control",
-      "eyebrow": "Platform Operations",
-      "headline": "Keep every\ncompany\nmoving.",
-      "description": "A focused command center for the people, limits, shared roles, and company access that keep your platform healthy.",
+      "badge": "CCG ERP",
+      "eyebrow": "Construction Operations",
+      "headline": "Build better.\nManage\nsmarter.",
+      "description": "One platform connecting projects, procurement, stock, finance, and teams — so construction businesses run from a single source of truth.",
       "features": {
-        "people": {
-          "title": "People",
-          "description": "Account operations"
+        "projects": {
+          "title": "Projects",
+          "description": "From contract to handover"
         },
-        "companies": {
-          "title": "Companies",
-          "description": "Limits and access"
+        "procurement": {
+          "title": "Procurement",
+          "description": "Buy, stock, and supply"
         },
-        "liveControl": {
-          "title": "Live control",
-          "description": "Fast interventions"
+        "finance": {
+          "title": "Finance",
+          "description": "Costs under control"
         }
-      },
-      "footerAccess": "Administrator access only",
-      "footerClient": "Independent web client"
+      }
     }
   },
   "home": {
     "title": "Home",
     "subtitle": "Application home placeholder. Business features will be added in later tasks.",
-    "welcome": "Welcome to CCG"
+    "welcome": "Welcome to Alharmeen"
   },
   "notFound": {
     "title": "Page not found",

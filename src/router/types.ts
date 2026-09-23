@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router";
 
 /**
- * Extended route object for the CCG application.
+ * Extended route object for the Alharmeen application.
  *
  * Adds first-class fields alongside the standard React Router RouteObject
  * so route definitions read as plain, flat data — no nesting under `handle`.
