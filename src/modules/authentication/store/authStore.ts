@@ -38,7 +38,7 @@ const initialState = {
   accessToken: null,
   user: null,
   isAuthenticated: false,
-  isInitialized: false,
+  isInitialized: true,
 };
 
 export const useAuthStore = create<TAuthStore>((set) => ({
@@ -49,12 +49,12 @@ export const useAuthStore = create<TAuthStore>((set) => ({
       accessToken,
       user,
       isAuthenticated: true,
+      isInitialized: true,
     }),
 
   logout: () =>
     set({
       ...initialState,
-      isInitialized: true,
     }),
 
   setAccessToken: (accessToken) =>
