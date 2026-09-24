@@ -25,10 +25,10 @@ export const useLoginForm = () => {
       values.email === "admin@admin.com" &&
       values.password === "admin@123"
     ) {
-      localStorage.setItem("ALHARMEEN_TOKEN", "admin");
+      localStorage.setItem("CCG_TOKEN", "admin");
       navigate(APP_ROUTES.home);
     } else {
-      localStorage.removeItem("ALHARMEEN_TOKEN");
+      localStorage.removeItem("CCG_TOKEN");
     }
   };
 

@@ -19,7 +19,7 @@ export const useThemeStore = create<ThemeState>()(
         set({ mode: get().mode === "light" ? "dark" : "light" }),
     }),
     {
-      name: "alharmeen-theme-mode",
+      name: "ccg-theme-mode",
     },
   ),
 );

@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 
 const ProtectedRoute = () => {
-  const token = localStorage.getItem("ALHARMEEN_TOKEN");
+  const token = localStorage.getItem("CCG_TOKEN");
   if (!token) {
     return <Navigate to={AUTH_ROUTES.login} replace />;
   }
