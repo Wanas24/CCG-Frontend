@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
-import { Home } from "lucide-react";
+import { Home, LogIn } from "lucide-react";
 import { AppButton } from "@/shared/ANTD_UIComponents";
+import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 
 const NotFound = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const isAuthenticated = Boolean(localStorage.getItem("CCG_TOKEN"));
 
   return (
     <main className="relative flex w-full flex-1 flex-col h-screen overflow-hidden">
@@ -39,11 +41,19 @@ const NotFound = () => {
           </p>
 
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
-            <Link to={APP_ROUTES.home}>
-              <AppButton variant="primary" icon={<Home size={18} />}>
-                {t("notFound.goHome")}
-              </AppButton>
-            </Link>
+            {isAuthenticated ? (
+              <Link to={APP_ROUTES.home}>
+                <AppButton variant="primary" icon={<Home size={18} />}>
+                  {t("notFound.goHome")}
+                </AppButton>
+              </Link>
+            ) : (
+              <Link to={AUTH_ROUTES.login}>
+                <AppButton variant="primary" icon={<LogIn size={18} />}>
+                  {t("notFound.goLogin")}
+                </AppButton>
+              </Link>
+            )}
             <AppButton variant="secondary" onClick={() => navigate(-1)}>
               {t("common.back")}
             </AppButton>
