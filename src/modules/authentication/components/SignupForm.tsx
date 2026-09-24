@@ -1,7 +1,14 @@
+import dayjs from "dayjs";
 import { Link } from "react-router";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AppButton, AppCheckBox, AppInput } from "@/shared/ANTD_UIComponents";
+import {
+  AppButton,
+  AppDatePicker,
+  AppInput,
+  AppTextArea,
+} from "@/shared/ANTD_UIComponents";
+import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { useSignupForm } from "../hooks/useSignupForm";
@@ -9,7 +16,15 @@ import { useSignupForm } from "../hooks/useSignupForm";
 const SignupForm = () => {
   const { t } = useTranslation();
   const translateError = useTranslatedFormError();
-  const { control, handleSubmit, errors, onSubmit } = useSignupForm();
+  const {
+    control,
+    handleSubmit,
+    errors,
+    onSubmit,
+    isPending,
+    isError,
+    registerError,
+  } = useSignupForm();
 
   return (
     <form
@@ -23,20 +38,37 @@ const SignupForm = () => {
         </h1>
       </div>
 
-      <Controller
-        name="fullName"
-        control={control}
-        render={({ field }) => (
-          <AppInput
-            {...field}
-            autoComplete="name"
-            label={t("auth.signup.fullNameLabel")}
-            placeholder={t("auth.signup.fullNamePlaceholder")}
-            required
-            errorMsg={translateError(errors.fullName?.message)}
-          />
-        )}
-      />
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <Controller
+          name="firstName"
+          control={control}
+          render={({ field }) => (
+            <AppInput
+              {...field}
+              autoComplete="given-name"
+              label={t("auth.signup.firstNameLabel")}
+              placeholder={t("auth.signup.firstNamePlaceholder")}
+              required
+              errorMsg={translateError(errors.firstName?.message)}
+            />
+          )}
+        />
+
+        <Controller
+          name="lastName"
+          control={control}
+          render={({ field }) => (
+            <AppInput
+              {...field}
+              autoComplete="family-name"
+              label={t("auth.signup.lastNameLabel")}
+              placeholder={t("auth.signup.lastNamePlaceholder")}
+              required
+              errorMsg={translateError(errors.lastName?.message)}
+            />
+          )}
+        />
+      </div>
 
       <Controller
         name="email"
@@ -54,53 +86,134 @@ const SignupForm = () => {
         )}
       />
 
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <AppInput
+              {...field}
+              type="password"
+              autoComplete="new-password"
+              label={t("auth.signup.passwordLabel")}
+              placeholder={t("auth.signup.passwordPlaceholder")}
+              required
+              errorMsg={translateError(errors.password?.message)}
+            />
+          )}
+        />
+
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field }) => (
+            <AppInput
+              {...field}
+              type="password"
+              autoComplete="new-password"
+              label={t("auth.signup.confirmPasswordLabel")}
+              placeholder={t("auth.signup.confirmPasswordPlaceholder")}
+              required
+              errorMsg={translateError(errors.confirmPassword?.message)}
+            />
+          )}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <Controller
+          name="phoneNumber"
+          control={control}
+          render={({ field }) => (
+            <AppInput
+              {...field}
+              type="tel"
+              autoComplete="tel"
+              label={t("auth.signup.phoneNumberLabel")}
+              placeholder={t("auth.signup.phoneNumberPlaceholder")}
+              required
+              errorMsg={translateError(errors.phoneNumber?.message)}
+            />
+          )}
+        />
+
+        <Controller
+          name="extraPhone"
+          control={control}
+          render={({ field }) => (
+            <AppInput
+              {...field}
+              type="tel"
+              label={t("auth.signup.extraPhoneLabel")}
+              placeholder={t("auth.signup.extraPhonePlaceholder")}
+              required
+              errorMsg={translateError(errors.extraPhone?.message)}
+            />
+          )}
+        />
+      </div>
+
       <Controller
-        name="password"
+        name="nationalId"
         control={control}
         render={({ field }) => (
           <AppInput
             {...field}
-            type="password"
-            autoComplete="new-password"
-            label={t("auth.signup.passwordLabel")}
-            placeholder={t("auth.signup.passwordPlaceholder")}
+            label={t("auth.signup.nationalIdLabel")}
+            placeholder={t("auth.signup.nationalIdPlaceholder")}
             required
-            errorMsg={translateError(errors.password?.message)}
+            errorMsg={translateError(errors.nationalId?.message)}
           />
         )}
       />
 
       <Controller
-        name="confirmPassword"
+        name="dateOfBirth"
         control={control}
         render={({ field }) => (
-          <AppInput
-            {...field}
-            type="password"
-            autoComplete="new-password"
-            label={t("auth.signup.confirmPasswordLabel")}
-            placeholder={t("auth.signup.confirmPasswordPlaceholder")}
+          <AppDatePicker
+            value={field.value ? dayjs(field.value) : null}
+            onChange={(date) =>
+              field.onChange(
+                dayjs.isDayjs(date) ? date.toISOString() : "",
+              )
+            }
+            label={t("auth.signup.dateOfBirthLabel")}
+            placeholder={t("auth.signup.dateOfBirthPlaceholder")}
             required
-            errorMsg={translateError(errors.confirmPassword?.message)}
+            errorMsg={translateError(errors.dateOfBirth?.message)}
           />
         )}
       />
 
       <Controller
-        name="acceptTerms"
+        name="fullAddress"
         control={control}
         render={({ field }) => (
-          <AppCheckBox
-            checked={field.value}
-            onChange={(event) => field.onChange(event.target.checked)}
-            errorMsg={translateError(errors.acceptTerms?.message)}
-          >
-            {t("auth.signup.acceptTerms")}
-          </AppCheckBox>
+          <AppTextArea
+            {...field}
+            autoComplete="street-address"
+            label={t("auth.signup.fullAddressLabel")}
+            placeholder={t("auth.signup.fullAddressPlaceholder")}
+            required
+            rows={3}
+            errorMsg={translateError(errors.fullAddress?.message)}
+          />
         )}
       />
 
-      <AppButton htmlType="submit" variant="primary" block>
+      {isError && (
+        <AppErrorContainer
+          error={registerError?.response?.data.message || ""}
+        />
+      )}
+
+      <AppButton
+        htmlType="submit"
+        variant="primary"
+        block
+        loading={isPending}
+      >
         {t("auth.signup.submit")}
       </AppButton>
 

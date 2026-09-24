@@ -1,9 +1,16 @@
 import { Navigate, Outlet } from "react-router";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
+import { useAuthStore } from "@/modules/authentication/store/authStore";
+import PageLoader from "@/shared/components/PageLoader/PageLoader";
 
 const ProtectedRoute = () => {
-  const token = localStorage.getItem("CCG_TOKEN");
-  if (!token) {
+  const { isAuthenticated, isInitialized } = useAuthStore();
+
+  if (!isInitialized) {
+    return <PageLoader />;
+  }
+
+  if (!isAuthenticated) {
     return <Navigate to={AUTH_ROUTES.login} replace />;
   }
 

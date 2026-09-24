@@ -1,8 +1,19 @@
+import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { signupSchema, type SignupFormValues } from "../schemas";
+import { useRegister } from "../api/hooks/useRegister";
 
 export const useSignupForm = () => {
+  const navigate = useNavigate();
+  const {
+    mutate: registerMutate,
+    isPending,
+    isError,
+    error: registerError,
+  } = useRegister();
+
   const {
     control,
     handleSubmit,
@@ -10,20 +21,32 @@ export const useSignupForm = () => {
   } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
-      acceptTerms: false,
+      phoneNumber: "",
+      fullAddress: "",
+      extraPhone: "",
+      nationalId: "",
+      dateOfBirth: "",
     },
   });
 
-  const onSubmit = (_values: SignupFormValues) => {
-    // Authentication API integration is out of ST-01 scope.
+  const onSubmit = (values: SignupFormValues) => {
+    registerMutate(values, {
+      onSuccess: () => {
+        navigate(AUTH_ROUTES.login);
+      },
+    });
   };
 
   return {
     control,
+    isPending,
+    isError,
+    registerError,
     handleSubmit,
     errors,
     onSubmit,

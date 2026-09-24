@@ -22,7 +22,7 @@
       "emailPlaceholder": "admin@company.com",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "أدخل كلمة المرور",
-      "rememberMe": "إبقائي متصلاً",
+      "rememberMe": "تذكرني ",
       "forgotPassword": "نسيت كلمة المرور؟",
       "submit": "تسجيل الدخول",
       "noAccount": "ليس لديك حساب؟",
@@ -30,15 +30,26 @@
     },
     "signup": {
       "title": "إنشاء حساب",
-      "fullNameLabel": "الاسم الكامل",
-      "fullNamePlaceholder": "اسمك الكامل",
+      "firstNameLabel": "الاسم الأول",
+      "firstNamePlaceholder": "اسمك الأول",
+      "lastNameLabel": "اسم العائلة",
+      "lastNamePlaceholder": "اسم عائلتك",
       "emailLabel": "البريد الإلكتروني",
       "emailPlaceholder": "name@company.com",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "أنشئ كلمة مرور",
       "confirmPasswordLabel": "تأكيد كلمة المرور",
       "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
-      "acceptTerms": "أوافق على الشروط والأحكام",
+      "phoneNumberLabel": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "extraPhoneLabel": "رقم هاتف إضافي",
+      "extraPhonePlaceholder": "أدخل رقم هاتف إضافي",
+      "nationalIdLabel": "الرقم القومي",
+      "nationalIdPlaceholder": "أدخل الرقم القومي",
+      "dateOfBirthLabel": "تاريخ الميلاد",
+      "dateOfBirthPlaceholder": "اختر تاريخ ميلادك",
+      "fullAddressLabel": "العنوان بالكامل",
+      "fullAddressPlaceholder": "أدخل عنوانك بالكامل",
       "submit": "إنشاء حساب",
       "hasAccount": "لديك حساب بالفعل؟",
       "loginLink": "تسجيل الدخول"
@@ -94,7 +105,6 @@
     "goHome": "العودة للرئيسية",
     "goLogin": "الذهاب لتسجيل الدخول"
   },
-
 
   "upload": {
     "dragText": "انقر أو اسحب الملف إلى هذه المنطقة للرفع",

@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
 import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import type { ResetPasswordParams } from "@/modules/authentication/types/auth";
+import type { TResetPasswordParams } from "@/modules/authentication/types/auth";
 import { useResetPasswordForm } from "../hooks/useResetPasswordForm";
 
-type Props = ResetPasswordParams;
+type Props = TResetPasswordParams;
 
 const ResetPasswordForm = ({ userId, token }: Props) => {
   const { t } = useTranslation();

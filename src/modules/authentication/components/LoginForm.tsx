@@ -5,12 +5,21 @@ import { useTranslation } from "react-i18next";
 import { AppButton, AppCheckBox, AppInput } from "@/shared/ANTD_UIComponents";
 import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import { useLoginForm } from "../hooks/useLoginForm";
+import { useLoginManager } from "../hooks/useLoginManager";
+import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 
 const LoginForm = () => {
   const { t } = useTranslation();
   const translateError = useTranslatedFormError();
-  const { control, handleSubmit, errors, onSubmit } = useLoginForm();
+  const {
+    control,
+    handleSubmit,
+    errors,
+    onSubmit,
+    isPending,
+    isError,
+    loginError,
+  } = useLoginManager();
 
   return (
     <form
@@ -78,9 +87,12 @@ const LoginForm = () => {
           )}
         />
       </div>
+      {isError && (
+        <AppErrorContainer error={loginError?.response?.data.message || ""} />
+      )}
 
       {/* Submit button */}
-      <AppButton htmlType="submit" variant="primary" block>
+      <AppButton htmlType="submit" variant="primary" loading={isPending}>
         {t("auth.login.submit")} →
       </AppButton>
 
