@@ -91,12 +91,23 @@ const handleHttpErrorPayload = (
   handleApiResult(toFailedSimpleResult(payload, fallbackMessage), toastOptions);
 };
 
-// 401 — JWT challenge (errorCode 2): refresh once; user-gone (no code): logout
+const triggerSilentLogout = () => {
+  console.log("401 getted redirect....");
+  handleApiResult(
+    {
+      isSuccess: false,
+      message: "",
+      errorCode: ErrorCode.Unauthorized,
+    },
+    { skipToast: true },
+  );
+};
+
+// 401 — JWT challenge (errorCode 2): refresh once; otherwise silent logout
 const handle401Error = async (
   error: AxiosError,
   config: RetryableRequestConfig,
   payload: TSimpleResult | undefined,
-  toastOptions: ToastOptions,
 ) => {
   const isUserGone =
     isSimpleResult(payload) &&
@@ -104,14 +115,7 @@ const handle401Error = async (
     (payload.errorCode === null || payload.errorCode === undefined);
 
   if (isUserGone) {
-    handleApiResult(
-      {
-        isSuccess: false,
-        message: payload.message,
-        errorCode: ErrorCode.Unauthorized,
-      },
-      toastOptions,
-    );
+    triggerSilentLogout();
     return Promise.reject(error);
   }
 
@@ -121,6 +125,7 @@ const handle401Error = async (
     config.headers.set("Authorization", `Bearer ${accessToken}`);
     return apiClient.request(config);
   } catch {
+    triggerSilentLogout();
     return Promise.reject(error);
   }
 };
@@ -200,24 +205,13 @@ apiClient.interceptors.response.use(
       return handleTransportError(error, toastOptions);
     }
 
-    if (status === 401 && !isRefreshTokenPath(config.url) && !config._retry) {
-      return handle401Error(error, config, payload, toastOptions);
-    }
+    if (status === 401) {
+      if (isRefreshTokenPath(config.url) || config._retry) {
+        triggerSilentLogout();
+        return Promise.reject(error);
+      }
 
-    if (status === 401 && config._retry) {
-      const message = isSimpleResult(payload)
-        ? payload.message
-        : i18n.t("common.unexpectedError");
-
-      handleApiResult(
-        {
-          isSuccess: false,
-          message,
-          errorCode: ErrorCode.Unauthorized,
-        },
-        toastOptions,
-      );
-      return Promise.reject(error);
+      return handle401Error(error, config, payload);
     }
 
     if (status === 403) {
