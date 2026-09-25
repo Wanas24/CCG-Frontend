@@ -1,12 +1,21 @@
-import axios, { type InternalAxiosRequestConfig } from "axios";
+import axios, {
+  type AxiosError,
+  type InternalAxiosRequestConfig,
+} from "axios";
 import { getStoredLocale } from "@/i18n";
-import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
+import i18n from "@/i18n/config";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import type { TSimpleResult } from "@/modules/authentication/types";
 import { isAccessTokenExpired } from "@/modules/authentication/utils/getJwtExpiration";
 import { authEndpoints } from "@/modules/authentication/api/endPoints/authentication.endpoints";
 import { ErrorCode } from "./errorCodes";
-import { handleApiResult, registerErrorHandler } from "./apiResultHandler";
+import { handleApiResult } from "./apiResultHandler";
+import { registerAuthErrorHandlers } from "./registerAuthErrorHandlers";
+import {
+  getNetworkErrorMessage,
+  isSimpleResult,
+  toFailedSimpleResult,
+} from "./normalizeApiError";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
@@ -16,6 +25,10 @@ declare module "axios" {
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
+};
+
+type ToastOptions = {
+  skipToast?: boolean;
 };
 
 const VERIFICATION_BYPASS_PATHS = [
@@ -35,46 +48,113 @@ const isRefreshTokenPath = (url?: string) => {
   return url.includes(authEndpoints.refreshToken.path);
 };
 
-const navigateTo = (path: string) => {
-  void import("@/router/routes").then(({ router }) => {
-    void router.navigate(path, { replace: true });
-  });
+const getRefreshedAccessToken = async (): Promise<string> => {
+  const { refreshAccessToken } =
+    await import("@/modules/authentication/utils/refreshAccessToken");
+  return refreshAccessToken();
 };
 
-// --- Error code handlers ---
-
-registerErrorHandler(ErrorCode.AccountVerificationRequired, () => {
-  useAuthStore.getState().setConfirmationStatus({
-    emailConfirmed: false,
-    phoneNumberConfirmed: false,
-  });
-  if (window.location.pathname !== AUTH_ROUTES.verifyAccount) {
-    navigateTo(AUTH_ROUTES.verifyAccount);
+const handleTransportError = (
+  error: AxiosError,
+  toastOptions: ToastOptions,
+) => {
+  if (toastOptions.skipToast) {
+    return Promise.reject(error);
   }
-});
 
-registerErrorHandler(ErrorCode.Unauthorized, () => {
-  useAuthStore.getState().logout();
-  if (window.location.pathname !== AUTH_ROUTES.login) {
-    navigateTo(AUTH_ROUTES.login);
+  handleApiResult(
+    {
+      isSuccess: false,
+      message: getNetworkErrorMessage(error.code),
+      errorCode: null,
+    },
+    toastOptions,
+  );
+  return Promise.reject(error);
+};
+
+const handleHttpErrorPayload = (
+  payload: unknown,
+  status: number | undefined,
+  toastOptions: ToastOptions,
+) => {
+  if (isSimpleResult(payload) && !payload.isSuccess) {
+    handleApiResult(payload, toastOptions);
+    return;
   }
-});
 
-registerErrorHandler(ErrorCode.Forbidden, () => {
-  useAuthStore.getState().logout();
-  if (window.location.pathname !== AUTH_ROUTES.login) {
-    navigateTo(AUTH_ROUTES.login);
+  const fallbackMessage =
+    status !== undefined && status >= 500
+      ? i18n.t("common.serverError")
+      : i18n.t("common.unexpectedError");
+
+  handleApiResult(toFailedSimpleResult(payload, fallbackMessage), toastOptions);
+};
+
+// 401 — JWT challenge (errorCode 2): refresh once; user-gone (no code): logout
+const handle401Error = async (
+  error: AxiosError,
+  config: RetryableRequestConfig,
+  payload: TSimpleResult | undefined,
+  toastOptions: ToastOptions,
+) => {
+  const isUserGone =
+    isSimpleResult(payload) &&
+    !payload.isSuccess &&
+    (payload.errorCode === null || payload.errorCode === undefined);
+
+  if (isUserGone) {
+    handleApiResult(
+      {
+        isSuccess: false,
+        message: payload.message,
+        errorCode: ErrorCode.Unauthorized,
+      },
+      toastOptions,
+    );
+    return Promise.reject(error);
   }
-});
 
-// --- Axios instance ---
+  config._retry = true;
+  try {
+    const accessToken = await getRefreshedAccessToken();
+    config.headers.set("Authorization", `Bearer ${accessToken}`);
+    return apiClient.request(config);
+  } catch {
+    return Promise.reject(error);
+  }
+};
+
+// 403 — bypass verification endpoints to avoid redirect loops
+const handle403Error = (
+  error: AxiosError,
+  config: RetryableRequestConfig,
+  payload: TSimpleResult | undefined,
+  toastOptions: ToastOptions,
+) => {
+  if (
+    payload?.errorCode === ErrorCode.AccountVerificationRequired &&
+    isVerificationBypassPath(config.url)
+  ) {
+    if (isSimpleResult(payload) && !payload.isSuccess) {
+      handleApiResult(
+        { isSuccess: false, message: payload.message, errorCode: null },
+        toastOptions,
+      );
+    }
+    return Promise.reject(error);
+  }
+
+  handleHttpErrorPayload(payload, 403, toastOptions);
+  return Promise.reject(error);
+};
+
+registerAuthErrorHandlers();
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
-
-// --- Request interceptor ---
 
 apiClient.interceptors.request.use(async (config) => {
   config.headers.set("X-Language", getStoredLocale());
@@ -86,9 +166,7 @@ apiClient.interceptors.request.use(async (config) => {
   let accessToken = useAuthStore.getState().accessToken;
 
   if (accessToken && isAccessTokenExpired(accessToken)) {
-    const { refreshAccessToken } =
-      await import("@/modules/authentication/utils/refreshAccessToken");
-    accessToken = await refreshAccessToken();
+    accessToken = await getRefreshedAccessToken();
   }
 
   if (accessToken) {
@@ -98,19 +176,12 @@ apiClient.interceptors.request.use(async (config) => {
   return config;
 });
 
-// --- Response interceptors ---
-
 apiClient.interceptors.response.use(
   (response) => {
-    const result = response.data as TSimpleResult | undefined;
+    const result = response.data;
     const skipToast = response.config.skipToast;
 
-    if (
-      result &&
-      typeof result === "object" &&
-      "isSuccess" in result &&
-      !result.isSuccess
-    ) {
+    if (isSimpleResult(result) && !result.isSuccess) {
       handleApiResult(result, { skipToast });
     }
     return response;
@@ -123,52 +194,37 @@ apiClient.interceptors.response.use(
     const config = error.config as RetryableRequestConfig;
     const status = error.response?.status;
     const payload = error.response?.data as TSimpleResult | undefined;
-    const toastOptions = { skipToast: config.skipToast };
+    const toastOptions: ToastOptions = { skipToast: config.skipToast };
 
-    // 401 — check errorCode before attempting refresh
-    if (status === 401 && !isRefreshTokenPath(config.url) && !config._retry) {
-      if (payload?.errorCode === ErrorCode.Unauthorized) {
-        handleApiResult(payload, toastOptions);
-        return Promise.reject(error);
-      }
-
-      config._retry = true;
-      try {
-        const { refreshAccessToken } =
-          await import("@/modules/authentication/utils/refreshAccessToken");
-        const accessToken = await refreshAccessToken();
-        config.headers.set("Authorization", `Bearer ${accessToken}`);
-        return apiClient.request(config);
-      } catch {
-        return Promise.reject(error);
-      }
+    if (!error.response) {
+      return handleTransportError(error, toastOptions);
     }
 
-    // 403 — guard bypass paths to avoid redirect loops on verification endpoints
-    if (status === 403) {
-      if (
-        payload?.errorCode === ErrorCode.AccountVerificationRequired &&
-        isVerificationBypassPath(config.url)
-      ) {
-        if (payload?.isSuccess === false) {
-          handleApiResult(
-            { isSuccess: false, message: payload.message, errorCode: null },
-            toastOptions,
-          );
-        }
-        return Promise.reject(error);
-      }
+    if (status === 401 && !isRefreshTokenPath(config.url) && !config._retry) {
+      return handle401Error(error, config, payload, toastOptions);
+    }
 
-      if (payload?.isSuccess === false) {
-        handleApiResult(payload, toastOptions);
-      }
+    if (status === 401 && config._retry) {
+      const message = isSimpleResult(payload)
+        ? payload.message
+        : i18n.t("common.unexpectedError");
+
+      handleApiResult(
+        {
+          isSuccess: false,
+          message,
+          errorCode: ErrorCode.Unauthorized,
+        },
+        toastOptions,
+      );
       return Promise.reject(error);
     }
 
-    // All other errors (400, 422, 500, …)
-    if (payload?.isSuccess === false) {
-      handleApiResult(payload, toastOptions);
+    if (status === 403) {
+      return handle403Error(error, config, payload, toastOptions);
     }
+
+    handleHttpErrorPayload(payload, status, toastOptions);
     return Promise.reject(error);
   },
 );

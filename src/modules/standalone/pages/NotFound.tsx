@@ -3,12 +3,13 @@ import { useTranslation } from "react-i18next";
 import { Home, LogIn } from "lucide-react";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
+import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 
 const NotFound = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const isAuthenticated = Boolean(localStorage.getItem("CCG_TOKEN"));
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
     <main className="relative flex w-full flex-1 flex-col h-screen overflow-hidden">

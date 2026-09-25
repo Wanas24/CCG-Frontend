@@ -1,4 +1,4 @@
-import { message } from "antd";
+import { toast } from "react-toastify";
 import type { TSimpleResult, TSimpleResultErrorCode } from "@/modules/authentication/types";
 
 type ErrorHandler = () => void;
@@ -31,5 +31,5 @@ export const handleApiResult = (
 
   if (options?.skipToast) return;
 
-  void message.error(result.message);
+  toast.error(result.message);
 };
