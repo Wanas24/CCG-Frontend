@@ -1,12 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, ViewTransition } from "react";
 import { Outlet } from "react-router";
 import { ConfigProvider } from "antd";
-import { useTranslation } from "react-i18next";
 import { applyCssVariables, authCssVariables, authTheme } from "@/AntdTheme";
-import { AppLocaleSwitcher, useLocale } from "@/i18n";
+import { useLocale } from "@/i18n";
+import LayoutShowcase from "@/modules/authentication/components/LayoutShowcase/LayoutShowcase";
 
 const AuthLayout = () => {
-  const { t } = useTranslation();
   const { direction, antdLocale } = useLocale();
   const shellRef = useRef<HTMLDivElement>(null);
 
@@ -18,22 +17,18 @@ const AuthLayout = () => {
 
   return (
     <ConfigProvider theme={authTheme} direction={direction} locale={antdLocale}>
-      <div
-        ref={shellRef}
-        className="relative flex min-h-dvh w-full flex-col bg-(--app-bg) text-(--app-text)"
-      >
-        <header className="flex items-center justify-between px-6 py-4">
-          <span className="text-xl font-semibold tracking-wide text-(--naturalBlack)">
-            {t("common.appName")}
-          </span>
-          <AppLocaleSwitcher />
-        </header>
+      <div ref={shellRef} className="flex min-h-dvh w-full text-(--app-text)">
+        <div className="hidden lg:flex lg:w-[55%] flex-shrink-0">
+          <LayoutShowcase />
+        </div>
 
-        <main className="flex flex-1 items-center justify-center px-4 py-8">
-          <div className="w-full max-w-md rounded-2xl border border-(--Grey300) bg-(--app-surface) p-8 shadow-2xl">
-            <Outlet />
+        <div className="flex flex-1 flex-col items-center justify-center bg-(--app-surface) px-8 py-12">
+          <div className="w-full max-w-xl p-5 rounded-xl">
+            <ViewTransition>
+              <Outlet />
+            </ViewTransition>
           </div>
-        </main>
+        </div>
       </div>
     </ConfigProvider>
   );

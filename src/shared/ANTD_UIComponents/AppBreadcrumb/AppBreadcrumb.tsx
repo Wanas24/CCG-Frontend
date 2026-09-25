@@ -66,7 +66,7 @@ export function AppBreadcrumb({
   ) => {
     const labelClassName = clsx(
       "font-semibold whitespace-nowrap max-w-[120px] truncate",
-      isActive ? "text-(--naturalBlack)" : "text-(--Grey900)",
+      isActive ? "text-(--app-text)" : "text-(--Grey900)",
     );
 
     if (onTabClick) {
@@ -112,7 +112,7 @@ export function AppBreadcrumb({
               onClick={() => onTabClick(item.path)}
               className={clsx(
                 "flex-1 cursor-pointer bg-transparent border-0 p-0 text-left font-semibold",
-                isActive ? "text-(--naturalBlack)" : "text-(--Grey900)",
+                isActive ? "text-(--app-text)" : "text-(--Grey900)",
               )}
             >
               {item.title}
@@ -122,7 +122,7 @@ export function AppBreadcrumb({
               to={item.path}
               className={clsx(
                 "flex-1 font-semibold",
-                isActive ? "text-(--naturalBlack)" : "text-(--Grey900)",
+                isActive ? "text-(--app-text)" : "text-(--Grey900)",
               )}
             >
               {item.title}
@@ -167,7 +167,7 @@ export function AppBreadcrumb({
     <Dropdown menu={{ items: contextMenuItems }} trigger={["contextMenu"]}>
       <div
         className={clsx(
-          " w-full overflow-hidden bg-(--naturalWhite)",
+          " w-full overflow-hidden bg-(--app-surface)",
           className,
         )}
       >
@@ -193,7 +193,7 @@ export function AppBreadcrumb({
                     {showCloseButton && (
                       <X
                         className={clsx(
-                          "cursor-pointer rounded-full hover:bg-(--Grey800)/20 hover:text-(--naturalBlack) transition-all duration-300",
+                          "cursor-pointer rounded-full hover:bg-(--Grey800)/20 hover:text-(--app-text) transition-all duration-300",
                           isActive ? "text-(--Grey900)" : "text-(--Grey600)",
                         )}
                         size={19}
@@ -240,7 +240,7 @@ export function AppBreadcrumb({
                       className={clsx(
                         "text-lg",
                         isActiveInMore
-                          ? "text-(--naturalBlack)"
+                          ? "text-(--app-text)"
                           : "text-(--Grey900)",
                       )}
                     />
@@ -248,7 +248,7 @@ export function AppBreadcrumb({
                       className={clsx(
                         "text-sm",
                         isActiveInMore
-                          ? "font-bold text-(--naturalBlack)"
+                          ? "font-bold text-(--app-text)"
                           : "font-semibold text-(--Grey900)",
                       )}
                     >

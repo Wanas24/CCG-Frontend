@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "CCG",
+    "appName": "Construct Code Group",
     "loading": "جارٍ التحميل...",
     "submit": "إرسال",
     "cancel": "إلغاء",
@@ -18,12 +18,11 @@
   "auth": {
     "login": {
       "title": "مرحبًا بعودتك",
-      "subtitle": "سجّل الدخول للمتابعة إلى حسابك",
       "emailLabel": "البريد الإلكتروني",
-      "emailPlaceholder": "name@company.com",
+      "emailPlaceholder": "admin@company.com",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "أدخل كلمة المرور",
-      "rememberMe": "تذكرني",
+      "rememberMe": "إبقائي متصلاً",
       "forgotPassword": "نسيت كلمة المرور؟",
       "submit": "تسجيل الدخول",
       "noAccount": "ليس لديك حساب؟",
@@ -31,7 +30,6 @@
     },
     "signup": {
       "title": "إنشاء حساب",
-      "subtitle": "ابدأ رحلتك مع CCG",
       "fullNameLabel": "الاسم الكامل",
       "fullNamePlaceholder": "اسمك الكامل",
       "emailLabel": "البريد الإلكتروني",
@@ -65,17 +63,42 @@
       "missingParamsDescription": "هذا الرابط يفتقد معلومات مطلوبة. اطلب إعادة تعيين جديدة ثم حاول مرة أخرى.",
       "requestNewLink": "طلب رابط جديد",
       "backToLogin": "العودة لتسجيل الدخول"
+    },
+    "showcase": {
+      "badge": "نظام إدارة الإنشاءات ERP",
+      "eyebrow": "نظام إدارة الإنشاءات ERP",
+      "headline": "أدِر كل مشروع إنشائي من منصة واحدة.",
+      "description": "توفر Construct Code Group نظام ERP شاملًا لإدارة الإنشاءات يمركز المشاريع والمشتريات والمخزون والقوى العاملة والعمليات المالية في منصة آمنة واحدة—لمساعدة الفرق على تسليم المشاريع في الوقت المحدد وضمن الميزانية.",
+      "contact": {
+        "info": {
+          "title": "المعلومات",
+          "subtitle": "الاستفسارات العامة والدعم",
+          "email": "Info@construct-code.com"
+        },
+        "sales": {
+          "title": "المبيعات",
+          "subtitle": "عروض المنتج والتسعير",
+          "email": "Sales@construct-code.com"
+        },
+        "hr": {
+          "title": "الموارد البشرية",
+          "subtitle": "الوظائف والتوظيف",
+          "email": "Hr@construct-code.com"
+        }
+      }
     }
-  },
-  "home": {
-    "title": "الرئيسية",
-    "subtitle": "صفحة رئيسية مؤقتة. سيتم إضافة وظائف العمل في مهام لاحقة.",
-    "welcome": "مرحبًا بك في CCG"
   },
   "notFound": {
     "title": "الصفحة غير موجودة",
     "description": "الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.",
-    "goHome": "العودة للرئيسية"
+    "goHome": "العودة للرئيسية",
+    "goLogin": "الذهاب لتسجيل الدخول"
+  },
+
+
+  "upload": {
+    "dragText": "انقر أو اسحب الملف إلى هذه المنطقة للرفع",
+    "dragHint": "يدعم رفع ملف واحد أو عدة ملفات. يُمنع منعًا باتًا رفع بيانات الشركة أو أي ملفات محظورة."
   },
 
   "validation": {

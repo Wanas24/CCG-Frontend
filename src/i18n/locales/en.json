@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "CCG",
+    "appName": "Construct Code Group",
     "loading": "Loading...",
     "submit": "Submit",
     "cancel": "Cancel",
@@ -18,20 +18,18 @@
   "auth": {
     "login": {
       "title": "Welcome back",
-      "subtitle": "Sign in to continue to your account",
       "emailLabel": "Email address",
-      "emailPlaceholder": "name@company.com",
+      "emailPlaceholder": "admin@company.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
-      "rememberMe": "Remember me",
+      "rememberMe": "Keep me signed in",
       "forgotPassword": "Forgot password?",
-      "submit": "Sign in",
+      "submit": "Login",
       "noAccount": "Don't have an account?",
       "signupLink": "Create account"
     },
     "signup": {
       "title": "Create account",
-      "subtitle": "Start your journey with CCG",
       "fullNameLabel": "Full name",
       "fullNamePlaceholder": "Your full name",
       "emailLabel": "Email address",
@@ -65,17 +63,42 @@
       "missingParamsDescription": "This reset link is missing required information. Request a new password reset and try again.",
       "requestNewLink": "Request a new link",
       "backToLogin": "Back to sign in"
+    },
+    "showcase": {
+      "badge": "Construction Management ERP",
+      "eyebrow": "Construction Management ERP",
+      "headline": "Manage every construction project from one platform.",
+      "description": "Construct Code Group provides a comprehensive construction management ERP that centralizes projects, procurement, inventory, workforce, and financial operations in one secure platform—helping teams deliver projects on time and within budget.",
+      "contact": {
+        "info": {
+          "title": "Info",
+          "subtitle": "General inquiries and support",
+          "email": "Info@construct-code.com"
+        },
+        "sales": {
+          "title": "Sales",
+          "subtitle": "Product demos and pricing",
+          "email": "Sales@construct-code.com"
+        },
+        "hr": {
+          "title": "HR",
+          "subtitle": "Careers and recruitment",
+          "email": "Hr@construct-code.com"
+        }
+      }
     }
-  },
-  "home": {
-    "title": "Home",
-    "subtitle": "Application home placeholder. Business features will be added in later tasks.",
-    "welcome": "Welcome to CCG"
   },
   "notFound": {
     "title": "Page not found",
     "description": "The page you are looking for does not exist or may have been moved.",
-    "goHome": "Back to home"
+    "goHome": "Back to Home",
+    "goLogin": "Go to Login"
+  },
+
+
+  "upload": {
+    "dragText": "Click or drag file to this area to upload",
+    "dragHint": "Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files."
   },
 
   "validation": {

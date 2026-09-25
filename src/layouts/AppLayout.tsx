@@ -1,11 +1,15 @@
+import { Suspense } from "react";
 import { Outlet } from "react-router";
 import { AppNavbar } from "@/shared/components";
+import { NavigationProgressFallback } from "@/shared/components/NavigationProgress/NavigationProgress";
 
 const AppLayout = () => {
   return (
     <div className="flex min-h-dvh flex-col bg-(--app-bg) text-(--app-text)">
       <AppNavbar />
-      <Outlet />
+      <Suspense fallback={<NavigationProgressFallback />}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };

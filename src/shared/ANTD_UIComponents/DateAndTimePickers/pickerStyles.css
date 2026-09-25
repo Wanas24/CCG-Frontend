@@ -7,12 +7,12 @@
     .ant-picker-cell-range-start
   ):not(.ant-picker-cell-range-end):not(.ant-picker-cell-disabled)
   .ant-picker-cell-inner {
-  color: var(--naturalWhite);
+  color: var(--app-surface);
 }
 
 .ant-picker-time-panel-cell:not(.ant-picker-time-panel-cell-disabled)
   .ant-picker-time-panel-cell-inner:hover {
-  color: var(--naturalWhite);
+  color: var(--app-surface);
 }
 
 .ant-picker-date-panel .ant-picker-header {
@@ -32,7 +32,7 @@
 .ant-picker-panel .ant-picker-header > .ant-picker-header-prev-btn,
 .ant-picker-panel .ant-picker-header > .ant-picker-header-next-btn {
   align-items: center;
-  background-color: var(--naturalWhite);
+  background-color: var(--app-surface);
   border: none;
   border-radius: 10px;
   box-shadow: 0 2px 6px 0 color-mix(in srgb, var(--Grey900) 10%, transparent);
@@ -55,7 +55,7 @@
 .ant-picker-panel
   .ant-picker-header
   > .ant-picker-header-next-btn:hover:not(:disabled) {
-  background-color: var(--naturalWhite);
+  background-color: var(--app-surface);
   box-shadow: 0 2px 8px 0 color-mix(in srgb, var(--Grey900) 14%, transparent);
   color: var(--Grey900);
 }

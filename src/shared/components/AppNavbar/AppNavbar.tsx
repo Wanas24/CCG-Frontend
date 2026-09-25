@@ -10,7 +10,7 @@ const AppNavbar = () => {
   const navigate = useNavigate();
   return (
     <header className="flex items-center justify-between border-b border-(--Grey300) px-6 py-4">
-      <h1 className="text-lg font-semibold text-(--naturalBlack)">
+      <h1 className="text-lg font-semibold text-(--app-text)">
         {t("common.appName")}
       </h1>
       <div className="flex items-center gap-3">

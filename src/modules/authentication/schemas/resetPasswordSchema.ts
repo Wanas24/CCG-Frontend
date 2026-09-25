@@ -1,21 +1,17 @@
 import { z } from "zod";
+import { VALIDATION } from "@/shared/validation";
 
-type Translate = (key: string) => string;
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(1, VALIDATION.required)
+      .min(8, VALIDATION.passwordMin),
+    confirmPassword: z.string().min(1, VALIDATION.required),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: VALIDATION.passwordMatch,
+    path: ["confirmPassword"],
+  });
 
-export const createResetPasswordSchema = (t: Translate) =>
-  z
-    .object({
-      password: z
-        .string()
-        .min(1, t("validation.required"))
-        .min(8, t("validation.passwordMin")),
-      confirmPassword: z.string().min(1, t("validation.required")),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: t("validation.passwordMatch"),
-      path: ["confirmPassword"],
-    });
-
-export type ResetPasswordFormValues = z.infer<
-  ReturnType<typeof createResetPasswordSchema>
->;
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;

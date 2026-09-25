@@ -7,12 +7,15 @@
     "types": ["vite/client"],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
+    "strict": true,
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@/UI_Components/*": ["src/shared/ANTD_UIComponents/*"],
       "@/UIComponents/*": ["src/shared/ANTD_UIComponents/*"]
     },
+
     "resolveJsonModule": true,
     "ignoreDeprecations": "6.0",
 

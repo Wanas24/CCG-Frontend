@@ -47,7 +47,7 @@ export const AppFieldWrapper = ({
       {label && (
         <label
           className={clsx(
-            "text-(--naturalBlack)",
+            "text-(--app-text)",
             DesignTokens.inputs.labelFontSize,
           )}
         >
@@ -68,7 +68,7 @@ export const AppFieldWrapper = ({
 
       {tooltip && (
         <Tooltip className="bg-(--Primary400)!" title={tooltip}>
-          <span className="cursor-help w-4 h-4 text-sm flex items-center justify-center rounded-full text-(--naturalWhite)! bg-(--Primary400)!">
+          <span className="cursor-help w-4 h-4 text-sm flex items-center justify-center rounded-full text-(--app-surface)! bg-(--Primary400)!">
             <span>i</span>
           </span>
         </Tooltip>

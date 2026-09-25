@@ -9,7 +9,7 @@ const ResetPasswordMissingParams = () => {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold text-(--naturalBlack)">
+        <h1 className="text-2xl font-semibold text-(--app-text)">
           {t("auth.resetPassword.missingParamsTitle")}
         </h1>
         <p className="text-sm text-(--Grey600)">

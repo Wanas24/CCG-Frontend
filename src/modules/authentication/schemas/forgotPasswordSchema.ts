@@ -1,15 +1,11 @@
 import { z } from "zod";
+import { VALIDATION } from "@/shared/validation";
 
-type Translate = (key: string) => string;
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(1, VALIDATION.required)
+    .email(VALIDATION.email),
+});
 
-export const createForgotPasswordSchema = (t: Translate) =>
-  z.object({
-    email: z
-      .string()
-      .min(1, t("validation.required"))
-      .email(t("validation.email")),
-  });
-
-export type ForgotPasswordFormValues = z.infer<
-  ReturnType<typeof createForgotPasswordSchema>
->;
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
