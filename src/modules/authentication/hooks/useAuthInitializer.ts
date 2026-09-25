@@ -20,7 +20,7 @@ export const useAuthInitializer = () => {
         const { data } = response;
 
         if (response.isSuccess && data?.token && data.isAuthenticated) {
-          await establishSession(data);
+          establishSession(data);
         }
       } catch {
         // No valid refresh cookie — stay logged out

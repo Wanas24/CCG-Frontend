@@ -2,7 +2,6 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
-import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { loginSchema, type LoginFormValues } from "../schemas";
 import { useLogin } from "../api/hooks/useLogin";
 import { establishSession } from "./establishSession";
@@ -31,18 +30,15 @@ export const useLoginManager = () => {
 
   const onSubmit = (payload: LoginFormValues) => {
     loginMutate(payload, {
-      onSuccess: async (response) => {
+      onSuccess: (response) => {
         const { data } = response;
 
         if (!response.isSuccess || !data?.token || !data.isAuthenticated) {
           return;
         }
 
-        const { isVerified } = await establishSession(data);
-
-        navigate(isVerified ? APP_ROUTES.home : AUTH_ROUTES.verifyAccount, {
-          replace: true,
-        });
+        establishSession(data);
+        navigate(APP_ROUTES.home, { replace: true });
       },
     });
   };

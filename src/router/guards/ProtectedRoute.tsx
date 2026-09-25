@@ -4,7 +4,7 @@ import { useAuthStore } from "@/modules/authentication/store/authStore";
 import PageLoader from "@/shared/components/PageLoader/PageLoader";
 
 const ProtectedRoute = () => {
-  const { isAuthenticated, isInitialized, isVerified } = useAuthStore();
+  const { isAuthenticated, isInitialized } = useAuthStore();
 
   if (!isInitialized) {
     return <PageLoader />;
@@ -12,10 +12,6 @@ const ProtectedRoute = () => {
 
   if (!isAuthenticated) {
     return <Navigate to={AUTH_ROUTES.login} replace />;
-  }
-
-  if (!isVerified) {
-    return <Navigate to={AUTH_ROUTES.verifyAccount} replace />;
   }
 
   return <Outlet />;

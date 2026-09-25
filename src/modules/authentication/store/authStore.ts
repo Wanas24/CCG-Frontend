@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { TConfirmationStatus, TUser } from "../types";
-import { isAccountVerified } from "../types";
 
 export type { TUser };
 
@@ -16,7 +15,6 @@ type TAuthStore = {
 
   isAuthenticated: boolean;
   isInitialized: boolean;
-  isVerified: boolean;
 
   login: (payload: TSessionStorePayload) => void;
   logout: () => void;
@@ -33,7 +31,6 @@ const initialState = {
   confirmationStatus: null,
   isAuthenticated: false,
   isInitialized: false,
-  isVerified: false,
 };
 
 export const useAuthStore = create<TAuthStore>((set) => ({
@@ -72,6 +69,5 @@ export const useAuthStore = create<TAuthStore>((set) => ({
   setConfirmationStatus: (confirmationStatus) =>
     set({
       confirmationStatus,
-      isVerified: isAccountVerified(confirmationStatus),
     }),
 }));
