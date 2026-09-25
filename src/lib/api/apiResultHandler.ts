@@ -12,7 +12,14 @@ export const registerErrorHandler = (
   registry.set(code, handler);
 };
 
-export const handleApiResult = (result: TSimpleResult): void => {
+type HandleApiResultOptions = {
+  skipToast?: boolean;
+};
+
+export const handleApiResult = (
+  result: TSimpleResult,
+  options?: HandleApiResultOptions,
+): void => {
   if (result.isSuccess) return;
 
   const code = result.errorCode ?? null;
@@ -21,6 +28,8 @@ export const handleApiResult = (result: TSimpleResult): void => {
     registry.get(code)!();
     return;
   }
+
+  if (options?.skipToast) return;
 
   void message.error(result.message);
 };

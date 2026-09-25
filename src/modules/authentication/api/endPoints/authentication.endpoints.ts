@@ -15,6 +15,7 @@ export const authEndpoints = {
     method: "GET",
     path: `/auth/refreshToken`,
     auth: "none",
+    skipToast: true,
   }),
   revokeToken: createEndpoint({
     method: "POST",

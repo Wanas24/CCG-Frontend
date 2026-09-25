@@ -8,6 +8,12 @@ import { authEndpoints } from "@/modules/authentication/api/endPoints/authentica
 import { ErrorCode } from "./errorCodes";
 import { handleApiResult, registerErrorHandler } from "./apiResultHandler";
 
+declare module "axios" {
+  export interface AxiosRequestConfig {
+    skipToast?: boolean;
+  }
+}
+
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
@@ -97,13 +103,15 @@ apiClient.interceptors.request.use(async (config) => {
 apiClient.interceptors.response.use(
   (response) => {
     const result = response.data as TSimpleResult | undefined;
+    const skipToast = response.config.skipToast;
+
     if (
       result &&
       typeof result === "object" &&
       "isSuccess" in result &&
       !result.isSuccess
     ) {
-      handleApiResult(result);
+      handleApiResult(result, { skipToast });
     }
     return response;
   },
@@ -115,11 +123,12 @@ apiClient.interceptors.response.use(
     const config = error.config as RetryableRequestConfig;
     const status = error.response?.status;
     const payload = error.response?.data as TSimpleResult | undefined;
+    const toastOptions = { skipToast: config.skipToast };
 
     // 401 — check errorCode before attempting refresh
     if (status === 401 && !isRefreshTokenPath(config.url) && !config._retry) {
       if (payload?.errorCode === ErrorCode.Unauthorized) {
-        handleApiResult(payload);
+        handleApiResult(payload, toastOptions);
         return Promise.reject(error);
       }
 
@@ -142,20 +151,23 @@ apiClient.interceptors.response.use(
         isVerificationBypassPath(config.url)
       ) {
         if (payload?.isSuccess === false) {
-          handleApiResult({ isSuccess: false, message: payload.message, errorCode: null });
+          handleApiResult(
+            { isSuccess: false, message: payload.message, errorCode: null },
+            toastOptions,
+          );
         }
         return Promise.reject(error);
       }
 
       if (payload?.isSuccess === false) {
-        handleApiResult(payload);
+        handleApiResult(payload, toastOptions);
       }
       return Promise.reject(error);
     }
 
     // All other errors (400, 422, 500, …)
     if (payload?.isSuccess === false) {
-      handleApiResult(payload);
+      handleApiResult(payload, toastOptions);
     }
     return Promise.reject(error);
   },

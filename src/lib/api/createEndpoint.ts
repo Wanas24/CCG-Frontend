@@ -5,6 +5,7 @@ export interface TCreateEndpointProps {
   path: string;
   auth?: AuthType;
   permissions?: string[];
+  skipToast?: boolean;
 }
 
 export const createEndpoint = (
@@ -13,6 +14,7 @@ export const createEndpoint = (
   return {
     auth: "required",
     permissions: [],
+    skipToast: false,
     ...options,
   } as const;
 };

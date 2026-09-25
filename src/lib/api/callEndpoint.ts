@@ -29,6 +29,7 @@ export const callEndpoint = async <TResponse, TBody = unknown>(
     params: options.queryParams,
     data: options.body,
     headers: options.headers,
+    skipToast: endpoint.skipToast,
   });
 
   return data;
