@@ -146,7 +146,6 @@ const SignupForm = () => {
               type="tel"
               label={t("auth.signup.extraPhoneLabel")}
               placeholder={t("auth.signup.extraPhonePlaceholder")}
-              required
               errorMsg={translateError(errors.extraPhone?.message)}
             />
           )}
@@ -175,7 +174,7 @@ const SignupForm = () => {
             value={field.value ? dayjs(field.value) : null}
             onChange={(date) =>
               field.onChange(
-                dayjs.isDayjs(date) ? date.toISOString() : "",
+                dayjs.isDayjs(date) ? date.format("YYYY-MM-DD") : "",
               )
             }
             label={t("auth.signup.dateOfBirthLabel")}

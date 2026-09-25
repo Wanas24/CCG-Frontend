@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { signupSchema, type SignupFormValues } from "../schemas";
 import { useRegister } from "../api/hooks/useRegister";
+import { establishSession } from "./establishSession";
 
 export const useSignupForm = () => {
   const navigate = useNavigate();
@@ -36,8 +37,15 @@ export const useSignupForm = () => {
 
   const onSubmit = (values: SignupFormValues) => {
     registerMutate(values, {
-      onSuccess: () => {
-        navigate(AUTH_ROUTES.login);
+      onSuccess: async (response) => {
+        const { data } = response;
+
+        if (!response.isSuccess || !data?.token || !data.isAuthenticated) {
+          return;
+        }
+
+        await establishSession(data);
+        navigate(AUTH_ROUTES.verifyAccount, { replace: true });
       },
     });
   };

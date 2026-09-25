@@ -14,6 +14,7 @@ interface RequestOptions<TBody = unknown> {
   pathParams?: Record<string, string | number>;
   queryParams?: Record<string, string | number>;
   body?: TBody;
+  headers?: Record<string, string>;
 }
 
 export const callEndpoint = async <TResponse, TBody = unknown>(
@@ -27,6 +28,7 @@ export const callEndpoint = async <TResponse, TBody = unknown>(
     method: endpoint.method,
     params: options.queryParams,
     data: options.body,
+    headers: options.headers,
   });
 
   return data;

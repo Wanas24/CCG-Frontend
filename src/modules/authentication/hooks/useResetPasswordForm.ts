@@ -1,12 +1,23 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema, type ResetPasswordFormValues } from "../schemas";
-import type { TResetPasswordParams } from "../types/auth";
+import type { TResetPasswordParams } from "../types";
+import { useResetPassword } from "../api/hooks/useResetPassword";
 
 export const useResetPasswordForm = ({
-  userId,
+  email,
   token,
 }: TResetPasswordParams) => {
+  const {
+    mutate: resetPasswordMutate,
+    isPending,
+    isError,
+    isSuccess,
+    error: resetPasswordError,
+    data,
+    reset,
+  } = useResetPassword();
+
   const {
     control,
     handleSubmit,
@@ -19,9 +30,13 @@ export const useResetPasswordForm = ({
     },
   });
 
-  const onSubmit = (_values: ResetPasswordFormValues) => {
-    void userId;
-    void token;
+  const onSubmit = (values: ResetPasswordFormValues) => {
+    reset();
+    resetPasswordMutate({
+      email,
+      token,
+      newPassword: values.password,
+    });
   };
 
   return {
@@ -29,5 +44,10 @@ export const useResetPasswordForm = ({
     handleSubmit,
     errors,
     onSubmit,
+    isPending,
+    isError,
+    isSuccess: isSuccess && Boolean(data?.isSuccess),
+    resetPasswordError,
+    successMessage: data?.message,
   };
 };

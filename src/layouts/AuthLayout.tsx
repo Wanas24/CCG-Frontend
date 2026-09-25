@@ -22,7 +22,7 @@ const AuthLayout = () => {
           <LayoutShowcase />
         </div>
 
-        <div className="flex flex-1 flex-col items-center overflow-y-auto bg-(--app-surface) px-8 py-12">
+        <div className="flex flex-1 flex-col items-center overflow-y-auto bg-(--app-surface) py-12">
           <div className="w-full max-w-xl p-5 rounded-xl my-auto">
             <ViewTransition>
               <Outlet />

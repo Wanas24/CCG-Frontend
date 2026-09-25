@@ -9,4 +9,9 @@ export const VALIDATION = {
   email: "validation.email",
   passwordMin: "validation.passwordMin",
   passwordMatch: "validation.passwordMatch",
+  passwordComplexity: "validation.passwordComplexity",
+  maxLength50: "validation.maxLength50",
+  phoneInvalid: "validation.phoneInvalid",
+  nationalIdLength: "validation.nationalIdLength",
+  dateOfBirthPast: "validation.dateOfBirthPast",
 } as const satisfies Record<keyof ValidationMessages, ValidationKey>;
