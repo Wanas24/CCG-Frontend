@@ -17,14 +17,7 @@ export const useConfirmEmailManager = ({
   const setConfirmationStatus = useAuthStore(
     (state) => state.setConfirmationStatus,
   );
-  const {
-    mutate,
-    isPending,
-    isError,
-    isSuccess,
-    error,
-    data,
-  } = useConfirmEmail();
+  const { mutate, isPending, isSuccess, data } = useConfirmEmail();
   const { mutateAsync: fetchConfirmationStatus } = useConfirmationStatus();
 
   useEffect(() => {
@@ -35,7 +28,6 @@ export const useConfirmEmailManager = ({
           if (!response.isSuccess || !isAuthenticated) {
             return;
           }
-
           try {
             const statusResponse = await fetchConfirmationStatus();
             const status = statusResponse.data ?? null;
@@ -66,9 +58,7 @@ export const useConfirmEmailManager = ({
 
   return {
     isPending,
-    isError,
     isSuccess,
-    error,
     message: data?.message,
     continuePath,
   };

@@ -1,7 +1,6 @@
 import { ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppTag } from "@/shared/ANTD_UIComponents";
-import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useVerifyAccountManager } from "../hooks/useVerifyAccountManager";
 
 const VerifyAccountForm = () => {
@@ -18,21 +17,9 @@ const VerifyAccountForm = () => {
     isRefreshing,
     isSendingEmail,
     isSendingPhone,
-    isRefreshError,
-    isEmailError,
-    isPhoneError,
-    refreshError,
-    emailError,
-    phoneError,
     emailMessage,
     phoneMessage,
   } = useVerifyAccountManager();
-
-  const apiError =
-    refreshError?.response?.data?.message ||
-    emailError?.response?.data?.message ||
-    phoneError?.response?.data?.message ||
-    "";
 
   return (
     <div className="flex flex-col gap-6">
@@ -109,10 +96,6 @@ const VerifyAccountForm = () => {
           </>
         )}
       </div>
-
-      {(isRefreshError || isEmailError || isPhoneError) && (
-        <AppErrorContainer error={apiError} />
-      )}
 
       <AppButton
         variant="primary"

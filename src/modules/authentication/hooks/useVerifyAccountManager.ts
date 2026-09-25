@@ -19,8 +19,6 @@ export const useVerifyAccountManager = () => {
   const {
     mutate: refreshStatus,
     isPending: isRefreshing,
-    isError: isRefreshError,
-    error: refreshError,
     isSuccess: isRefreshSuccess,
     data: refreshData,
   } = useConfirmationStatus();
@@ -28,8 +26,6 @@ export const useVerifyAccountManager = () => {
   const {
     mutate: sendEmail,
     isPending: isSendingEmail,
-    isError: isEmailError,
-    error: emailError,
     isSuccess: isEmailSuccess,
     data: emailData,
     reset: resetEmail,
@@ -38,8 +34,6 @@ export const useVerifyAccountManager = () => {
   const {
     mutate: sendPhone,
     isPending: isSendingPhone,
-    isError: isPhoneError,
-    error: phoneError,
     isSuccess: isPhoneSuccess,
     data: phoneData,
     reset: resetPhone,
@@ -87,12 +81,6 @@ export const useVerifyAccountManager = () => {
     isRefreshing,
     isSendingEmail,
     isSendingPhone,
-    isRefreshError,
-    isEmailError,
-    isPhoneError,
-    refreshError,
-    emailError,
-    phoneError,
     emailMessage: isEmailSuccess ? emailData?.message : undefined,
     phoneMessage: isPhoneSuccess ? phoneData?.message : undefined,
     refreshMessage: isRefreshSuccess ? refreshData?.message : undefined,

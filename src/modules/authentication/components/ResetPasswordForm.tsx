@@ -3,7 +3,6 @@ import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { KeyRound } from "lucide-react";
 import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
-import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import type { TResetPasswordParams } from "@/modules/authentication/types";
@@ -17,12 +16,9 @@ const ResetPasswordForm = ({ email, token }: Props) => {
   const {
     control,
     handleSubmit,
-    errors,
     onSubmit,
     isPending,
-    isError,
     isSuccess,
-    resetPasswordError,
     successMessage,
   } = useResetPasswordForm({
     email,
@@ -72,7 +68,7 @@ const ResetPasswordForm = ({ email, token }: Props) => {
       <Controller
         name="password"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppInput
             {...field}
             type="password"
@@ -80,7 +76,7 @@ const ResetPasswordForm = ({ email, token }: Props) => {
             label={t("auth.resetPassword.passwordLabel")}
             placeholder={t("auth.resetPassword.passwordPlaceholder")}
             required
-            errorMsg={translateError(errors.password?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
@@ -88,7 +84,7 @@ const ResetPasswordForm = ({ email, token }: Props) => {
       <Controller
         name="confirmPassword"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppInput
             {...field}
             type="password"
@@ -96,16 +92,10 @@ const ResetPasswordForm = ({ email, token }: Props) => {
             label={t("auth.resetPassword.confirmPasswordLabel")}
             placeholder={t("auth.resetPassword.confirmPasswordPlaceholder")}
             required
-            errorMsg={translateError(errors.confirmPassword?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
-
-      {isError && (
-        <AppErrorContainer
-          error={resetPasswordError?.response?.data.message || ""}
-        />
-      )}
 
       <AppButton
         htmlType="submit"

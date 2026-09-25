@@ -8,7 +8,6 @@ import {
   AppInput,
   AppTextArea,
 } from "@/shared/ANTD_UIComponents";
-import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { useSignupForm } from "../hooks/useSignupForm";
@@ -16,15 +15,7 @@ import { useSignupForm } from "../hooks/useSignupForm";
 const SignupForm = () => {
   const { t } = useTranslation();
   const translateError = useTranslatedFormError();
-  const {
-    control,
-    handleSubmit,
-    errors,
-    onSubmit,
-    isPending,
-    isError,
-    registerError,
-  } = useSignupForm();
+  const { control, handleSubmit, onSubmit, isPending } = useSignupForm();
 
   return (
     <form
@@ -42,14 +33,14 @@ const SignupForm = () => {
         <Controller
           name="firstName"
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <AppInput
               {...field}
               autoComplete="given-name"
               label={t("auth.signup.firstNameLabel")}
               placeholder={t("auth.signup.firstNamePlaceholder")}
               required
-              errorMsg={translateError(errors.firstName?.message)}
+              errorMsg={translateError(fieldState.error?.message)}
             />
           )}
         />
@@ -57,14 +48,14 @@ const SignupForm = () => {
         <Controller
           name="lastName"
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <AppInput
               {...field}
               autoComplete="family-name"
               label={t("auth.signup.lastNameLabel")}
               placeholder={t("auth.signup.lastNamePlaceholder")}
               required
-              errorMsg={translateError(errors.lastName?.message)}
+              errorMsg={translateError(fieldState.error?.message)}
             />
           )}
         />
@@ -73,7 +64,7 @@ const SignupForm = () => {
       <Controller
         name="email"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppInput
             {...field}
             type="email"
@@ -81,7 +72,7 @@ const SignupForm = () => {
             label={t("auth.signup.emailLabel")}
             placeholder={t("auth.signup.emailPlaceholder")}
             required
-            errorMsg={translateError(errors.email?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
@@ -90,7 +81,7 @@ const SignupForm = () => {
         <Controller
           name="password"
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <AppInput
               {...field}
               type="password"
@@ -98,7 +89,7 @@ const SignupForm = () => {
               label={t("auth.signup.passwordLabel")}
               placeholder={t("auth.signup.passwordPlaceholder")}
               required
-              errorMsg={translateError(errors.password?.message)}
+              errorMsg={translateError(fieldState.error?.message)}
             />
           )}
         />
@@ -106,7 +97,7 @@ const SignupForm = () => {
         <Controller
           name="confirmPassword"
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <AppInput
               {...field}
               type="password"
@@ -114,7 +105,7 @@ const SignupForm = () => {
               label={t("auth.signup.confirmPasswordLabel")}
               placeholder={t("auth.signup.confirmPasswordPlaceholder")}
               required
-              errorMsg={translateError(errors.confirmPassword?.message)}
+              errorMsg={translateError(fieldState.error?.message)}
             />
           )}
         />
@@ -124,7 +115,7 @@ const SignupForm = () => {
         <Controller
           name="phoneNumber"
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <AppInput
               {...field}
               type="tel"
@@ -132,7 +123,7 @@ const SignupForm = () => {
               label={t("auth.signup.phoneNumberLabel")}
               placeholder={t("auth.signup.phoneNumberPlaceholder")}
               required
-              errorMsg={translateError(errors.phoneNumber?.message)}
+              errorMsg={translateError(fieldState.error?.message)}
             />
           )}
         />
@@ -140,13 +131,13 @@ const SignupForm = () => {
         <Controller
           name="extraPhone"
           control={control}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <AppInput
               {...field}
               type="tel"
               label={t("auth.signup.extraPhoneLabel")}
               placeholder={t("auth.signup.extraPhonePlaceholder")}
-              errorMsg={translateError(errors.extraPhone?.message)}
+              errorMsg={translateError(fieldState.error?.message)}
             />
           )}
         />
@@ -155,13 +146,13 @@ const SignupForm = () => {
       <Controller
         name="nationalId"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppInput
             {...field}
             label={t("auth.signup.nationalIdLabel")}
             placeholder={t("auth.signup.nationalIdPlaceholder")}
             required
-            errorMsg={translateError(errors.nationalId?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
@@ -169,7 +160,7 @@ const SignupForm = () => {
       <Controller
         name="dateOfBirth"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppDatePicker
             value={field.value ? dayjs(field.value) : null}
             onChange={(date) =>
@@ -180,7 +171,7 @@ const SignupForm = () => {
             label={t("auth.signup.dateOfBirthLabel")}
             placeholder={t("auth.signup.dateOfBirthPlaceholder")}
             required
-            errorMsg={translateError(errors.dateOfBirth?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
@@ -188,7 +179,7 @@ const SignupForm = () => {
       <Controller
         name="fullAddress"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppTextArea
             {...field}
             autoComplete="street-address"
@@ -196,16 +187,10 @@ const SignupForm = () => {
             placeholder={t("auth.signup.fullAddressPlaceholder")}
             required
             rows={3}
-            errorMsg={translateError(errors.fullAddress?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
-
-      {isError && (
-        <AppErrorContainer
-          error={registerError?.response?.data.message || ""}
-        />
-      )}
 
       <AppButton
         htmlType="submit"

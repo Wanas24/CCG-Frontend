@@ -3,7 +3,6 @@ import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { MailCheck } from "lucide-react";
 import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
-import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { useForgotPasswordForm } from "../hooks/useForgotPasswordForm";
@@ -11,17 +10,8 @@ import { useForgotPasswordForm } from "../hooks/useForgotPasswordForm";
 const ForgotPasswordForm = () => {
   const { t } = useTranslation();
   const translateError = useTranslatedFormError();
-  const {
-    control,
-    handleSubmit,
-    errors,
-    onSubmit,
-    isPending,
-    isError,
-    isSuccess,
-    forgotPasswordError,
-    successMessage,
-  } = useForgotPasswordForm();
+  const { control, handleSubmit, onSubmit, isPending, isSuccess, successMessage } =
+    useForgotPasswordForm();
 
   if (isSuccess) {
     return (
@@ -67,7 +57,7 @@ const ForgotPasswordForm = () => {
       <Controller
         name="email"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppInput
             {...field}
             type="email"
@@ -75,16 +65,10 @@ const ForgotPasswordForm = () => {
             label={t("auth.forgotPassword.emailLabel")}
             placeholder={t("auth.forgotPassword.emailPlaceholder")}
             required
-            errorMsg={translateError(errors.email?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
-
-      {isError && (
-        <AppErrorContainer
-          error={forgotPasswordError?.response?.data.message || ""}
-        />
-      )}
 
       <AppButton
         htmlType="submit"

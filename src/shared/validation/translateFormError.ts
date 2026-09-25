@@ -9,5 +9,9 @@ export const translateFormError = (
     return undefined;
   }
 
-  return t(errorMessage as ValidationKey);
+  if (errorMessage.startsWith("validation.")) {
+    return t(errorMessage as ValidationKey);
+  }
+
+  return errorMessage;
 };

@@ -2,20 +2,12 @@ import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { MailCheck } from "lucide-react";
 import { AppButton } from "@/shared/ANTD_UIComponents";
-import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useConfirmEmailManager } from "../hooks/useConfirmEmailManager";
 import type { TConfirmEmailParams } from "../types";
 
 const ConfirmEmailResult = ({ userId, token }: TConfirmEmailParams) => {
   const { t } = useTranslation();
-  const {
-    isPending,
-    isError,
-    isSuccess,
-    error,
-    message,
-    continuePath,
-  } = useConfirmEmailManager({ userId, token });
+  const { isPending, isSuccess, message, continuePath } = useConfirmEmailManager({ userId, token });
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,14 +28,8 @@ const ConfirmEmailResult = ({ userId, token }: TConfirmEmailParams) => {
         </p>
       </div>
 
-      {message && !isError && (
+      {message && (
         <p className="text-sm text-(--statusG200)">{message}</p>
-      )}
-
-      {isError && (
-        <AppErrorContainer
-          error={error?.response?.data?.message || t("auth.confirmEmail.error")}
-        />
       )}
 
       {!isPending && (

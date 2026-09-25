@@ -2,14 +2,9 @@ import { z } from "zod";
 import { VALIDATION } from "@/shared/validation";
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, VALIDATION.required)
-    .email(VALIDATION.email),
-  password: z
-    .string()
-    .min(1, VALIDATION.required)
-    .min(8, VALIDATION.passwordMin),
+  // email: z.email(VALIDATION.email),
+  email: z.string().email(VALIDATION.email),
+  password: z.string().min(1, VALIDATION.required),
   rememberMe: z.boolean(),
 });
 
