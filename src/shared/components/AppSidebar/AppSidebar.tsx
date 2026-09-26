@@ -1,34 +1,40 @@
-import { memo, useCallback, useContext, useState } from "react";
-import { ConfigProvider, Divider } from "antd";
+import { memo, useCallback, useState } from "react";
+import { Divider } from "antd";
 import { SidebarProvider } from "./SidebarContext";
 import SidebarMenu from "./SidebarMenu";
-import SidebarCollapseButton from "./SidebarCollapseButton";
 import { defaultMenuConfig } from "./menuConfig";
 import type { AppSidebarProps } from "./types";
-import {
-  SIDEBAR_TABLET_BREAKPOINT,
-  useSidebarTabletBreakpoint,
-} from "./utils";
+import { SIDEBAR_TABLET_BREAKPOINT, useSidebarTabletBreakpoint } from "./utils";
 import "./styles.css";
 
-/** Logo shown at the top of the expanded sidebar. Hidden when collapsed. */
 const SidebarLogo = memo(function SidebarLogo() {
   return (
-    <div className="h-[50px] w-[50px] m-auto mt-3">
+    <div className="m-auto mt-3 flex items-center gap-2">
       <img
-        className="h-full w-full object-cover"
-        src="/assets/sidebar/sideLogo.webp"
+        src="/assets/logo-dark-tight.webp"
         alt="logo"
+        className="h-16 w-20 object-contain"
       />
+      <div className="flex flex-col leading-tight">
+        <div className="flex items-baseline gap-1.5 text-sm font-bold uppercase tracking-wide">
+          <span className="text-(--sidebar-text)">Construct</span>
+          <span className="text-(--Secondary300)">Code</span>
+        </div>
+        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-(--Primary300)">
+          Group
+        </span>
+      </div>
     </div>
   );
 });
 
-/** Horizontal rule beneath the logo. Hidden when collapsed. */
 const SidebarDivider = memo(function SidebarDivider() {
   return (
-    <div className="w-[85%] m-auto">
-      <Divider orientation="horizontal" className="bg-gray-300/30!" />
+    <div className="m-auto w-[85%]">
+      <Divider
+        orientation="horizontal"
+        className="my-2! border-(--sidebar-text)/20!"
+      />
     </div>
   );
 });
@@ -39,8 +45,8 @@ const AppSidebar = ({
   defaultCollapsed = false,
   permissions = [],
   menuConfig = defaultMenuConfig,
-  expandedWidth = "100%",
-  collapsedWidth = "100%",
+  expandedWidth = "16rem",
+  collapsedWidth = "4.5rem",
   autoCollapseBelow = SIDEBAR_TABLET_BREAKPOINT,
 }: AppSidebarProps) => {
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
@@ -58,28 +64,23 @@ const AppSidebar = ({
     }
   }, [isControlled, onCollapse]);
 
-  const { direction } = useContext(ConfigProvider.ConfigContext);
-  const isRtl = direction === "rtl";
-
   return (
     <SidebarProvider
       collapsed={effectiveCollapsed}
       onToggle={toggleCollapse}
-      isRtl={isRtl}
       menuConfig={menuConfig}
       permissions={permissions}
     >
       <div
         style={{ width: effectiveCollapsed ? collapsedWidth : expandedWidth }}
-        className="app-sidebar relative flex h-full shrink-0 overflow-hidden bg-(--Primary400)! transition-[width] duration-300 ease-in-out"
+        className="app-sidebar relative flex h-dvh shrink-0 overflow-hidden bg-(--sidebar-bg)! text-(--sidebar-text) transition-[width] duration-300 ease-in-out"
       >
-        <div className="w-full flex flex-col justify-center h-full">
+        <div className="flex h-full w-full flex-col justify-center">
           <SidebarLogo />
           <SidebarDivider />
           <SidebarMenu />
           <div className="h-5" />
         </div>
-        <SidebarCollapseButton />
       </div>
     </SidebarProvider>
   );

@@ -1,0 +1,64 @@
+.sidebar-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.app-sidebar .ant-menu {
+  width: 95% !important;
+  margin: auto !important;
+  background: transparent !important;
+  color: var(--sidebar-text) !important;
+}
+
+.app-sidebar .ant-menu-item,
+.app-sidebar .ant-menu-submenu-title {
+  color: var(--sidebar-text) !important;
+}
+
+.app-sidebar .ant-menu-item .anticon,
+.app-sidebar .ant-menu-submenu-title .anticon {
+  color: var(--sidebar-text) !important;
+}
+
+.app-sidebar .ant-menu-item:hover,
+.app-sidebar .ant-menu-submenu-title:hover {
+  color: var(--sidebar-text) !important;
+  background-color: var(--sidebar-active-container) !important;
+}
+
+.app-sidebar .ant-menu-item.ant-menu-item-selected {
+  border: 2px solid var(--Primary300) !important;
+  margin-inline: 0px !important;
+  width: 90% !important;
+  margin: auto !important;
+  padding-inline-start: 16px !important;
+  background-color: var(--sidebar-active-container) !important;
+  color: var(--sidebar-text) !important;
+}
+
+.app-sidebar .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open {
+  border: 2px solid var(--Primary300) !important;
+  background-color: var(--sidebar-active-container) !important;
+  margin-bottom: 10px !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-vertical {
+  background: var(--sidebar-bg) !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-vertical .ant-menu-item {
+  color: var(--sidebar-text) !important;
+}
+
+.app-sidebar
+  .ant-menu.ant-menu-inline-collapsed
+  .ant-menu-item.ant-menu-item-selected {
+  justify-content: center !important;
+  padding: 0px !important;
+}

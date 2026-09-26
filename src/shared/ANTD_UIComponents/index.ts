@@ -53,8 +53,12 @@ export {
   type AppCheckBoxLabelDirection,
 } from "./AppCheckBox/AppCheckBox";
 export { AppTag, type AppTagProps, type AppTagVariant } from "./AppTag/AppTag";
-export { default as AppSidebar } from "./AppSidebar/AppSidebar";
-export type { AppSidebarProps, MenuItemConfig } from "./AppSidebar/types";
+export { default as AppSidebar } from "../components/AppSidebar/AppSidebar";
+export {
+  SIDEBAR_TABLET_BREAKPOINT,
+  useSidebarTabletBreakpoint,
+} from "../components/AppSidebar/utils";
+export type { AppSidebarProps, MenuItemConfig } from "../components/AppSidebar/types";
 export {
   AppFormLayout,
   AppFormPage,

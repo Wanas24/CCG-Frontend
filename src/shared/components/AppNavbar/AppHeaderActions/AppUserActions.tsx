@@ -61,7 +61,7 @@ const AppUserActions = () => {
       >
         <Avatar
           size={36}
-          className="bg-(--Primary400)! text-(--Secondary300)! font-semibold text-sm shrink-0"
+          className="bg-(--brand-surface)! text-(--Secondary300)! font-semibold text-sm shrink-0"
           icon={!initials ? <User size={16} /> : undefined}
         >
           {initials || null}

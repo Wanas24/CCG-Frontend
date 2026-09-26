@@ -8,18 +8,34 @@ import { createAntdTheme } from "../themeFactory";
 
 export const lightTheme = createAntdTheme(lightCssVariables, {
   algorithm: theme.defaultAlgorithm,
+  tokenOverrides: {
+    colorBgContainer: lightCssVariables["--app-surface"],
+    colorBorder: lightCssVariables["--Grey300"],
+  },
   componentOverrides: {
     DatePicker: {
-      cellHoverBg: lightCssVariables["--Primary400"],
+      cellHoverBg: lightCssVariables["--Primary100"],
+    },
+    Menu: {
+      colorBgContainer: "transparent",
+      itemBg: "transparent",
     },
   },
 });
 
 export const darkTheme = createAntdTheme(darkCssVariables, {
   algorithm: theme.darkAlgorithm,
+  tokenOverrides: {
+    colorBgContainer: darkCssVariables["--app-surface"],
+    colorBorder: darkCssVariables["--Grey300"],
+  },
   componentOverrides: {
     DatePicker: {
-      cellHoverBg: darkCssVariables["--Primary400"],
+      cellHoverBg: darkCssVariables["--Primary100"],
+    },
+    Menu: {
+      colorBgContainer: "transparent",
+      itemBg: "transparent",
     },
   },
 });
