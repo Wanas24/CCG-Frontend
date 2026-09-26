@@ -1,4 +1,4 @@
-import AppHeaderActions from "./AppHeaderActions/AppHeaderActions";
+import AppHeaderActions from "../../components/AppNavbar/AppHeaderActions/AppHeaderActions";
 import AppHeaderWelcome from "./AppHeaderWelcome/AppHeaderWelcome";
 
 const AppHeader = () => {
