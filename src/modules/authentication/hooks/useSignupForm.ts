@@ -5,8 +5,12 @@ import {
   applyApiFieldErrors,
   getSimpleResultFromAxiosError,
 } from "@/lib/api/applyApiFieldErrors";
-import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import { signupSchema, type SignupFormValues } from "../schemas";
+import { APP_ROUTES } from "@/modules/standalone/routes/paths";
+import {
+  normalizeOptionalPhone,
+  signupSchema,
+  type SignupFormValues,
+} from "../schemas";
 import { useRegister } from "../api/hooks/useRegister";
 import { establishSession } from "./establishSession";
 
@@ -16,6 +20,7 @@ export const useSignupForm = () => {
 
   const { control, handleSubmit, setError } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
+    mode: "all",
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -31,24 +36,30 @@ export const useSignupForm = () => {
   });
 
   const onSubmit = (values: SignupFormValues) => {
-    registerMutate(values, {
-      onSuccess: async (response) => {
-        if (!response.isSuccess) {
-          applyApiFieldErrors(setError, response.data);
-          return;
-        }
-
-        const { data } = response;
-        if (!data?.token || !data.isAuthenticated) return;
-
-        await establishSession(data);
-        navigate(AUTH_ROUTES.verifyAccount, { replace: true });
+    registerMutate(
+      {
+        ...values,
+        extraPhone: normalizeOptionalPhone(values.extraPhone),
       },
-      onError: (error) => {
-        const result = getSimpleResultFromAxiosError(error);
-        applyApiFieldErrors(setError, result?.data);
+      {
+        onSuccess: async (response) => {
+          if (!response.isSuccess) {
+            applyApiFieldErrors(setError, response.data);
+            return;
+          }
+
+          const { data } = response;
+          if (!data?.token || !data.isAuthenticated) return;
+
+          establishSession(data);
+          navigate(APP_ROUTES.home, { replace: true });
+        },
+        onError: (error) => {
+          const result = getSimpleResultFromAxiosError(error);
+          applyApiFieldErrors(setError, result?.data);
+        },
       },
-    });
+    );
   };
 
   return {

@@ -6,6 +6,7 @@ import {
   AppButton,
   AppDatePicker,
   AppInput,
+  AppPhoneInput,
   AppTextArea,
 } from "@/shared/ANTD_UIComponents";
 import { useTranslatedFormError } from "@/shared/validation";
@@ -116,10 +117,12 @@ const SignupForm = () => {
           name="phoneNumber"
           control={control}
           render={({ field, fieldState }) => (
-            <AppInput
-              {...field}
-              type="tel"
-              autoComplete="tel"
+            <AppPhoneInput
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              inputProps={{ autoComplete: "tel" }}
               label={t("auth.signup.phoneNumberLabel")}
               placeholder={t("auth.signup.phoneNumberPlaceholder")}
               required
@@ -132,9 +135,11 @@ const SignupForm = () => {
           name="extraPhone"
           control={control}
           render={({ field, fieldState }) => (
-            <AppInput
-              {...field}
-              type="tel"
+            <AppPhoneInput
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
               label={t("auth.signup.extraPhoneLabel")}
               placeholder={t("auth.signup.extraPhonePlaceholder")}
               errorMsg={translateError(fieldState.error?.message)}

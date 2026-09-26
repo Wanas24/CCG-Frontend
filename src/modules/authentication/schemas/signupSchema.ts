@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { VALIDATION } from "@/shared/validation";
-
-const EGYPT_MOBILE_E164 = /^\+20(10|11|12|15)\d{8}$/;
+import {
+  optionalEgyptMobileSchema,
+  requiredEgyptMobileSchema,
+} from "./phoneRules";
 
 const passwordComplexity = (value: string) =>
   /[a-z]/.test(value) &&
@@ -47,17 +49,9 @@ export const signupSchema = z
       .min(8, VALIDATION.passwordMin)
       .refine(passwordComplexity, VALIDATION.passwordComplexity),
     confirmPassword: z.string().min(1, VALIDATION.required),
-    phoneNumber: z
-      .string()
-      .min(1, VALIDATION.required)
-      .regex(EGYPT_MOBILE_E164, VALIDATION.phoneInvalid),
+    phoneNumber: requiredEgyptMobileSchema,
     fullAddress: z.string().min(1, VALIDATION.required),
-    extraPhone: z
-      .string()
-      .refine(
-        (value) => value === "" || EGYPT_MOBILE_E164.test(value),
-        VALIDATION.phoneInvalid,
-      ),
+    extraPhone: optionalEgyptMobileSchema,
     nationalId: z
       .string()
       .min(1, VALIDATION.required)
