@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
@@ -17,14 +17,14 @@ export const useConfirmEmailManager = ({
   const setConfirmationStatus = useAuthStore(
     (state) => state.setConfirmationStatus,
   );
-  const { mutate, isPending, isSuccess, data } = useConfirmEmail();
+  const { mutate, isPending, isSuccess, isError, data } = useConfirmEmail();
 
-  useEffect(() => {
+  const confirm = useCallback(() => {
     mutate(
       { userId, token },
       {
         onSuccess: async (response) => {
-          if (!response.isSuccess || !isAuthenticated) {
+          if (!response.isSuccess || !useAuthStore.getState().isAuthenticated) {
             return;
           }
           try {
@@ -41,22 +41,19 @@ export const useConfirmEmailManager = ({
         },
       },
     );
-  }, [
-    mutate,
-    userId,
-    token,
-    isAuthenticated,
-    setConfirmationStatus,
-    navigate,
-  ]);
+  }, [mutate, userId, token, setConfirmationStatus, navigate]);
 
   const continuePath = isAuthenticated
     ? AUTH_ROUTES.verifyAccount
     : AUTH_ROUTES.login;
 
+  const confirmed = isSuccess && Boolean(data?.isSuccess);
+
   return {
+    confirm,
     isPending,
-    isSuccess,
+    isSuccess: confirmed,
+    isError: isError || (isSuccess && !confirmed),
     message: data?.message,
     continuePath,
   };
