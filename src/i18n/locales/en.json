@@ -85,15 +85,18 @@
       "successDescription": "Your password has been updated. You can sign in with your new password."
     },
     "verifyAccount": {
-      "title": "Verify your account",
-      "subtitle": "Confirm your email and phone number to continue",
+      "badge": "Account verification",
+      "title": "Finish verifying your account",
+      "subtitle": "Some actions need a confirmed email and phone. You can keep using the app and return here anytime.",
       "emailLabel": "Email",
       "phoneLabel": "Phone",
       "confirmed": "Confirmed",
       "pending": "Pending",
       "resendEmail": "Resend confirmation email",
       "sendWhatsApp": "Send WhatsApp verification",
-      "refreshStatus": "I've verified — refresh status"
+      "autoCheckHint": "Status updates automatically every 20 seconds",
+      "backToHome": "Back to home",
+      "progress": "{{done}} of {{total}} complete"
     },
     "confirmEmail": {
       "title": "Email confirmation",

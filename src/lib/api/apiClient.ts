@@ -129,27 +129,25 @@ const handle401Error = async (
   }
 };
 
-// 403 — bypass verification endpoints to avoid redirect loops
-const handle403Error = (
+const isAccountVerificationRequired = (payload: unknown): payload is TSimpleResult =>
+  isSimpleResult(payload) &&
+  Number(payload.errorCode) === ErrorCode.AccountVerificationRequired;
+
+const handleAccountVerificationRequired = (
   error: AxiosError,
   config: RetryableRequestConfig,
-  payload: TSimpleResult | undefined,
+  payload: TSimpleResult,
   toastOptions: ToastOptions,
 ) => {
-  if (
-    payload?.errorCode === ErrorCode.AccountVerificationRequired &&
-    isVerificationBypassPath(config.url)
-  ) {
-    if (isSimpleResult(payload) && !payload.isSuccess) {
-      handleApiResult(
-        { isSuccess: false, message: payload.message, errorCode: null },
-        toastOptions,
-      );
-    }
+  if (isVerificationBypassPath(config.url)) {
+    handleApiResult(
+      { isSuccess: false, message: payload.message, errorCode: null },
+      toastOptions,
+    );
     return Promise.reject(error);
   }
 
-  handleHttpErrorPayload(payload, 403, toastOptions);
+  handleApiResult(payload, toastOptions);
   return Promise.reject(error);
 };
 
@@ -204,6 +202,16 @@ apiClient.interceptors.response.use(
       return handleTransportError(error, toastOptions);
     }
 
+    // Check before 401 refresh — verification-required must not look like a JWT challenge.
+    if (isAccountVerificationRequired(payload)) {
+      return handleAccountVerificationRequired(
+        error,
+        config,
+        payload,
+        toastOptions,
+      );
+    }
+
     if (status === 401) {
       // Refresh-path 401 is an expected anonymous/bootstrap state — reject only.
       // Mid-session callers (refreshAccessToken / handle401Error) own logout+redirect.
@@ -217,10 +225,6 @@ apiClient.interceptors.response.use(
       }
 
       return handle401Error(error, config, payload);
-    }
-
-    if (status === 403) {
-      return handle403Error(error, config, payload, toastOptions);
     }
 
     handleHttpErrorPayload(payload, status, toastOptions);

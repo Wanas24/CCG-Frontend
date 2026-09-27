@@ -1,4 +1,5 @@
 import AuthLayout from "@/layouts/AuthLayout";
+import VerifyAccountLayout from "@/layouts/VerifyAccountLayout";
 import PublicRoute from "@/router/guards/PublicRoute";
 import VerifyAccountRoute from "@/router/guards/VerifyAccountRoute";
 import type { AppRouteObject } from "@/router/types";
@@ -62,7 +63,7 @@ const authRouteConfig: AppRouteObject[] = [
     Component: VerifyAccountRoute,
     children: [
       {
-        Component: AuthLayout,
+        Component: VerifyAccountLayout,
         showInMenu: false,
         children: [
           {

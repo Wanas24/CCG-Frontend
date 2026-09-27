@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
-import { useConfirmationStatus } from "../api/hooks/useConfirmationStatus";
+import {
+  CONFIRMATION_STATUS_POLL_INTERVAL_MS,
+  useConfirmationStatus,
+} from "../api/hooks/useConfirmationStatus";
 import { useSendEmailConfirmation } from "../api/hooks/useSendEmailConfirmation";
 import { useVerifyPhone } from "../api/hooks/useVerifyPhone";
 import { useLogoutManager } from "./useLogoutManager";
@@ -16,12 +20,12 @@ export const useVerifyAccountManager = () => {
   );
   const { logout, isPending: isLoggingOut } = useLogoutManager();
 
-  const {
-    mutate: refreshStatus,
-    isPending: isRefreshing,
-    isSuccess: isRefreshSuccess,
-    data: refreshData,
-  } = useConfirmationStatus();
+  const isVerified = isAccountVerified(confirmationStatus);
+
+  const { data: statusResponse } = useConfirmationStatus({
+    enabled: !isVerified,
+    refetchInterval: CONFIRMATION_STATUS_POLL_INTERVAL_MS,
+  });
 
   const {
     mutate: sendEmail,
@@ -39,24 +43,16 @@ export const useVerifyAccountManager = () => {
     reset: resetPhone,
   } = useVerifyPhone();
 
-  const applyStatusAndNavigate = (
-    status: { emailConfirmed: boolean; phoneNumberConfirmed: boolean } | null,
-  ) => {
+  useEffect(() => {
+    if (!statusResponse?.isSuccess) return;
+
+    const status = statusResponse.data ?? null;
     setConfirmationStatus(status);
+
     if (isAccountVerified(status)) {
       navigate(APP_ROUTES.home, { replace: true });
     }
-  };
-
-  const onRefreshStatus = () => {
-    refreshStatus(undefined, {
-      onSuccess: (response) => {
-        if (response.isSuccess) {
-          applyStatusAndNavigate(response.data ?? null);
-        }
-      },
-    });
-  };
+  }, [statusResponse, setConfirmationStatus, navigate]);
 
   const onResendEmail = () => {
     if (!email) return;
@@ -69,20 +65,22 @@ export const useVerifyAccountManager = () => {
     sendPhone();
   };
 
+  const goHome = () => {
+    navigate(APP_ROUTES.home);
+  };
+
   return {
     email,
     emailConfirmed: confirmationStatus?.emailConfirmed ?? false,
     phoneConfirmed: confirmationStatus?.phoneNumberConfirmed ?? false,
-    onRefreshStatus,
     onResendEmail,
     onSendPhoneVerification,
+    goHome,
     logout,
     isLoggingOut,
-    isRefreshing,
     isSendingEmail,
     isSendingPhone,
     emailMessage: isEmailSuccess ? emailData?.message : undefined,
     phoneMessage: isPhoneSuccess ? phoneData?.message : undefined,
-    refreshMessage: isRefreshSuccess ? refreshData?.message : undefined,
   };
 };

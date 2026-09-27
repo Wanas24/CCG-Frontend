@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { useConfirmEmail } from "../api/hooks/useConfirmEmail";
-import { useConfirmationStatus } from "../api/hooks/useConfirmationStatus";
+import { fetchConfirmationStatus } from "../api/hooks/useConfirmationStatus";
 import { useAuthStore } from "../store/authStore";
 import type { TConfirmEmailParams } from "../types";
 import { isAccountVerified } from "../types";
@@ -18,7 +18,6 @@ export const useConfirmEmailManager = ({
     (state) => state.setConfirmationStatus,
   );
   const { mutate, isPending, isSuccess, data } = useConfirmEmail();
-  const { mutateAsync: fetchConfirmationStatus } = useConfirmationStatus();
 
   useEffect(() => {
     mutate(
@@ -49,7 +48,6 @@ export const useConfirmEmailManager = ({
     isAuthenticated,
     setConfirmationStatus,
     navigate,
-    fetchConfirmationStatus,
   ]);
 
   const continuePath = isAuthenticated

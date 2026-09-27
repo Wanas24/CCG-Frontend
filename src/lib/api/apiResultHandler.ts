@@ -22,7 +22,10 @@ export const handleApiResult = (
 ): void => {
   if (result.isSuccess) return;
 
-  const code = result.errorCode ?? null;
+  const code =
+    result.errorCode === null || result.errorCode === undefined
+      ? null
+      : (Number(result.errorCode) as TSimpleResultErrorCode);
 
   if (code !== null && registry.has(code)) {
     registry.get(code)!();
