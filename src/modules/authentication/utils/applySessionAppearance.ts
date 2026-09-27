@@ -3,7 +3,7 @@ import { useThemeStore, type AppThemeMode } from "@/AntdTheme";
 import type { TUser } from "../types";
 
 const isAppThemeMode = (value: string): value is AppThemeMode =>
-  value === "light" || value === "dark";
+  value === "light" || value === "dark" || value === "system";
 
 export const applySessionAppearance = (user: TUser) => {
   if (user.language === "en" || user.language === "ar") {

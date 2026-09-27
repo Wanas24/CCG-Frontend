@@ -48,7 +48,9 @@ export const useThemePreference = () => {
   );
 
   const toggleTheme = useCallback(() => {
-    changeTheme(mode === "light" ? "dark" : "light");
+    const next =
+      mode === "light" ? "dark" : mode === "dark" ? "system" : "light";
+    changeTheme(next);
   }, [changeTheme, mode]);
 
   return {

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ConfigProvider } from "antd";
 import { applyCssVariables, themeCssVariables } from "./cssVariables";
 import { useThemeStore } from "./themeStore";
 import { darkTheme, lightTheme } from "./themes";
+import { resolveAppliedTheme, type AppliedThemeMode } from "./resolveAppliedTheme";
 import { useLocale } from "@/i18n/useLocale";
 import { DesignTokens } from "./DesignTokens";
 
@@ -18,14 +19,36 @@ const antdThemes = {
 export const AppThemeProvider = ({ children }: AppThemeProviderProps) => {
   const mode = useThemeStore((state) => state.mode);
   const { direction, antdLocale } = useLocale();
+  const [appliedMode, setAppliedMode] = useState<AppliedThemeMode>(() =>
+    resolveAppliedTheme(mode),
+  );
 
   useEffect(() => {
-    applyCssVariables(themeCssVariables[mode]);
-    document.documentElement.dataset.theme = mode;
+    if (mode !== "system") {
+      setAppliedMode(mode);
+      return;
+    }
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const syncAppliedMode = () => {
+      setAppliedMode(media.matches ? "dark" : "light");
+    };
+
+    syncAppliedMode();
+    media.addEventListener("change", syncAppliedMode);
+
+    return () => {
+      media.removeEventListener("change", syncAppliedMode);
+    };
   }, [mode]);
 
+  useEffect(() => {
+    applyCssVariables(themeCssVariables[appliedMode]);
+    document.documentElement.dataset.theme = appliedMode;
+  }, [appliedMode]);
+
   const theme = useMemo(() => {
-    const activeTheme = antdThemes[mode];
+    const activeTheme = antdThemes[appliedMode];
     const fontFamily =
       direction === "rtl"
         ? DesignTokens.fontFamily.arabic
@@ -35,7 +58,7 @@ export const AppThemeProvider = ({ children }: AppThemeProviderProps) => {
       ...activeTheme,
       token: { ...activeTheme.token, fontFamily },
     };
-  }, [mode, direction]);
+  }, [appliedMode, direction]);
 
   return (
     <ConfigProvider theme={theme} direction={direction} locale={antdLocale}>
