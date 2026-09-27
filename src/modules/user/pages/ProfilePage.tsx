@@ -2,13 +2,13 @@ import { useTranslation } from "react-i18next";
 import {
   AppFormPage,
   AppFormSection,
-  AppSkeleton,
 } from "@/shared/ANTD_UIComponents";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useGetMe } from "../api/hooks/useGetMe";
 import ChangePhoneForm from "../components/ChangePhoneForm";
 import ProfileForm from "../components/ProfileForm";
 import ProfileImageSection from "../components/ProfileImageSection";
+import ProfilePageSkeleton from "../components/ProfilePageSkeleton";
 import ProfileReadOnlyDetails from "../components/ProfileReadOnlyDetails";
 
 const ProfilePage = () => {
@@ -17,11 +17,7 @@ const ProfilePage = () => {
   const profile = data?.isSuccess ? data.data : undefined;
 
   if (isLoading) {
-    return (
-      <div className="p-6">
-        <AppSkeleton active paragraph={{ rows: 8 }} />
-      </div>
-    );
+    return <ProfilePageSkeleton />;
   }
 
   if (isError || !profile) {
