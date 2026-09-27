@@ -7,6 +7,8 @@ import {
 } from "../api/hooks/useConfirmationStatus";
 import { useSendEmailConfirmation } from "../api/hooks/useSendEmailConfirmation";
 import { useVerifyPhone } from "../api/hooks/useVerifyPhone";
+import { queryClient } from "@/lib/queryClient";
+import { userMeQueryKey } from "@/modules/user/api/hooks/useGetMe";
 import { useLogoutManager } from "./useLogoutManager";
 import { useAuthStore } from "../store/authStore";
 import { isAccountVerified } from "../types";
@@ -48,6 +50,10 @@ export const useVerifyAccountManager = () => {
 
     const status = statusResponse.data ?? null;
     setConfirmationStatus(status);
+
+    if (status?.phoneNumberConfirmed) {
+      void queryClient.invalidateQueries({ queryKey: userMeQueryKey });
+    }
 
     if (isAccountVerified(status)) {
       navigate(APP_ROUTES.home, { replace: true });

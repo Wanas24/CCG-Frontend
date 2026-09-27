@@ -14,4 +14,6 @@ export const VALIDATION = {
   phoneInvalid: "validation.phoneInvalid",
   nationalIdLength: "validation.nationalIdLength",
   dateOfBirthPast: "validation.dateOfBirthPast",
+  imageType: "validation.imageType",
+  imageMaxSize: "validation.imageMaxSize",
 } as const satisfies Record<keyof ValidationMessages, ValidationKey>;

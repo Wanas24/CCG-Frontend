@@ -20,13 +20,10 @@ export const registerAuthErrorHandlers = () => {
   registerErrorHandler(ErrorCode.AccountVerificationRequired, () => {
     const { confirmationStatus, setConfirmationStatus } = useAuthStore.getState();
 
-    // Seed pending status only when unknown — don't wipe a partial poll result.
-    if (!confirmationStatus) {
-      setConfirmationStatus({
-        emailConfirmed: false,
-        phoneNumberConfirmed: false,
-      });
-    }
+    setConfirmationStatus({
+      emailConfirmed: confirmationStatus?.emailConfirmed ?? false,
+      phoneNumberConfirmed: false,
+    });
 
     if (window.location.pathname !== AUTH_ROUTES.verifyAccount) {
       navigateTo(AUTH_ROUTES.verifyAccount);
