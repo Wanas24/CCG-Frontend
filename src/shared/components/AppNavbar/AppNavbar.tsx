@@ -5,7 +5,7 @@ import { useLogoutManager } from "@/modules/authentication/hooks/useLogoutManage
 import { USER_ROUTES } from "@/modules/user/routes/paths";
 import AppButton from "@/shared/ANTD_UIComponents";
 import AppThemeToggle from "@/shared/components/AppThemeToggle";
-import { UserIcon } from "lucide-react";
+import { LogOutIcon, UserIcon } from "lucide-react";
 
 const AppNavbar = () => {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ const AppNavbar = () => {
       <h1 className="text-lg font-semibold text-(--app-text)">
         {t("common.appName")}
       </h1>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1">
         <AppThemeToggle />
         <AppLocaleSwitcher />
         <Link to={USER_ROUTES.profile}>
@@ -27,13 +27,13 @@ const AppNavbar = () => {
           />
         </Link>
         <AppButton
-          className="underline underline-offset-1"
           variant="default"
           loading={isPending}
           onClick={() => void logout()}
-        >
-          {t("common.logout")}
-        </AppButton>
+          icon={<LogOutIcon size={18} />}
+          aria-label={t("common.logout")}
+          title={t("common.logout")}
+        />
       </div>
     </header>
   );
