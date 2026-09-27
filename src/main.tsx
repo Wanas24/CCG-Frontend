@@ -10,8 +10,7 @@ import { getDeviceId } from "@/services/deviceId";
 getDeviceId();
 
 createRoot(document.getElementById("root")!).render(
-
     <AppProviders>
       <RouterProvider router={router} />
-    </AppProviders>,
+    </AppProviders>
 );

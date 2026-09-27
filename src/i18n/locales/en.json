@@ -102,6 +102,8 @@
     },
     "confirmEmail": {
       "title": "Email confirmation",
+      "idle": "Use the button below to confirm your email address.",
+      "confirm": "Confirm email",
       "pending": "Confirming your email…",
       "success": "Your email has been confirmed.",
       "failed": "We could not confirm your email.",

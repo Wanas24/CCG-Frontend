@@ -7,7 +7,8 @@ import type { TConfirmEmailParams } from "../types";
 
 const ConfirmEmailResult = ({ userId, token }: TConfirmEmailParams) => {
   const { t } = useTranslation();
-  const { isPending, isSuccess, message, continuePath } = useConfirmEmailManager({ userId, token });
+  const { confirm, isPending, isSuccess, isError, message, continuePath } =
+    useConfirmEmailManager({ userId, token });
 
   return (
     <div className="flex flex-col gap-6">
@@ -24,20 +25,31 @@ const ConfirmEmailResult = ({ userId, token }: TConfirmEmailParams) => {
             ? t("auth.confirmEmail.pending")
             : isSuccess
               ? t("auth.confirmEmail.success")
-              : t("auth.confirmEmail.failed")}
+              : isError
+                ? t("auth.confirmEmail.failed")
+                : t("auth.confirmEmail.idle")}
         </p>
       </div>
 
-      {message && (
+      {isSuccess && message && (
         <p className="text-sm text-(--statusG200)">{message}</p>
       )}
 
-      {!isPending && (
+      {isSuccess ? (
         <Link to={continuePath}>
           <AppButton variant="primary" block>
             {t("auth.confirmEmail.continue")}
           </AppButton>
         </Link>
+      ) : (
+        <AppButton
+          variant="primary"
+          block
+          loading={isPending}
+          onClick={confirm}
+        >
+          {t("auth.confirmEmail.confirm")}
+        </AppButton>
       )}
     </div>
   );
