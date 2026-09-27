@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { AppLocaleSwitcher } from "@/i18n";
 import { useLogoutManager } from "@/modules/authentication/hooks/useLogoutManager";
 import { USER_ROUTES } from "@/modules/user/routes/paths";
+import CompanySwitcher from "@/modules/company/components/CompanySwitcher";
 import AppButton from "@/shared/ANTD_UIComponents";
 import AppThemeToggle from "@/shared/components/AppThemeToggle";
 import { LogOutIcon, UserIcon } from "lucide-react";
@@ -17,6 +18,7 @@ const AppNavbar = () => {
         {t("common.appName")}
       </h1>
       <div className="flex items-center gap-1">
+        <CompanySwitcher />
         <AppThemeToggle />
         <AppLocaleSwitcher />
         <Link to={USER_ROUTES.profile}>

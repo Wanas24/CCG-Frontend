@@ -100,6 +100,8 @@
       "backToHome": "Back to home",
       "progress": "{{done}} of {{total}} complete"
     },
+    "companyDisabled": "This company is disabled and cannot be selected.",
+    "noCompany": "No company is available.",
     "confirmEmail": {
       "title": "Email confirmation",
       "idle": "Use the button below to confirm your email address.",
@@ -209,6 +211,54 @@
       "saveSuccess": "Profile updated",
       "changePhone": "Change phone number",
       "changePhoneSuccess": "Phone number updated"
+    }
+  },
+
+  "company": {
+    "page": {
+      "title": "Company",
+      "loadError": "Unable to load company information. Please try again."
+    },
+    "switcher": {
+      "label": "Current company"
+    },
+    "create": {
+      "title": "Create company",
+      "subtitle": "Add a company to start using the workspace.",
+      "navLabel": "Create company",
+      "submit": "Create company",
+      "success": "Company created successfully"
+    },
+    "edit": {
+      "section": "Company information",
+      "save": "Save changes",
+      "success": "Company updated successfully"
+    },
+    "delete": {
+      "section": "Delete company",
+      "action": "Delete company",
+      "confirmTitle": "Delete this company?",
+      "confirmMessage": "This will permanently delete the current company. This action cannot be undone.",
+      "success": "Company deleted successfully"
+    },
+    "logo": {
+      "section": "Company logo",
+      "alt": "Company logo",
+      "empty": "No logo",
+      "upload": "Upload logo",
+      "delete": "Delete logo",
+      "uploadSuccess": "Company logo uploaded",
+      "deleteSuccess": "Company logo removed"
+    },
+    "fields": {
+      "name": "Company name",
+      "namePlaceholder": "Enter the company name",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter a description",
+      "address": "Address",
+      "addressPlaceholder": "Enter the company address",
+      "timeZone": "Time zone",
+      "timeZonePlaceholder": "Select a time zone"
     }
   }
 }

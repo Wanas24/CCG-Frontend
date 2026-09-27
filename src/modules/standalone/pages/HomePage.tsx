@@ -1,18 +1,13 @@
-import { AppButton } from "@/shared/ANTD_UIComponents";
-import { useGetCompanies } from "@/modules/company/api/hooks/useGetCompanies";
+import { useTranslation } from "react-i18next";
 
 const HomePage = () => {
-  const { mutate: getCompanies, isPending } = useGetCompanies();
+  const { t } = useTranslation();
 
   return (
     <div className="p-6">
-      <AppButton
-        variant="primary"
-        loading={isPending}
-        onClick={() => getCompanies()}
-      >
-        Get Companies
-      </AppButton>
+      <h1 className="text-lg font-semibold text-(--app-text)">
+        {t("common.appName")}
+      </h1>
     </div>
   );
 };

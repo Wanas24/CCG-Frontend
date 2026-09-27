@@ -2,6 +2,7 @@ import { createBrowserRouter, type RouteObject } from "react-router";
 import authRouteConfig from "@/modules/authentication/routes/routeConfig";
 import appRouteConfig from "@/modules/standalone/routes/routeConfig";
 import userRouteConfig from "@/modules/user/routes/routeConfig";
+import companyRouteConfig from "@/modules/company/routes/routeConfig";
 import NotFound from "@/modules/standalone/pages/NotFound";
 import RootLayout from "@/layouts/RootLayout";
 import type { AppRouteObject } from "./types";
@@ -13,6 +14,7 @@ const routes: AppRouteObject[] = [
       ...authRouteConfig,
       ...appRouteConfig,
       ...userRouteConfig,
+      ...companyRouteConfig,
       {
         path: "*",
         Component: NotFound,
