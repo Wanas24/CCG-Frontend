@@ -1,4 +1,5 @@
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
+import { isPublicAuthPath } from "@/modules/authentication/routes/isPublicAuthPath";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { ErrorCode } from "./errorCodes";
 import { registerErrorHandler } from "./apiResultHandler";
@@ -30,7 +31,7 @@ export const registerAuthErrorHandlers = () => {
   const logoutHandler = () => {
     useAuthStore.getState().logout();
 
-    if (window.location.pathname !== AUTH_ROUTES.login) {
+    if (!isPublicAuthPath(window.location.pathname)) {
       navigateTo(AUTH_ROUTES.login);
     }
   };

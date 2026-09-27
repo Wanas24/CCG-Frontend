@@ -1,4 +1,5 @@
 import { AUTH_ROUTES } from "../routes/paths";
+import { isPublicAuthPath } from "../routes/isPublicAuthPath";
 import { authService } from "../api/services/authentication.service";
 import { useAuthStore } from "../store/authStore";
 import { mapAuthPayloadToUser } from "./mapAuthPayloadToUser";
@@ -6,7 +7,7 @@ import { mapAuthPayloadToUser } from "./mapAuthPayloadToUser";
 let refreshPromise: Promise<string> | null = null;
 
 const redirectToLogin = () => {
-  if (window.location.pathname === AUTH_ROUTES.login) {
+  if (isPublicAuthPath(window.location.pathname)) {
     return;
   }
 

@@ -92,7 +92,6 @@ const handleHttpErrorPayload = (
 };
 
 const triggerSilentLogout = () => {
-  console.log("401 getted redirect....");
   handleApiResult(
     {
       isSuccess: false,
@@ -206,7 +205,13 @@ apiClient.interceptors.response.use(
     }
 
     if (status === 401) {
-      if (isRefreshTokenPath(config.url) || config._retry) {
+      // Refresh-path 401 is an expected anonymous/bootstrap state — reject only.
+      // Mid-session callers (refreshAccessToken / handle401Error) own logout+redirect.
+      if (isRefreshTokenPath(config.url)) {
+        return Promise.reject(error);
+      }
+
+      if (config._retry) {
         triggerSilentLogout();
         return Promise.reject(error);
       }

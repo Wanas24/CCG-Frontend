@@ -22,6 +22,7 @@ export const useResetPasswordForm = ({
 
   const { control, handleSubmit, setError } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
+    mode: "all",
     defaultValues: {
       password: "",
       confirmPassword: "",
