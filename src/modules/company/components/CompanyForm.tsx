@@ -15,7 +15,7 @@ const CompanyForm = ({ company }: Props) => {
 
   return (
     <form
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-6"
       onSubmit={handleSubmit(onSubmit)}
       noValidate
     >

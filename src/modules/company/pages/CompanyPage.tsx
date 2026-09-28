@@ -4,7 +4,6 @@ import {
   AppButton,
   AppFormPage,
   AppFormSection,
-  AppSkeleton,
 } from "@/shared/ANTD_UIComponents";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
@@ -12,6 +11,7 @@ import { useGetCurrentCompany } from "../api/hooks/useGetCurrentCompany";
 import CompanyDeleteSection from "../components/CompanyDeleteSection";
 import CompanyForm from "../components/CompanyForm";
 import CompanyLogoSection from "../components/CompanyLogoSection";
+import CompanyPageSkeleton from "../components/CompanyPageSkeleton";
 import { COMPANY_ROUTES } from "../routes/paths";
 
 const CompanyPage = () => {
@@ -36,11 +36,7 @@ const CompanyPage = () => {
   }
 
   if (isLoading) {
-    return (
-      <div className="p-6">
-        <AppSkeleton active paragraph={{ rows: 8 }} />
-      </div>
-    );
+    return <CompanyPageSkeleton />;
   }
 
   if (isError || !company) {
