@@ -37,7 +37,7 @@ const CompanySwitcher = () => {
     { type: "divider" },
     {
       key: "manage",
-      label: <Link to={COMPANY_ROUTES.root}>{t("company.page.title")}</Link>,
+      label: <Link to={COMPANY_ROUTES.root}>{t("company.switcher.details")}</Link>,
     },
     {
       key: "create",

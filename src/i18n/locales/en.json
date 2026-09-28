@@ -220,7 +220,8 @@
       "loadError": "Unable to load company information. Please try again."
     },
     "switcher": {
-      "label": "Current company"
+      "label": "Current company",
+      "details": " Selected company details"
     },
     "create": {
       "title": "Create company",
