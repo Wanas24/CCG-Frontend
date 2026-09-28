@@ -5,9 +5,14 @@ import { AppButton } from "@/shared/ANTD_UIComponents";
 import type { AppThemeMode } from "@/AntdTheme";
 import { useThemePreference } from "@/modules/user/hooks/useThemePreference";
 
-const AppThemeToggle = () => {
+type Props = {
+  showLabel?: boolean;
+};
+
+const AppThemeToggle = ({ showLabel = false }: Props) => {
   const { t } = useTranslation();
   const { mode, changeTheme } = useThemePreference();
+  const label = t("common.theme");
 
   const items: MenuProps["items"] = [
     {
@@ -39,13 +44,26 @@ const AppThemeToggle = () => {
       <Sun size={18} />
     );
 
+  const trigger = (
+    <AppButton
+      variant="default"
+      aria-label={label}
+      aria-haspopup="menu"
+      iconPlacement={"start"}
+      className={
+        showLabel
+          ? "w-full !justify-start hover:bg-(--Grey100)!"
+          : undefined
+      }
+      icon={triggerIcon}
+    >
+      {showLabel ? label : null}
+    </AppButton>
+  );
+
   return (
     <Dropdown menu={{ items, selectedKeys: [mode] }} trigger={["click"]}>
-      <AppButton
-        variant="default"
-        aria-label={t("common.theme")}
-        icon={triggerIcon}
-      />
+      {showLabel ? <span className="block w-full">{trigger}</span> : trigger}
     </Dropdown>
   );
 };
