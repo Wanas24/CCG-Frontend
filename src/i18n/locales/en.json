@@ -175,11 +175,13 @@
       "imageSection": "Profile image",
       "accountSection": "Account details",
       "personalSection": "Personal information",
+      "formDescription": "Update your personal details. Changes are saved to your account.",
       "phoneSection": "Phone number",
       "phoneHint": "Enter a new number to enable the change. You will need to verify it before the update is complete.",
       "imageAlt": "Profile image",
       "noImage": "No image",
       "uploadImage": "Upload image",
+      "changePhoto": "Change photo",
       "deleteImage": "Delete image",
       "imageRequiresCompany": "A company is required on your account before you can upload a profile image.",
       "imageUploadSuccess": "Profile image updated",
@@ -192,6 +194,8 @@
       "noCompany": "None",
       "isManagerLabel": "Manager",
       "isActiveLabel": "Active",
+      "activeStatus": "Active",
+      "inactiveStatus": "Inactive",
       "yes": "Yes",
       "no": "No",
       "firstNameLabel": "First name",
@@ -233,6 +237,7 @@
     },
     "edit": {
       "section": "Company information",
+      "description": "Update the company details used across the workspace.",
       "save": "Save changes",
       "success": "Company updated successfully"
     },
@@ -243,16 +248,21 @@
       "confirmMessage": "This will permanently delete the current company. This action cannot be undone.",
       "success": "Company deleted successfully"
     },
+    "details": {
+      "section": "Company details"
+    },
     "logo": {
       "section": "Company logo",
       "alt": "Company logo",
       "empty": "No logo",
       "upload": "Upload logo",
+      "change": "Change logo",
       "delete": "Delete logo",
       "uploadSuccess": "Company logo uploaded",
       "deleteSuccess": "Company logo removed"
     },
     "fields": {
+      "id": "Company ID",
       "name": "Company name",
       "namePlaceholder": "Enter the company name",
       "description": "Description",

@@ -4,14 +4,18 @@ import {
   AppButton,
   AppFormPage,
   AppFormSection,
+  AppIdentitySplit,
+  AppIdentitySummary,
 } from "@/shared/ANTD_UIComponents";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
+import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { useGetCurrentCompany } from "../api/hooks/useGetCurrentCompany";
 import CompanyDeleteSection from "../components/CompanyDeleteSection";
 import CompanyForm from "../components/CompanyForm";
 import CompanyLogoSection from "../components/CompanyLogoSection";
 import CompanyPageSkeleton from "../components/CompanyPageSkeleton";
+import CompanyReadOnlyDetails from "../components/CompanyReadOnlyDetails";
 import { COMPANY_ROUTES } from "../routes/paths";
 
 const CompanyPage = () => {
@@ -25,7 +29,11 @@ const CompanyPage = () => {
       <div className="p-6">
         <AppFormPage title={t("company.page.title")}>
           <AppFormSection>
-            <p className="text-sm text-(--Grey600)">{t("auth.noCompany")}</p>
+            <p
+              className={`${DesignTokens.inputs.labelFontSize} ${DesignTokens.typography.muted}`}
+            >
+              {t("auth.noCompany")}
+            </p>
             <Link to={COMPANY_ROUTES.create}>
               <AppButton variant="primary">{t("company.create.navLabel")}</AppButton>
             </Link>
@@ -50,28 +58,51 @@ const CompanyPage = () => {
   return (
     <div className="p-6">
       <AppFormPage title={t("company.page.title")}>
-        <div className="flex flex-col gap-6">
-          <AppFormSection>
-            <h2 className="text-base font-semibold text-(--app-text)">
-              {t("company.logo.section")}
-            </h2>
-            <CompanyLogoSection logo={company.logo} />
-          </AppFormSection>
+        <AppIdentitySplit
+          sidebar={
+            <>
+              <AppFormSection>
+                <CompanyLogoSection
+                  logo={company.logo}
+                  details={
+                    <AppIdentitySummary
+                      title={company.name}
+                      subtitle={company.description || undefined}
+                    />
+                  }
+                />
+              </AppFormSection>
 
+              <AppFormSection>
+                <h2 className={DesignTokens.typography.headingSm}>
+                  {t("company.details.section")}
+                </h2>
+                <CompanyReadOnlyDetails company={company} />
+              </AppFormSection>
+            </>
+          }
+        >
           <AppFormSection>
-            <h2 className="text-base font-semibold text-(--app-text)">
-              {t("company.edit.section")}
-            </h2>
+            <div className="flex flex-col gap-1">
+              <h2 className={DesignTokens.typography.headingSm}>
+                {t("company.edit.section")}
+              </h2>
+              <p
+                className={`${DesignTokens.inputs.labelFontSize} ${DesignTokens.typography.muted}`}
+              >
+                {t("company.edit.description")}
+              </p>
+            </div>
             <CompanyForm company={company} />
           </AppFormSection>
 
           <AppFormSection>
-            <h2 className="text-base font-semibold text-(--app-text)">
+            <h2 className={DesignTokens.typography.headingSm}>
               {t("company.delete.section")}
             </h2>
             <CompanyDeleteSection />
           </AppFormSection>
-        </div>
+        </AppIdentitySplit>
       </AppFormPage>
     </div>
   );

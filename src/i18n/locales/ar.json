@@ -174,11 +174,13 @@
       "imageSection": "صورة الملف الشخصي",
       "accountSection": "بيانات الحساب",
       "personalSection": "المعلومات الشخصية",
+      "formDescription": "حدّث بياناتك الشخصية. يتم حفظ التغييرات في حسابك.",
       "phoneSection": "رقم الهاتف",
       "phoneHint": "أدخل رقمًا جديدًا لتفعيل التغيير. ستحتاج إلى التحقق منه قبل اكتمال التحديث.",
       "imageAlt": "صورة الملف الشخصي",
       "noImage": "لا توجد صورة",
       "uploadImage": "رفع صورة",
+      "changePhoto": "تغيير الصورة",
       "deleteImage": "حذف الصورة",
       "imageRequiresCompany": "يجب أن يكون هناك شركة على حسابك قبل رفع صورة الملف الشخصي.",
       "imageUploadSuccess": "تم تحديث صورة الملف الشخصي",
@@ -191,6 +193,8 @@
       "noCompany": "لا يوجد",
       "isManagerLabel": "مدير",
       "isActiveLabel": "نشط",
+      "activeStatus": "نشط",
+      "inactiveStatus": "غير نشط",
       "yes": "نعم",
       "no": "لا",
       "firstNameLabel": "الاسم الأول",
@@ -232,6 +236,7 @@
     },
     "edit": {
       "section": "معلومات الشركة",
+      "description": "حدّث بيانات الشركة المستخدمة في مساحة العمل.",
       "save": "حفظ التغييرات",
       "success": "تم تحديث الشركة بنجاح"
     },
@@ -242,16 +247,21 @@
       "confirmMessage": "سيتم حذف الشركة الحالية نهائيًا. لا يمكن التراجع عن هذا الإجراء بسهولة.",
       "success": "تم حذف الشركة بنجاح"
     },
+    "details": {
+      "section": "تفاصيل الشركة"
+    },
     "logo": {
       "section": "شعار الشركة",
       "alt": "شعار الشركة",
       "empty": "لا يوجد شعار",
       "upload": "رفع الشعار",
+      "change": "تغيير الشعار",
       "delete": "حذف الشعار",
       "uploadSuccess": "تم رفع شعار الشركة",
       "deleteSuccess": "تم حذف شعار الشركة"
     },
     "fields": {
+      "id": "معرف الشركة",
       "name": "اسم الشركة",
       "namePlaceholder": "أدخل اسم الشركة",
       "description": "الوصف",

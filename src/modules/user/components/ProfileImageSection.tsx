@@ -1,16 +1,18 @@
+import type { ReactNode } from "react";
 import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { AppButton, AppUpload } from "@/shared/ANTD_UIComponents";
 import { useProfileImageManager } from "../hooks/useProfileImageManager";
 
 type Props = {
   profileImage: string | null;
-  companyId: number | null;
+  details?: ReactNode;
 };
 
-const ProfileImageSection = ({ profileImage, companyId }: Props) => {
+const ProfileImageSection = ({ profileImage, details }: Props) => {
   const { t } = useTranslation();
-  const hasCompany = companyId !== null;
+
   const {
     beforeUpload,
     customRequest,
@@ -18,36 +20,34 @@ const ProfileImageSection = ({ profileImage, companyId }: Props) => {
     isUploading,
     isDeleting,
     isPending,
-  } = useProfileImageManager(hasCompany);
+  } = useProfileImageManager();
 
   return (
-    <div className="flex flex-col items-center gap-4 sm:flex-col sm:items-center">
+    <div className="flex flex-col items-center gap-4">
       {profileImage ? (
         <img
           src={profileImage}
           alt={t("user.profile.imageAlt")}
-          className="size-28 shrink-0 rounded-full object-cover border border-(--Grey300)"
+          className={`${DesignTokens.media.avatarLg} shrink-0 rounded-full object-cover border border-(--Grey300)`}
         />
       ) : (
-        <div className="flex size-28 shrink-0 flex-col items-center justify-center gap-1 rounded-full border border-(--Grey300) bg-(--Grey100) text-center text-xs text-(--Grey600)">
-          <User size={22} />
+        <div
+          className={`flex ${DesignTokens.media.avatarLg} shrink-0 flex-col items-center justify-center gap-1 rounded-full border border-(--Grey300) bg-(--Grey100) text-center ${DesignTokens.inputs.labelFontSize} ${DesignTokens.typography.muted}`}
+        >
+          <User size={DesignTokens.media.iconMd} />
           <span>{t("user.profile.noImage")}</span>
         </div>
       )}
 
-      <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:items-start">
-        {!hasCompany && (
-          <p className="text-sm text-(--Grey600)">
-            {t("user.profile.imageRequiresCompany")}
-          </p>
-        )}
+      {details}
 
-        <div className="flex justify-center items-center gap-2 sm:w-auto sm:flex-row ">
+      <div className="flex w-full flex-wrap items-center justify-center gap-2">
+        <div className="flex justify-center">
           <AppUpload
             accept=".jpg,.jpeg,.png,image/jpeg,image/png"
             maxCount={1}
             showUploadList={false}
-            disabled={!hasCompany || isPending}
+            disabled={isPending}
             beforeUpload={beforeUpload}
             customRequest={customRequest}
           >
@@ -55,13 +55,15 @@ const ProfileImageSection = ({ profileImage, companyId }: Props) => {
               variant="primary"
               htmlType="button"
               loading={isUploading}
-              disabled={!hasCompany || isPending}
+              disabled={isPending}
             >
-              {t("user.profile.uploadImage")}
+              {t("user.profile.changePhoto")}
             </AppButton>
           </AppUpload>
+        </div>
 
-          {profileImage && (
+        {profileImage && (
+          <div className="flex justify-center">
             <AppButton
               variant="delete"
               htmlType="button"
@@ -72,8 +74,8 @@ const ProfileImageSection = ({ profileImage, companyId }: Props) => {
             >
               {t("user.profile.deleteImage")}
             </AppButton>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
