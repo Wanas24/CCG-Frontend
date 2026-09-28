@@ -44,7 +44,6 @@ const ProfilePage = () => {
               <AppFormSection>
                 <ProfileImageSection
                   profileImage={profile.profileImage}
-                  companyId={profile.companyId}
                   details={
                     <AppIdentitySummary
                       title={fullName}

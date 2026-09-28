@@ -226,7 +226,11 @@
     },
     "switcher": {
       "label": "Current company",
-      "details": " Selected company details"
+      "details": " Selected company details",
+      "settings": "Company settings",
+      "active": "Active company",
+      "disabled": "Disabled",
+      "manager": "Manager"
     },
     "create": {
       "title": "Create company",
