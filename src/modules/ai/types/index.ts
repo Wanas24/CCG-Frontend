@@ -29,6 +29,8 @@ export type {
 
 export type { TAiPagedResult } from "./aiPagedResult";
 
+export type { TAiUiMessage } from "./aiUi";
+
 export type { TPagedResult };
 
 export type TSendAiChatResponse = TSimpleResult<TAiAssistantResponse>;

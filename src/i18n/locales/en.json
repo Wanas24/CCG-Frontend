@@ -337,14 +337,17 @@
       "emptyTitle": "How can I help you today?",
       "loadingMessages": "Loading messages...",
       "loadMessagesError": "Failed to load messages.",
-      "loadingOlder": "Loading older messages..."
+      "loadingOlder": "Loading older messages...",
+      "thinking": "AI is thinking...",
+      "sendError": "Failed to send message. Please try again."
     },
     "composer": {
       "label": "Message",
       "placeholder": "Type your message...",
       "attach": "Attach files",
       "voice": "Record a voice message",
-      "send": "Send message"
+      "send": "Send message",
+      "sending": "Sending..."
     },
     "usage": {
       "title": "Usage & limits",

@@ -9,15 +9,58 @@ import clsx from "clsx";
 import { Sparkles } from "lucide-react";
 import { AppSkeleton } from "@/shared/ANTD_UIComponents";
 import { useGetAiMessages } from "../api/hooks/useGetAiMessages";
+import type { TAiUiMessage } from "../types";
 import { flattenAiMessagePages } from "../utils/flattenAiMessagePages";
 
 type Props = {
   activeChatId: string | null;
+  localMessages: TAiUiMessage[];
+  isWaitingForAssistant: boolean;
+  sendError: boolean;
 };
 
 const SCROLL_LOAD_THRESHOLD_PX = 48;
 
-const AiMessages = ({ activeChatId }: Props) => {
+const MessageBubble = ({
+  role,
+  content,
+  isError,
+}: {
+  role: string;
+  content: string;
+  isError?: boolean;
+}) => {
+  const normalizedRole = role.toLowerCase();
+  const isUser = normalizedRole === "user";
+  const isAssistant = normalizedRole === "assistant";
+
+  return (
+    <div
+      className={clsx("flex w-full", isUser ? "justify-end" : "justify-start")}
+    >
+      <div
+        className={clsx(
+          "max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap break-words",
+          isUser
+            ? "rounded-ee-md bg-(--Primary400) text-(--app-surface)"
+            : isAssistant
+              ? "rounded-es-md bg-(--Grey200) text-(--app-text)"
+              : "rounded-es-md border border-(--Grey300) bg-(--app-surface) text-(--app-text)",
+          isError && "ring-1 ring-(--statusR200)",
+        )}
+      >
+        {content}
+      </div>
+    </div>
+  );
+};
+
+const AiMessages = ({
+  activeChatId,
+  localMessages,
+  isWaitingForAssistant,
+  sendError,
+}: Props) => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldScrollToBottomRef = useRef(false);
@@ -26,6 +69,7 @@ const AiMessages = ({ activeChatId }: Props) => {
     height: number;
     top: number;
   } | null>(null);
+  const previousLocalCountRef = useRef(0);
 
   const {
     data,
@@ -36,10 +80,13 @@ const AiMessages = ({ activeChatId }: Props) => {
     fetchNextPage,
   } = useGetAiMessages(activeChatId);
 
-  const messages = flattenAiMessagePages(data?.pages);
-  const showError =
+  const historyMessages = flattenAiMessagePages(data?.pages);
+  const showHistoryError =
     isError ||
     Boolean(data?.pages.some((page) => page !== undefined && !page.isSuccess));
+  const hasLocalContent =
+    localMessages.length > 0 || isWaitingForAssistant || sendError;
+  const showEmptyState = !activeChatId && !hasLocalContent;
 
   useEffect(() => {
     if (activeChatId === previousChatIdRef.current) {
@@ -53,11 +100,25 @@ const AiMessages = ({ activeChatId }: Props) => {
 
   useLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container || !activeChatId) {
+    if (!container) {
       return;
     }
 
-    if (shouldScrollToBottomRef.current && !isPending && !showError) {
+    const localCountChanged =
+      localMessages.length !== previousLocalCountRef.current ||
+      isWaitingForAssistant;
+    previousLocalCountRef.current = localMessages.length;
+
+    if (localCountChanged && hasLocalContent) {
+      container.scrollTop = container.scrollHeight;
+      return;
+    }
+
+    if (!activeChatId) {
+      return;
+    }
+
+    if (shouldScrollToBottomRef.current && !isPending && !showHistoryError) {
       container.scrollTop = container.scrollHeight;
       shouldScrollToBottomRef.current = false;
       return;
@@ -69,7 +130,16 @@ const AiMessages = ({ activeChatId }: Props) => {
         container.scrollHeight - restore.height + restore.top;
       restoreScrollRef.current = null;
     }
-  }, [activeChatId, isPending, isFetchingNextPage, messages, showError]);
+  }, [
+    activeChatId,
+    hasLocalContent,
+    isPending,
+    isFetchingNextPage,
+    isWaitingForAssistant,
+    historyMessages,
+    localMessages,
+    showHistoryError,
+  ]);
 
   const handleScroll = (event: UIEvent<HTMLDivElement>) => {
     if (!activeChatId || !hasNextPage || isFetchingNextPage) {
@@ -88,7 +158,7 @@ const AiMessages = ({ activeChatId }: Props) => {
     void fetchNextPage();
   };
 
-  if (!activeChatId) {
+  if (showEmptyState) {
     return (
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 overflow-y-auto p-6 text-center">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-(--Primary100) text-(--Primary400)">
@@ -104,7 +174,7 @@ const AiMessages = ({ activeChatId }: Props) => {
     );
   }
 
-  if (isPending) {
+  if (activeChatId && isPending && !hasLocalContent) {
     return (
       <div
         className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4"
@@ -118,7 +188,7 @@ const AiMessages = ({ activeChatId }: Props) => {
     );
   }
 
-  if (showError) {
+  if (activeChatId && showHistoryError && !hasLocalContent) {
     return (
       <div className="flex min-h-0 flex-1 items-center justify-center p-6 text-center">
         <p className="m-0 text-sm text-(--statusR200)">
@@ -140,33 +210,36 @@ const AiMessages = ({ activeChatId }: Props) => {
         </p>
       )}
 
-      {messages.map((message) => {
-        const isUser = message.role.toLowerCase() === "user";
-        const isAssistant = message.role.toLowerCase() === "assistant";
+      {historyMessages.map((message) => (
+        <MessageBubble
+          key={`history-${message.id}`}
+          role={message.role}
+          content={message.content}
+        />
+      ))}
 
-        return (
-          <div
-            key={message.id}
-            className={clsx(
-              "flex w-full",
-              isUser ? "justify-end" : "justify-start",
-            )}
-          >
-            <div
-              className={clsx(
-                "max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap break-words",
-                isUser
-                  ? "rounded-ee-md bg-(--Primary400) text-(--app-surface)"
-                  : isAssistant
-                    ? "rounded-es-md bg-(--Grey200) text-(--app-text)"
-                    : "rounded-es-md border border-(--Grey300) bg-(--app-surface) text-(--app-text)",
-              )}
-            >
-              {message.content}
-            </div>
+      {localMessages.map((message) => (
+        <MessageBubble
+          key={message.id}
+          role={message.role}
+          content={message.content}
+          isError={message.isError}
+        />
+      ))}
+
+      {isWaitingForAssistant && (
+        <div className="flex w-full justify-start" aria-live="polite">
+          <div className="rounded-2xl rounded-es-md bg-(--Grey200) px-3 py-2 text-sm text-(--Grey600)">
+            {t("ai.chat.thinking")}
           </div>
-        );
-      })}
+        </div>
+      )}
+
+      {sendError && (
+        <p className="m-0 text-center text-xs text-(--statusR200)">
+          {t("ai.chat.sendError")}
+        </p>
+      )}
     </div>
   );
 };
