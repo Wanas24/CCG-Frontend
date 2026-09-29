@@ -11,6 +11,7 @@ import { AppSkeleton } from "@/shared/ANTD_UIComponents";
 import { useGetAiMessages } from "../api/hooks/useGetAiMessages";
 import type { TAiUiMessage } from "../types";
 import { flattenAiMessagePages } from "../utils/flattenAiMessagePages";
+import AiMarkdown from "./AiMarkdown";
 
 type Props = {
   activeChatId: string | null;
@@ -40,16 +41,16 @@ const MessageBubble = ({
     >
       <div
         className={clsx(
-          "max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap break-words",
+          "max-w-[85%] rounded-2xl px-3 py-2 text-sm break-words",
           isUser
-            ? "rounded-ee-md bg-(--Primary400) text-(--app-surface)"
+            ? "whitespace-pre-wrap rounded-ee-md bg-(--Primary400) text-(--app-surface)"
             : isAssistant
               ? "rounded-es-md bg-(--Grey200) text-(--app-text)"
-              : "rounded-es-md border border-(--Grey300) bg-(--app-surface) text-(--app-text)",
+              : "whitespace-pre-wrap rounded-es-md border border-(--Grey300) bg-(--app-surface) text-(--app-text)",
           isError && "ring-1 ring-(--statusR200)",
         )}
       >
-        {content}
+        {isAssistant ? <AiMarkdown content={content} /> : content}
       </div>
     </div>
   );
