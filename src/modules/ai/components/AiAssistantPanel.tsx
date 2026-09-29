@@ -10,7 +10,7 @@ import {
   aiChatsQueryKey,
   aiMessagesQueryKey,
 } from "../api/queryKeys/aiQueryKeys";
-import type { TAiUiMessage } from "../types";
+import type { TAiAssistantUiMeta, TAiUiMessage } from "../types";
 import { createAiAssistantMetaKey } from "../utils/aiResponseMeta";
 import AiChatHeader from "./AiChatHeader";
 import AiChatSidebar from "./AiChatSidebar";
@@ -60,14 +60,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
   const [isWaitingForAssistant, setIsWaitingForAssistant] = useState(false);
   const [sendError, setSendError] = useState(false);
   const [assistantMetaByKey, setAssistantMetaByKey] = useState<
-    Record<
-      string,
-      {
-        usedTools?: string[];
-        selectedToolGroups?: string[];
-        warnings?: string[];
-      }
-    >
+    Record<string, TAiAssistantUiMeta>
   >({});
 
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -157,12 +150,21 @@ const AiAssistantPanel = ({ onClose }: Props) => {
         return { ok: false, restoreMessage: message };
       }
 
-      const { chatId, answer, usedTools, selectedToolGroups, warnings } =
-        response.data;
-      const responseMeta = {
+      const {
+        chatId,
+        answer,
         usedTools,
         selectedToolGroups,
         warnings,
+        sources,
+        artifacts,
+      } = response.data;
+      const responseMeta: TAiAssistantUiMeta = {
+        usedTools,
+        selectedToolGroups,
+        warnings,
+        sources,
+        artifacts,
       };
 
       setLocalMessages((current) => [

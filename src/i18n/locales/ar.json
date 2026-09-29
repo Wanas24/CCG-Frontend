@@ -343,7 +343,10 @@
     "response": {
       "toolsUsed": "الأدوات المستخدمة",
       "selectedCapabilities": "القدرات المحددة",
-      "warnings": "التحذيرات"
+      "warnings": "التحذيرات",
+      "sources": "المصادر",
+      "artifacts": "المرفقات",
+      "download": "تنزيل"
     },
     "composer": {
       "label": "الرسالة",

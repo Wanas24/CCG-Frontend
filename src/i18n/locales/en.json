@@ -344,7 +344,10 @@
     "response": {
       "toolsUsed": "Tools used",
       "selectedCapabilities": "Selected capabilities",
-      "warnings": "Warnings"
+      "warnings": "Warnings",
+      "sources": "Sources",
+      "artifacts": "Artifacts",
+      "download": "Download"
     },
     "composer": {
       "label": "Message",

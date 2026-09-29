@@ -9,10 +9,12 @@ import clsx from "clsx";
 import { Sparkles } from "lucide-react";
 import { AppSkeleton } from "@/shared/ANTD_UIComponents";
 import { useGetAiMessages } from "../api/hooks/useGetAiMessages";
-import type { TAiUiMessage } from "../types";
+import type { TAiAssistantUiMeta, TAiUiMessage } from "../types";
 import { flattenAiMessagePages } from "../utils/flattenAiMessagePages";
 import { createAiAssistantMetaKey } from "../utils/aiResponseMeta";
+import AiArtifacts from "./AiArtifacts";
 import AiMarkdown from "./AiMarkdown";
+import AiSources from "./AiSources";
 import AiToolUsage from "./AiToolUsage";
 import AiWarnings from "./AiWarnings";
 
@@ -21,14 +23,7 @@ type Props = {
   localMessages: TAiUiMessage[];
   isWaitingForAssistant: boolean;
   sendError: boolean;
-  assistantMetaByKey?: Record<
-    string,
-    {
-      usedTools?: string[];
-      selectedToolGroups?: string[];
-      warnings?: string[];
-    }
-  >;
+  assistantMetaByKey?: Record<string, TAiAssistantUiMeta>;
 };
 
 const SCROLL_LOAD_THRESHOLD_PX = 48;
@@ -40,14 +35,13 @@ const MessageBubble = ({
   usedTools,
   selectedToolGroups,
   warnings,
+  sources,
+  artifacts,
 }: {
   role: string;
   content: string;
   isError?: boolean;
-  usedTools?: string[];
-  selectedToolGroups?: string[];
-  warnings?: string[];
-}) => {
+} & TAiAssistantUiMeta) => {
   const normalizedRole = role.toLowerCase();
   const isUser = normalizedRole === "user";
   const isAssistant = normalizedRole === "assistant";
@@ -75,6 +69,8 @@ const MessageBubble = ({
               selectedToolGroups={selectedToolGroups}
             />
             <AiWarnings warnings={warnings} />
+            <AiSources sources={sources} />
+            <AiArtifacts artifacts={artifacts} />
           </>
         )}
       </div>
@@ -254,6 +250,8 @@ const AiMessages = ({
             usedTools={meta?.usedTools}
             selectedToolGroups={meta?.selectedToolGroups}
             warnings={meta?.warnings}
+            sources={meta?.sources}
+            artifacts={meta?.artifacts}
           />
         );
       })}
@@ -267,6 +265,8 @@ const AiMessages = ({
           usedTools={message.usedTools}
           selectedToolGroups={message.selectedToolGroups}
           warnings={message.warnings}
+          sources={message.sources}
+          artifacts={message.artifacts}
         />
       ))}
 
