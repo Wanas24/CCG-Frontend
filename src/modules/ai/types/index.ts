@@ -7,6 +7,7 @@ import type {
   TAiUsageStatusResponse,
 } from "./ai";
 import type { TAiCompanyUserSubscriptionResponse } from "./aiSubscription";
+import type { TAiPagedResult } from "./aiPagedResult";
 
 export type {
   TAiAssistantArtifact,
@@ -26,6 +27,8 @@ export type {
   TGetAiSubscriptionsParams,
 } from "./aiSubscription";
 
+export type { TAiPagedResult } from "./aiPagedResult";
+
 export type { TPagedResult };
 
 export type TSendAiChatResponse = TSimpleResult<TAiAssistantResponse>;
@@ -33,7 +36,7 @@ export type TSendAiChatResponse = TSimpleResult<TAiAssistantResponse>;
 export type TGetAiChatsResponse = TSimpleResult<TAiChatSummary[]>;
 
 export type TGetAiMessagesResponse = TSimpleResult<
-  TPagedResult<TAiMessageResponse>
+  TAiPagedResult<TAiMessageResponse>
 >;
 
 export type TArchiveAiChatResponse = TSimpleResult;

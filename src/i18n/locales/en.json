@@ -322,13 +322,22 @@
     "sidebar": {
       "newChat": "New chat",
       "conversations": "Conversations",
-      "emptyList": "Your conversations will appear here."
+      "emptyList": "Your conversations will appear here.",
+      "empty": "No conversations yet.",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "older": "Older",
+      "loading": "Loading conversations...",
+      "loadError": "Failed to load conversations."
     },
     "chat": {
       "newConversation": "New conversation",
       "openChats": "Open conversations",
       "openUsage": "Open usage and limits",
-      "emptyTitle": "How can I help you today?"
+      "emptyTitle": "How can I help you today?",
+      "loadingMessages": "Loading messages...",
+      "loadMessagesError": "Failed to load messages.",
+      "loadingOlder": "Loading older messages..."
     },
     "composer": {
       "label": "Message",

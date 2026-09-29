@@ -1,5 +1,6 @@
 import { queryClient } from "@/lib/queryClient";
 import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/availableCompaniesQueryKey";
+import { clearAiQueries } from "@/modules/ai/api/queryKeys/aiQueryKeys";
 import { userMeQueryKey } from "@/modules/user/api/hooks/useGetMe";
 import { refreshPermissions } from "@/modules/user/api/hooks/permissionsQueryKey";
 import { connectHub, disconnectHub } from "@/services/hub";
@@ -15,6 +16,7 @@ export const refreshAfterCompanySwitch = async () => {
     queryClient.invalidateQueries({ queryKey: currentCompanyQueryKey }),
     queryClient.invalidateQueries({ queryKey: companyLogoQueryKey }),
     refreshPermissions(),
+    clearAiQueries(),
   ]);
 
   disconnectHub();

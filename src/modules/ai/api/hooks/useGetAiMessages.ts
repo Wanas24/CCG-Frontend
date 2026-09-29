@@ -28,14 +28,9 @@ export const useGetAiMessages = (chatId: string | null, options: Options = {}) =
         return undefined;
       }
 
-      const { items, page, pageSize: responsePageSize, totalCount } =
-        lastPage.data;
+      const { page, totalPages } = lastPage.data;
 
-      if (items.length === 0 || items.length < responsePageSize) {
-        return undefined;
-      }
-
-      if (page * responsePageSize >= totalCount) {
+      if (page >= totalPages) {
         return undefined;
       }
 

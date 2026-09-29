@@ -321,13 +321,22 @@
     "sidebar": {
       "newChat": "محادثة جديدة",
       "conversations": "المحادثات",
-      "emptyList": "ستظهر محادثاتك هنا."
+      "emptyList": "ستظهر محادثاتك هنا.",
+      "empty": "لا توجد محادثات بعد.",
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "older": "أقدم",
+      "loading": "جارٍ تحميل المحادثات...",
+      "loadError": "تعذر تحميل المحادثات."
     },
     "chat": {
       "newConversation": "محادثة جديدة",
       "openChats": "فتح المحادثات",
       "openUsage": "فتح الاستخدام والحدود",
-      "emptyTitle": "كيف يمكنني مساعدتك اليوم؟"
+      "emptyTitle": "كيف يمكنني مساعدتك اليوم؟",
+      "loadingMessages": "جارٍ تحميل الرسائل...",
+      "loadMessagesError": "تعذر تحميل الرسائل.",
+      "loadingOlder": "جارٍ تحميل الرسائل الأقدم..."
     },
     "composer": {
       "label": "الرسالة",

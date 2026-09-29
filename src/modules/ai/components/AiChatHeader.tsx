@@ -3,6 +3,7 @@ import { Gauge, MessageSquare, X } from "lucide-react";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 
 type Props = {
+  conversationTitle: string | null;
   onOpenChats: () => void;
   onOpenUsage: () => void;
   onClose: () => void;
@@ -10,7 +11,12 @@ type Props = {
 
 const iconButtonClassName = "shrink-0 hover:bg-(--Grey200)!";
 
-const AiChatHeader = ({ onOpenChats, onOpenUsage, onClose }: Props) => {
+const AiChatHeader = ({
+  conversationTitle,
+  onOpenChats,
+  onOpenUsage,
+  onClose,
+}: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -30,7 +36,7 @@ const AiChatHeader = ({ onOpenChats, onOpenUsage, onClose }: Props) => {
           {t("ai.title")}
         </h2>
         <p className="m-0 truncate text-xs text-(--Grey600)">
-          {t("ai.chat.newConversation")}
+          {conversationTitle ?? t("ai.chat.newConversation")}
         </p>
       </div>
 

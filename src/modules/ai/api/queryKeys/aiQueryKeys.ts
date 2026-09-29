@@ -1,4 +1,7 @@
 import type { TGetAiSubscriptionsParams } from "../../types";
+import { queryClient } from "@/lib/queryClient";
+
+export const aiQueryRootKey = ["ai"] as const;
 
 export const aiChatsQueryKey = ["ai", "chats"] as const;
 
@@ -13,3 +16,8 @@ export const aiSubscriptionsQueryKey = (
 
 export const aiSubscriptionQueryKey = (userId: string) =>
   ["ai", "subscription", userId] as const;
+
+export const clearAiQueries = async () => {
+  await queryClient.cancelQueries({ queryKey: aiQueryRootKey });
+  queryClient.removeQueries({ queryKey: aiQueryRootKey });
+};
