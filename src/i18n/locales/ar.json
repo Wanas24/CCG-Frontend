@@ -306,5 +306,49 @@
       "timeZone": "المنطقة الزمنية",
       "timeZonePlaceholder": "اختر منطقة زمنية"
     }
+  },
+
+  "ai": {
+    "title": "المساعد الذكي",
+    "launcher": {
+      "open": "فتح المساعد الذكي",
+      "close": "إغلاق المساعد الذكي",
+      "hint": "تحتاج إلى مساعدة؟"
+    },
+    "panel": {
+      "close": "إغلاق المساعد الذكي"
+    },
+    "sidebar": {
+      "newChat": "محادثة جديدة",
+      "conversations": "المحادثات",
+      "emptyList": "ستظهر محادثاتك هنا."
+    },
+    "chat": {
+      "newConversation": "محادثة جديدة",
+      "openChats": "فتح المحادثات",
+      "openUsage": "فتح الاستخدام والحدود",
+      "emptyTitle": "كيف يمكنني مساعدتك اليوم؟"
+    },
+    "composer": {
+      "label": "الرسالة",
+      "placeholder": "اكتب رسالتك...",
+      "attach": "إرفاق ملفات",
+      "voice": "تسجيل رسالة صوتية",
+      "send": "إرسال الرسالة"
+    },
+    "usage": {
+      "title": "الاستخدام والحدود",
+      "tokens": "الرموز الشهرية",
+      "messages": "الرسائل الشهرية",
+      "noUsage": "لا توجد بيانات استخدام بعد",
+      "subscription": "الاشتراك",
+      "subscriptionNotLoaded": "لم يتم التحميل",
+      "response": "الرد الحالي",
+      "responseWaiting": "في انتظار الرد",
+      "tools": "الأدوات المستخدمة",
+      "noTools": "لم تُستخدم أي أدوات",
+      "warnings": "التحذيرات",
+      "noWarnings": "لا توجد تحذيرات"
+    }
   }
 }

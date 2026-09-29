@@ -307,5 +307,49 @@
       "timeZone": "Time zone",
       "timeZonePlaceholder": "Select a time zone"
     }
+  },
+
+  "ai": {
+    "title": "AI Assistant",
+    "launcher": {
+      "open": "Open AI assistant",
+      "close": "Close AI assistant",
+      "hint": "Need assistance?"
+    },
+    "panel": {
+      "close": "Close AI assistant"
+    },
+    "sidebar": {
+      "newChat": "New chat",
+      "conversations": "Conversations",
+      "emptyList": "Your conversations will appear here."
+    },
+    "chat": {
+      "newConversation": "New conversation",
+      "openChats": "Open conversations",
+      "openUsage": "Open usage and limits",
+      "emptyTitle": "How can I help you today?"
+    },
+    "composer": {
+      "label": "Message",
+      "placeholder": "Type your message...",
+      "attach": "Attach files",
+      "voice": "Record a voice message",
+      "send": "Send message"
+    },
+    "usage": {
+      "title": "Usage & limits",
+      "tokens": "Monthly tokens",
+      "messages": "Monthly messages",
+      "noUsage": "No usage data yet",
+      "subscription": "Subscription",
+      "subscriptionNotLoaded": "Not loaded",
+      "response": "Current response",
+      "responseWaiting": "Waiting for a response",
+      "tools": "Tools used",
+      "noTools": "No tools used",
+      "warnings": "Warnings",
+      "noWarnings": "No warnings"
+    }
   }
 }
