@@ -36,4 +36,10 @@ export const userEndpoints = {
     path: `/User/theme`,
     auth: "required",
   }),
+  getCurrentUserPermissions: createEndpoint({
+    method: "GET",
+    path: `/User/permissions`,
+    auth: "required",
+    permissions: [],
+  }),
 };

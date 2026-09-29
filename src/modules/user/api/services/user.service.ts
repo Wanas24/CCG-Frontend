@@ -6,6 +6,7 @@ import type {
   TDeleteProfileImageResponse,
   TEditProfileRequest,
   TEditProfileResponse,
+  TGetCurrentUserPermissionsResponse,
   TGetMeResponse,
   TUpdateLanguageRequest,
   TUpdateLanguageResponse,
@@ -46,5 +47,9 @@ export const userService = {
     callEndpoint<TUpdateThemeResponse, TUpdateThemeRequest>(
       userEndpoints.updateTheme,
       { body },
+    ),
+  getCurrentUserPermissions: () =>
+    callEndpoint<TGetCurrentUserPermissionsResponse>(
+      userEndpoints.getCurrentUserPermissions,
     ),
 };
