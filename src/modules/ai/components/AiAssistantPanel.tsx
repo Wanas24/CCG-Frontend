@@ -11,6 +11,7 @@ import {
   aiMessagesQueryKey,
 } from "../api/queryKeys/aiQueryKeys";
 import type { TAiUiMessage } from "../types";
+import { createAiAssistantMetaKey } from "../utils/aiResponseMeta";
 import AiChatHeader from "./AiChatHeader";
 import AiChatSidebar from "./AiChatSidebar";
 import AiComposer from "./AiComposer";
@@ -58,6 +59,16 @@ const AiAssistantPanel = ({ onClose }: Props) => {
   const [localMessages, setLocalMessages] = useState<TAiUiMessage[]>([]);
   const [isWaitingForAssistant, setIsWaitingForAssistant] = useState(false);
   const [sendError, setSendError] = useState(false);
+  const [assistantMetaByKey, setAssistantMetaByKey] = useState<
+    Record<
+      string,
+      {
+        usedTools?: string[];
+        selectedToolGroups?: string[];
+        warnings?: string[];
+      }
+    >
+  >({});
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const isSendingRef = useRef(false);
@@ -146,7 +157,13 @@ const AiAssistantPanel = ({ onClose }: Props) => {
         return { ok: false, restoreMessage: message };
       }
 
-      const { chatId, answer } = response.data;
+      const { chatId, answer, usedTools, selectedToolGroups, warnings } =
+        response.data;
+      const responseMeta = {
+        usedTools,
+        selectedToolGroups,
+        warnings,
+      };
 
       setLocalMessages((current) => [
         ...current,
@@ -154,10 +171,15 @@ const AiAssistantPanel = ({ onClose }: Props) => {
           id: createLocalMessageId("assistant"),
           role: "assistant",
           content: answer,
+          ...responseMeta,
         },
       ]);
       setIsWaitingForAssistant(false);
       setActiveChatId(chatId);
+      setAssistantMetaByKey((current) => ({
+        ...current,
+        [createAiAssistantMetaKey(chatId, answer)]: responseMeta,
+      }));
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: aiChatsQueryKey }),
@@ -227,6 +249,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
           localMessages={localMessages}
           isWaitingForAssistant={isWaitingForAssistant}
           sendError={sendError}
+          assistantMetaByKey={assistantMetaByKey}
         />
         <AiComposer isSending={isSending} onSend={handleSend} />
       </div>

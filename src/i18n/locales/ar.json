@@ -340,6 +340,11 @@
       "thinking": "المساعد الذكي يفكر...",
       "sendError": "تعذر إرسال الرسالة. يرجى المحاولة مرة أخرى."
     },
+    "response": {
+      "toolsUsed": "الأدوات المستخدمة",
+      "selectedCapabilities": "القدرات المحددة",
+      "warnings": "التحذيرات"
+    },
     "composer": {
       "label": "الرسالة",
       "placeholder": "اكتب رسالتك...",

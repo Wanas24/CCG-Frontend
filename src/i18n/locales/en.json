@@ -341,6 +341,11 @@
       "thinking": "AI is thinking...",
       "sendError": "Failed to send message. Please try again."
     },
+    "response": {
+      "toolsUsed": "Tools used",
+      "selectedCapabilities": "Selected capabilities",
+      "warnings": "Warnings"
+    },
     "composer": {
       "label": "Message",
       "placeholder": "Type your message...",

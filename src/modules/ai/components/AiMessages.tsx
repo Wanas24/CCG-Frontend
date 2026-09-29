@@ -11,13 +11,24 @@ import { AppSkeleton } from "@/shared/ANTD_UIComponents";
 import { useGetAiMessages } from "../api/hooks/useGetAiMessages";
 import type { TAiUiMessage } from "../types";
 import { flattenAiMessagePages } from "../utils/flattenAiMessagePages";
+import { createAiAssistantMetaKey } from "../utils/aiResponseMeta";
 import AiMarkdown from "./AiMarkdown";
+import AiToolUsage from "./AiToolUsage";
+import AiWarnings from "./AiWarnings";
 
 type Props = {
   activeChatId: string | null;
   localMessages: TAiUiMessage[];
   isWaitingForAssistant: boolean;
   sendError: boolean;
+  assistantMetaByKey?: Record<
+    string,
+    {
+      usedTools?: string[];
+      selectedToolGroups?: string[];
+      warnings?: string[];
+    }
+  >;
 };
 
 const SCROLL_LOAD_THRESHOLD_PX = 48;
@@ -26,10 +37,16 @@ const MessageBubble = ({
   role,
   content,
   isError,
+  usedTools,
+  selectedToolGroups,
+  warnings,
 }: {
   role: string;
   content: string;
   isError?: boolean;
+  usedTools?: string[];
+  selectedToolGroups?: string[];
+  warnings?: string[];
 }) => {
   const normalizedRole = role.toLowerCase();
   const isUser = normalizedRole === "user";
@@ -51,6 +68,15 @@ const MessageBubble = ({
         )}
       >
         {isAssistant ? <AiMarkdown content={content} /> : content}
+        {isAssistant && (
+          <>
+            <AiToolUsage
+              usedTools={usedTools}
+              selectedToolGroups={selectedToolGroups}
+            />
+            <AiWarnings warnings={warnings} />
+          </>
+        )}
       </div>
     </div>
   );
@@ -61,6 +87,7 @@ const AiMessages = ({
   localMessages,
   isWaitingForAssistant,
   sendError,
+  assistantMetaByKey = {},
 }: Props) => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -211,13 +238,25 @@ const AiMessages = ({
         </p>
       )}
 
-      {historyMessages.map((message) => (
-        <MessageBubble
-          key={`history-${message.id}`}
-          role={message.role}
-          content={message.content}
-        />
-      ))}
+      {historyMessages.map((message) => {
+        const meta =
+          activeChatId && message.role.toLowerCase() === "assistant"
+            ? assistantMetaByKey[
+                createAiAssistantMetaKey(activeChatId, message.content)
+              ]
+            : undefined;
+
+        return (
+          <MessageBubble
+            key={`history-${message.id}`}
+            role={message.role}
+            content={message.content}
+            usedTools={meta?.usedTools}
+            selectedToolGroups={meta?.selectedToolGroups}
+            warnings={meta?.warnings}
+          />
+        );
+      })}
 
       {localMessages.map((message) => (
         <MessageBubble
@@ -225,6 +264,9 @@ const AiMessages = ({
           role={message.role}
           content={message.content}
           isError={message.isError}
+          usedTools={message.usedTools}
+          selectedToolGroups={message.selectedToolGroups}
+          warnings={message.warnings}
         />
       ))}
 

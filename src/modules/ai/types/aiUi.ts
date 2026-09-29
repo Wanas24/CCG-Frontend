@@ -4,4 +4,7 @@ export type TAiUiMessage = {
   content: string;
   isPending?: boolean;
   isError?: boolean;
+  usedTools?: string[];
+  selectedToolGroups?: string[];
+  warnings?: string[];
 };
