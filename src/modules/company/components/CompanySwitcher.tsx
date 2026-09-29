@@ -130,7 +130,7 @@ const CompanyRow = ({
             to={COMPANY_ROUTES.root}
             role="menuitem"
             aria-label={t("company.switcher.settings")}
-            className="flex shrink-0 items-center justify-center rounded-lg p-2 text-(--Primary400) hover:bg-(--Grey100)"
+            className="flex shrink-0 items-center justify-center rounded-lg p-2 !text-(--Primary400) hover:bg-(--Grey100)"
             onClick={(event) => {
               event.stopPropagation();
               onClose();
@@ -216,7 +216,7 @@ const CompanySwitcher = () => {
               "flex items-center gap-2 rounded-lg px-2 py-2",
               DesignTokens.inputs.labelFontSize,
               DesignTokens.typography.emphasis,
-              "text-(--Primary400) hover:bg-(--Grey100)",
+              "!text-(--Primary400) hover:bg-(--Grey100)",
             )}
             onClick={closeMenu}
           >

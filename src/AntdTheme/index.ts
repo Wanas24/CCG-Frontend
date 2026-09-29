@@ -4,11 +4,10 @@ export {
   themeCssVariables,
   lightCssVariables,
   darkCssVariables,
-  authCssVariables,
   type ThemeMode,
   type CssVariableMap,
 } from "./cssVariables";
-export { lightTheme, darkTheme, authTheme } from "./themes";
+export { lightTheme, darkTheme } from "./themes";
 export { useThemeStore, type AppThemeMode } from "./themeStore";
 export {
   resolveAppliedTheme,

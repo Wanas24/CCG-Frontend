@@ -12,6 +12,7 @@ import { userMeQueryKey } from "@/modules/user/api/hooks/useGetMe";
 import { useLogoutManager } from "./useLogoutManager";
 import { useAuthStore } from "../store/authStore";
 import { isAccountVerified } from "../types";
+import { getPostVerificationPath } from "../utils/getPostVerificationPath";
 
 export const useVerifyAccountManager = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ export const useVerifyAccountManager = () => {
     }
 
     if (isAccountVerified(status)) {
-      navigate(APP_ROUTES.home, { replace: true });
+      navigate(getPostVerificationPath(), { replace: true });
     }
   }, [statusResponse, setConfirmationStatus, navigate]);
 

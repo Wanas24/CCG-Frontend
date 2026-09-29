@@ -48,18 +48,18 @@ const sharedStatus = {
 export const lightColorTokens: ThemeColorTokens = {
   ...sharedLightSurface,
   ...sharedStatus,
-  Primary100: "#E8EEF5",
-  Primary300: "#3D5A80",
-  Primary400: "#1B3A5F",
-  Secondary300: "#F0E6C8",
-  Grey300: "#D9DEE5",
-  Grey500: "#9AA3B0",
-  Grey600: "#6B7585",
-  Grey900: "#1A1F29",
-  statusG100: "#E8F7EF",
-  "app-bg": "#F5F6F8",
+  Primary100: "#E6F4EA",
+  Primary300: "#4A7A68",
+  Primary400: "#34594C",
+  Secondary300: "#1A2C26",
+  Grey300: "#D9D9D9",
+  Grey500: "#BFBFBF",
+  Grey600: "#666666",
+  Grey900: "#1F1F1F",
+  statusG100: "#E6F4EA",
+  "app-bg": "#FFFFFF",
   "app-surface": "#FFFFFF",
-  "app-text": "#0A0A0A",
+  "app-text": "#1F1F1F",
 };
 
 export const darkColorTokens: ThemeColorTokens = {
@@ -88,21 +88,4 @@ export const darkColorTokens: ThemeColorTokens = {
   "app-bg": "#0B0D11",
   "app-surface": "#151922",
   "app-text": "#F5F6F8",
-};
-
-export const authColorTokens: ThemeColorTokens = {
-  ...sharedLightSurface,
-  ...sharedStatus,
-  Primary100: "#E6F4EA",
-  Primary300: "#4A7A68",
-  Primary400: "#34594C",
-  Secondary300: "#1A2C26",
-  Grey300: "#D9D9D9",
-  Grey500: "#BFBFBF",
-  Grey600: "#666666",
-  Grey900: "#1F1F1F",
-  statusG100: "#E6F4EA",
-  "app-bg": "#FFFFFF",
-  "app-surface": "#FFFFFF",
-  "app-text": "#1F1F1F",
 };
