@@ -10,7 +10,11 @@ import {
   aiChatsQueryKey,
   aiMessagesQueryKey,
 } from "../api/queryKeys/aiQueryKeys";
-import type { TAiAssistantUiMeta, TAiUiMessage } from "../types";
+import type {
+  TAiAssistantUiMeta,
+  TAiComposerSendPayload,
+  TAiUiMessage,
+} from "../types";
 import { createAiAssistantMetaKey } from "../utils/aiResponseMeta";
 import AiChatHeader from "./AiChatHeader";
 import AiChatSidebar from "./AiChatSidebar";
@@ -65,6 +69,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const isSendingRef = useRef(false);
+  const pendingUserMessageIdRef = useRef<string | null>(null);
 
   const { mutateAsync: sendAiChat, isPending: isSendMutationPending } =
     useSendAiChat();
@@ -83,6 +88,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     isSendingRef.current = false;
+    pendingUserMessageIdRef.current = null;
     setLocalMessages([]);
     setIsWaitingForAssistant(false);
     setSendError(false);
@@ -93,6 +99,18 @@ const AiAssistantPanel = ({ onClose }: Props) => {
       abortControllerRef.current?.abort();
     };
   }, []);
+
+  const removePendingUserMessage = () => {
+    const pendingId = pendingUserMessageIdRef.current;
+    if (!pendingId) {
+      return;
+    }
+
+    setLocalMessages((current) =>
+      current.filter((message) => message.id !== pendingId),
+    );
+    pendingUserMessageIdRef.current = null;
+  };
 
   const handleSelectChat = (chatId: string) => {
     resetLocalConversation();
@@ -106,19 +124,50 @@ const AiAssistantPanel = ({ onClose }: Props) => {
     setIsChatSidebarOpen(false);
   };
 
-  const handleSend = async (message: string) => {
+  const handleCancelSend = () => {
+    abortControllerRef.current?.abort();
+  };
+
+  const handleSend = async (payload: TAiComposerSendPayload) => {
     if (isSendingRef.current || isSending) {
-      return { ok: false, restoreMessage: message };
+      return { ok: false, restore: payload };
+    }
+
+    const message = payload.message.trim();
+    const audio = payload.audio ?? null;
+    const attachments = payload.attachments ?? [];
+
+    if (!message && !audio) {
+      return { ok: false, restore: payload };
     }
 
     isSendingRef.current = true;
     setSendError(false);
+
+    const userMessageId = createLocalMessageId("user");
+    pendingUserMessageIdRef.current = userMessageId;
+
     setLocalMessages((current) => [
       ...current,
       {
-        id: createLocalMessageId("user"),
+        id: userMessageId,
         role: "user",
         content: message,
+        localAttachments: attachments.map((file) => ({
+          id: crypto.randomUUID(),
+          fileName: file.name,
+          contentType: file.type,
+          size: file.size,
+          file,
+        })),
+        localAudio: audio
+          ? {
+              fileName: audio.name,
+              contentType: audio.type,
+              size: audio.size,
+              file: audio,
+            }
+          : null,
       },
     ]);
     setIsWaitingForAssistant(true);
@@ -128,26 +177,28 @@ const AiAssistantPanel = ({ onClose }: Props) => {
 
     try {
       const response = await sendAiChat({
-        message,
+        ...(message ? { message } : {}),
+        ...(audio ? { audio } : {}),
+        ...(attachments.length > 0 ? { attachments } : {}),
         ...(activeChatId ? { chatId: activeChatId } : {}),
         signal: controller.signal,
       });
 
       if (controller.signal.aborted) {
-        return { ok: false, aborted: true };
+        setIsWaitingForAssistant(false);
+        removePendingUserMessage();
+        return { ok: false, aborted: true, restore: payload };
       }
 
       if (!response.isSuccess || !response.data) {
         setIsWaitingForAssistant(false);
         setSendError(true);
         setLocalMessages((current) =>
-          current.map((item, index) =>
-            index === current.length - 1 && item.role === "user"
-              ? { ...item, isError: true }
-              : item,
+          current.map((item) =>
+            item.id === userMessageId ? { ...item, isError: true } : item,
           ),
         );
-        return { ok: false, restoreMessage: message };
+        return { ok: false, restore: payload };
       }
 
       const {
@@ -158,6 +209,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
         warnings,
         sources,
         artifacts,
+        transcript,
       } = response.data;
       const responseMeta: TAiAssistantUiMeta = {
         usedTools,
@@ -165,10 +217,15 @@ const AiAssistantPanel = ({ onClose }: Props) => {
         warnings,
         sources,
         artifacts,
+        transcript,
       };
 
       setLocalMessages((current) => [
-        ...current,
+        ...current.map((item) =>
+          item.id === userMessageId && transcript
+            ? { ...item, content: transcript }
+            : item,
+        ),
         {
           id: createLocalMessageId("assistant"),
           role: "assistant",
@@ -178,6 +235,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
       ]);
       setIsWaitingForAssistant(false);
       setActiveChatId(chatId);
+      pendingUserMessageIdRef.current = null;
       setAssistantMetaByKey((current) => ({
         ...current,
         [createAiAssistantMetaKey(chatId, answer)]: responseMeta,
@@ -198,19 +256,20 @@ const AiAssistantPanel = ({ onClose }: Props) => {
       return { ok: true };
     } catch (error) {
       if (controller.signal.aborted || isAbortError(error)) {
-        return { ok: false, aborted: true };
+        setIsWaitingForAssistant(false);
+        setSendError(false);
+        removePendingUserMessage();
+        return { ok: false, aborted: true, restore: payload };
       }
 
       setIsWaitingForAssistant(false);
       setSendError(true);
       setLocalMessages((current) =>
-        current.map((item, index) =>
-          index === current.length - 1 && item.role === "user"
-            ? { ...item, isError: true }
-            : item,
+        current.map((item) =>
+          item.id === userMessageId ? { ...item, isError: true } : item,
         ),
       );
-      return { ok: false, restoreMessage: message };
+      return { ok: false, restore: payload };
     } finally {
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;
@@ -253,7 +312,11 @@ const AiAssistantPanel = ({ onClose }: Props) => {
           sendError={sendError}
           assistantMetaByKey={assistantMetaByKey}
         />
-        <AiComposer isSending={isSending} onSend={handleSend} />
+        <AiComposer
+          isSending={isSending}
+          onSend={handleSend}
+          onCancel={handleCancelSend}
+        />
       </div>
 
       <AiUsagePanel className="max-[900px]:hidden" />

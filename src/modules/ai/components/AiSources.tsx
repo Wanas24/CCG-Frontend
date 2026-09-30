@@ -25,26 +25,28 @@ const AiSources = ({ sources }: Props) => {
   }
 
   return (
-    <details className="mt-2 rounded-lg border border-(--Grey300) bg-(--app-surface)/70 text-xs">
-      <summary className="flex cursor-pointer list-none items-center gap-1.5 px-2 py-1.5 text-(--Grey700) marker:content-none [&::-webkit-details-marker]:hidden">
-        <Link2 size={14} aria-hidden="true" className="shrink-0" />
-        <span className="font-medium">{t("ai.response.sources")}</span>
-        <span className="text-(--Grey600)">({items.length})</span>
+    <details className="mt-1.5 text-xs text-(--Grey700)">
+      <summary className="flex cursor-pointer list-none items-center gap-1.5 py-0.5 marker:content-none [&::-webkit-details-marker]:hidden">
+        <Link2 size={12} aria-hidden="true" className="shrink-0 opacity-70" />
+        <span className="min-w-0 truncate font-medium">
+          {t("ai.response.sources")}
+        </span>
+        <span className="shrink-0 text-(--Grey600)">· {items.length}</span>
       </summary>
 
       <ul
         aria-label={t("ai.response.sources")}
-        className="m-0 flex list-none flex-col gap-1.5 border-t border-(--Grey300) px-2 py-2"
+        className="ms-4 mt-1 flex list-none flex-col gap-1 border-s border-(--Grey300) ps-2"
       >
         {items.map((source) => (
           <li
             key={`${source.type}-${source.id}-${source.label ?? ""}`}
-            className="break-words text-(--app-text)"
+            className="min-w-0 break-words text-(--app-text)"
           >
             {source.label?.trim() ? (
-              source.label
+              <span className="break-words">{source.label}</span>
             ) : (
-              <span dir="ltr" className="font-mono text-[0.7rem]">
+              <span dir="ltr" className="break-all font-mono text-[0.7rem]">
                 {getSourceLabel(source)}
               </span>
             )}

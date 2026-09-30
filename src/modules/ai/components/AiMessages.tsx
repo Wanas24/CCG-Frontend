@@ -13,6 +13,7 @@ import type { TAiAssistantUiMeta, TAiUiMessage } from "../types";
 import { flattenAiMessagePages } from "../utils/flattenAiMessagePages";
 import { createAiAssistantMetaKey } from "../utils/aiResponseMeta";
 import AiArtifacts from "./AiArtifacts";
+import AiLocalMediaPreview from "./AiLocalMediaPreview";
 import AiMarkdown from "./AiMarkdown";
 import AiSources from "./AiSources";
 import AiToolUsage from "./AiToolUsage";
@@ -37,11 +38,11 @@ const MessageBubble = ({
   warnings,
   sources,
   artifacts,
-}: {
-  role: string;
-  content: string;
-  isError?: boolean;
-} & TAiAssistantUiMeta) => {
+  transcript,
+  localAttachments,
+  localAudio,
+}: TAiUiMessage) => {
+  const { t } = useTranslation();
   const normalizedRole = role.toLowerCase();
   const isUser = normalizedRole === "user";
   const isAssistant = normalizedRole === "assistant";
@@ -61,9 +62,34 @@ const MessageBubble = ({
           isError && "ring-1 ring-(--statusR200)",
         )}
       >
-        {isAssistant ? <AiMarkdown content={content} /> : content}
+        {isAssistant ? (
+          <AiMarkdown content={content} />
+        ) : content ? (
+          content
+        ) : (
+          <span className="opacity-80">
+            {localAudio
+              ? t("ai.composer.voiceMessage")
+              : t("ai.composer.attachmentMessage")}
+          </span>
+        )}
+
+        {isUser && (
+          <AiLocalMediaPreview
+            attachments={localAttachments}
+            audio={localAudio}
+          />
+        )}
+
+        {isAssistant && transcript ? (
+          <p className="m-0 mt-1.5 border-t border-(--Grey300)/60 pt-1.5 text-[0.7rem] text-(--Grey700)">
+            <span className="font-medium">{t("ai.response.transcript")}: </span>
+            <span className="break-words">{transcript}</span>
+          </p>
+        ) : null}
+
         {isAssistant && (
-          <>
+          <div className="mt-0.5 min-w-0">
             <AiToolUsage
               usedTools={usedTools}
               selectedToolGroups={selectedToolGroups}
@@ -71,7 +97,7 @@ const MessageBubble = ({
             <AiWarnings warnings={warnings} />
             <AiSources sources={sources} />
             <AiArtifacts artifacts={artifacts} />
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -245,29 +271,21 @@ const AiMessages = ({
         return (
           <MessageBubble
             key={`history-${message.id}`}
-            role={message.role}
+            id={`history-${message.id}`}
+            role={message.role === "user" ? "user" : "assistant"}
             content={message.content}
             usedTools={meta?.usedTools}
             selectedToolGroups={meta?.selectedToolGroups}
             warnings={meta?.warnings}
             sources={meta?.sources}
             artifacts={meta?.artifacts}
+            transcript={meta?.transcript}
           />
         );
       })}
 
       {localMessages.map((message) => (
-        <MessageBubble
-          key={message.id}
-          role={message.role}
-          content={message.content}
-          isError={message.isError}
-          usedTools={message.usedTools}
-          selectedToolGroups={message.selectedToolGroups}
-          warnings={message.warnings}
-          sources={message.sources}
-          artifacts={message.artifacts}
-        />
+        <MessageBubble key={message.id} {...message} />
       ))}
 
       {isWaitingForAssistant && (

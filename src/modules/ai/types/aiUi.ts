@@ -6,6 +6,22 @@ export type TAiAssistantUiMeta = {
   warnings?: string[];
   sources?: TAiAssistantSource[];
   artifacts?: TAiAssistantArtifact[];
+  transcript?: string;
+};
+
+export type TAiUiLocalAttachment = {
+  id: string;
+  fileName: string;
+  contentType: string;
+  size: number;
+  file: File;
+};
+
+export type TAiUiLocalAudio = {
+  fileName: string;
+  contentType: string;
+  size: number;
+  file: File;
 };
 
 export type TAiUiMessage = {
@@ -14,4 +30,12 @@ export type TAiUiMessage = {
   content: string;
   isPending?: boolean;
   isError?: boolean;
+  localAttachments?: TAiUiLocalAttachment[];
+  localAudio?: TAiUiLocalAudio | null;
 } & TAiAssistantUiMeta;
+
+export type TAiComposerSendPayload = {
+  message: string;
+  audio?: File | null;
+  attachments?: File[];
+};
