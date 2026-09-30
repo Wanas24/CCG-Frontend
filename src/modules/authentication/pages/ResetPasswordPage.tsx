@@ -4,18 +4,14 @@ import ResetPasswordMissingParams from "@/modules/authentication/components/Rese
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
-  const userId = searchParams.get("userId");
+  const email = searchParams.get("email");
   const token = searchParams.get("token");
 
-  if (!userId || !token) {
-    return (
-      <ResetPasswordMissingParams />
-    );
+  if (!email || !token) {
+    return <ResetPasswordMissingParams />;
   }
 
-  return (
-    <ResetPasswordForm userId={userId} token={token} />
-  );
+  return <ResetPasswordForm email={email} token={token} />;
 };
 
 export default ResetPasswordPage;

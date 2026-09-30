@@ -12,6 +12,16 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
+      "@/modules/*": ["src/modules/*"],
+      "@/lib/*": ["src/lib/*"],
+      "@/shared/*": ["src/shared/*"],
+      "@/router/*": ["src/router/*"],
+      "@/layouts/*": ["src/layouts/*"],
+      "@/services/*": ["src/services/*"],
+      "@/i18n/*": ["src/i18n/*"],
+      "@/AntdTheme/*": ["src/AntdTheme/*"],
+      "@/providers/*": ["src/providers/*"],
+      "@/assets/*": ["src/assets/*"],
       "@/UI_Components/*": ["src/shared/ANTD_UIComponents/*"],
       "@/UIComponents/*": ["src/shared/ANTD_UIComponents/*"]
     },

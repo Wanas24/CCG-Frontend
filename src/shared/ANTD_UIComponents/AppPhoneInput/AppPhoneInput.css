@@ -1,0 +1,49 @@
+.app-phone-input {
+  --react-international-phone-height: 44px;
+  --react-international-phone-font-size: 14px;
+  --react-international-phone-border-radius: 8px;
+  --react-international-phone-border-color: var(--Grey300);
+  --react-international-phone-background-color: var(--app-surface);
+  --react-international-phone-text-color: var(--app-text);
+  --react-international-phone-country-selector-background-color: var(--Grey100);
+  --react-international-phone-country-selector-background-color-hover: var(--Grey200);
+  --react-international-phone-country-selector-border-color: var(--Grey300);
+  --react-international-phone-country-selector-arrow-color: var(--Grey600);
+  --react-international-phone-dropdown-item-background-color: var(--app-surface);
+  --react-international-phone-dropdown-item-text-color: var(--app-text);
+  --react-international-phone-dropdown-item-dial-code-color: var(--Grey600);
+  --react-international-phone-selected-dropdown-item-background-color: var(--Grey100);
+  --react-international-phone-selected-dropdown-item-text-color: var(--app-text);
+  --react-international-phone-dropdown-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --react-international-phone-disabled-background-color: var(--Grey100);
+  --react-international-phone-disabled-text-color: var(--Grey500);
+}
+
+.app-phone-input--error {
+  --react-international-phone-border-color: var(--statusR200);
+  --react-international-phone-country-selector-border-color: var(--statusR200);
+}
+
+.app-phone-input .react-international-phone-input-container {
+  width: 100%;
+}
+
+.app-phone-input .react-international-phone-input-container .react-international-phone-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-phone-input .react-international-phone-input-container .react-international-phone-input:focus {
+  border-color: var(--Primary400);
+  outline: none;
+}
+
+.app-phone-input--error
+  .react-international-phone-input-container
+  .react-international-phone-input:focus {
+  border-color: var(--statusR200);
+}
+
+.app-phone-input .react-international-phone-country-selector-dropdown {
+  z-index: 1050;
+}

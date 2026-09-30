@@ -5,12 +5,12 @@ import { useTranslation } from "react-i18next";
 import { AppButton, AppCheckBox, AppInput } from "@/shared/ANTD_UIComponents";
 import { useTranslatedFormError } from "@/shared/validation";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import { useLoginForm } from "../hooks/useLoginForm";
+import { useLoginManager } from "../hooks/useLoginManager";
 
 const LoginForm = () => {
   const { t } = useTranslation();
   const translateError = useTranslatedFormError();
-  const { control, handleSubmit, errors, onSubmit } = useLoginForm();
+  const { control, handleSubmit, onSubmit, isPending } = useLoginManager();
 
   return (
     <form
@@ -18,7 +18,6 @@ const LoginForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       noValidate
     >
-      {/* Key icon placeholder — replace with actual icon */}
       <div className="w-10 h-10 rounded-xl bg-[#E8F5F0] flex items-center justify-center">
         <KeyRound className="w-6 h-6 text-[#3D7A6A]" />
       </div>
@@ -29,11 +28,10 @@ const LoginForm = () => {
         </h1>
       </div>
 
-      {/* Email field */}
       <Controller
         name="email"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppInput
             {...field}
             type="email"
@@ -41,16 +39,15 @@ const LoginForm = () => {
             label={t("auth.login.emailLabel")}
             placeholder={t("auth.login.emailPlaceholder")}
             required
-            errorMsg={translateError(errors.email?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
 
-      {/* Password field */}
       <Controller
         name="password"
         control={control}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <AppInput
             {...field}
             type="password"
@@ -58,12 +55,11 @@ const LoginForm = () => {
             label={t("auth.login.passwordLabel")}
             placeholder={t("auth.login.passwordPlaceholder")}
             required
-            errorMsg={translateError(errors.password?.message)}
+            errorMsg={translateError(fieldState.error?.message)}
           />
         )}
       />
 
-      {/* Remember me + Server badge */}
       <div className="flex items-center justify-between gap-3">
         <Controller
           name="rememberMe"
@@ -79,15 +75,12 @@ const LoginForm = () => {
         />
       </div>
 
-      {/* Submit button */}
-      <AppButton htmlType="submit" variant="primary" block>
+      <AppButton htmlType="submit" variant="primary" loading={isPending}>
         {t("auth.login.submit")} →
       </AppButton>
 
-      {/* Divider */}
       <hr className="border-t border-(--Grey200)" />
 
-      {/* Forgot password + Create account */}
       <div className="flex items-center justify-between text-sm">
         <Link
           to={AUTH_ROUTES.forgotPassword}

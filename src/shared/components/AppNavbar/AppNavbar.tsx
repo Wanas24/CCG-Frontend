@@ -1,32 +1,69 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
-import { AppLocaleSwitcher } from "@/i18n";
-import AppThemeToggle from "@/shared/components/AppThemeToggle";
-import AppButton from "@/shared/ANTD_UIComponents";
-import { useNavigate } from "react-router";
-import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
+import { Menu } from "lucide-react";
+import { useLocale } from "@/i18n/useLocale";
+import { useLogoutManager } from "@/modules/authentication/hooks/useLogoutManager";
+import { AppButton, AppDrawer } from "@/shared/ANTD_UIComponents";
+import DesktopNavbarActions from "./DesktopNavbarActions";
+import MobileNavbarMenu from "./MobileNavbarMenu";
 
 const AppNavbar = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { isRtl } = useLocale();
+  const location = useLocation();
+  const { logout, isPending } = useLogoutManager();
+  const [menuPath, setMenuPath] = useState<string | null>(null);
+  const mobileOpen = menuPath === location.pathname;
+
+  const openMobileMenu = () => setMenuPath(location.pathname);
+  const closeMobileMenu = () => setMenuPath(null);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const onChange = () => {
+      if (media.matches) {
+        setMenuPath(null);
+      }
+    };
+
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
   return (
-    <header className="flex items-center justify-between border-b border-(--Grey300) px-6 py-4">
-      <h1 className="text-lg font-semibold text-(--app-text)">
+    <header className="flex items-center justify-between gap-3 border-b border-(--Grey300) px-6 py-4">
+      <h1 className="min-w-0 truncate text-lg font-semibold text-(--app-text)">
         {t("common.appName")}
       </h1>
-      <div className="flex items-center gap-3">
-        <AppThemeToggle />
-        <AppLocaleSwitcher />
+
+      <nav className="hidden md:flex items-center gap-1" aria-label={t("common.menu")}>
+        <DesktopNavbarActions logout={logout} isPending={isPending} />
+      </nav>
+
+      <div className="shrink-0 md:hidden">
         <AppButton
-          className="underline underline-offset-1"
           variant="default"
-          onClick={() => {
-            localStorage.removeItem("ALHARMEEN_TOKEN");
-            navigate(AUTH_ROUTES.login);
-          }}
+          icon={<Menu size={18} />}
+          aria-label={t("common.menu")}
+          aria-expanded={mobileOpen}
+          onClick={openMobileMenu}
+        />
+        <AppDrawer
+          open={mobileOpen}
+          onClose={closeMobileMenu}
+          placement={isRtl ? "left" : "right"}
+          title={t("common.menu")}
+          width={280}
+          destroyOnHidden
+          classNames={{ body: "flex flex-col gap-3" }}
         >
-          {/* Dummy */}
-          Logout
-        </AppButton>
+          <MobileNavbarMenu
+            logout={logout}
+            isPending={isPending}
+            onNavigate={closeMobileMenu}
+          />
+        </AppDrawer>
       </div>
     </header>
   );

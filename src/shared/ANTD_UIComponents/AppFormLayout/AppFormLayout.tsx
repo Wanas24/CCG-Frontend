@@ -39,7 +39,7 @@ export type AppFormFieldsProps = {
 };
 
 export const AppFormFields = ({ children, className }: AppFormFieldsProps) => (
-  <div className={clsx("flex flex-col gap-4", className)}>{children}</div>
+  <div className={clsx("flex flex-col gap-6", className)}>{children}</div>
 );
 
 export type AppFormSectionProps = {

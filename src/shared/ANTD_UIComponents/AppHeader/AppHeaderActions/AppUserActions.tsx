@@ -1,17 +1,32 @@
 import { Dropdown, type MenuProps } from "antd";
 import { ChevronDown } from "lucide-react";
-
-const userMenuItems: MenuProps["items"] = [
-  { key: "profile", label: "Profile" },
-  { key: "settings", label: "Settings" },
-  { type: "divider" },
-  { key: "logout", label: "Log out" },
-];
+import { useTranslation } from "react-i18next";
+import { useLogoutManager } from "@/modules/authentication/hooks/useLogoutManager";
 
 const AppUserActions = () => {
+  const { t } = useTranslation();
+  const { logout, isPending } = useLogoutManager();
+
+  const userMenuItems: MenuProps["items"] = [
+    { key: "profile", label: "Profile" },
+    { key: "settings", label: "Settings" },
+    { type: "divider" },
+    {
+      key: "logout",
+      label: t("common.logout"),
+      disabled: isPending,
+    },
+  ];
+
+  const onMenuClick: MenuProps["onClick"] = ({ key }) => {
+    if (key === "logout") {
+      void logout();
+    }
+  };
+
   return (
     <Dropdown
-      menu={{ items: userMenuItems }}
+      menu={{ items: userMenuItems, onClick: onMenuClick }}
       trigger={["click"]}
       overlayClassName="min-w-[200px]!"
     >

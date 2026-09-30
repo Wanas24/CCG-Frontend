@@ -20,7 +20,11 @@ const variantConfig: Record<
   AppButtonVariant,
   Pick<ButtonProps, "color" | "variant"> & { className?: string }
 > = {
-  primary: { color: "primary", variant: "solid", className: "cursor-pointer!" },
+  primary: {
+    color: "primary",
+    variant: "solid",
+    className: "cursor-pointer! h-11 w-full sm:w-fit",
+  },
   secondary: {
     color: "default",
     variant: "outlined",
@@ -41,7 +45,7 @@ const variantConfig: Record<
     color: "default",
     variant: "text",
     className:
-      "cursor-pointer! hover:bg-(--statusR100)! text-(--statusR200)! px-2!",
+      "cursor-pointer! w-fit shrink-0 hover:bg-(--statusR100)! text-(--statusR200)! px-2!",
   },
 };
 
@@ -51,6 +55,7 @@ export const AppButton = ({
   className,
   children,
   icon,
+  block,
   ...props
 }: AppButtonProps) => {
   const config = variantConfig[variant];
@@ -60,11 +65,12 @@ export const AppButton = ({
   return (
     <Button
       {...props}
+      block={block}
       icon={resolvedIcon}
       color={config.color}
       variant={config.variant}
       iconPlacement={iconPlacement}
-      className={clsx(config.className, className)}
+      className={clsx(config.className, block && "w-full!", className)}
     >
       {children}
     </Button>

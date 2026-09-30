@@ -11,7 +11,7 @@ export const LOCALE_DIRECTION: Record<AppLocale, "ltr" | "rtl"> = {
   ar: "rtl",
 };
 
-const STORAGE_KEY = "alharmeen-locale";
+const STORAGE_KEY = "ccg-locale";
 
 export const getStoredLocale = (): AppLocale => {
   const stored = localStorage.getItem(STORAGE_KEY);

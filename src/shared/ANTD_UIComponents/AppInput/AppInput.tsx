@@ -1,4 +1,16 @@
-import { DownOutlined } from "@ant-design/icons";
+import {
+  useEffect,
+  useState,
+  type ClipboardEvent,
+  type DragEvent,
+  type MouseEvent,
+  type PointerEvent,
+} from "react";
+import {
+  DownOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import {
   Dropdown,
   Input,
@@ -23,6 +35,71 @@ export type AppInputProps = InputProps &
 
 const errorBorderClassName =
   "[&_.ant-input-outlined]:border-(--statusR200)! [&_.ant-input-affix-wrapper]:border-(--statusR200)! hover:[&_.ant-input-outlined]:border-(--statusR200)! hover:[&_.ant-input-affix-wrapper]:border-(--statusR200)! [&_.ant-input-outlined:focus]:border-(--statusR200)! [&_.ant-input-affix-wrapper-focused]:border-(--statusR200)! [&_.ant-input-group-wrapper]:border-(--statusR200)!";
+
+type PasswordInputProps = Omit<InputProps, "type">;
+
+const preventPasswordExport = (
+  event: ClipboardEvent<HTMLInputElement> | DragEvent<HTMLInputElement>,
+) => {
+  event.preventDefault();
+};
+
+const preventPasswordContextMenu = (event: MouseEvent<HTMLElement>) => {
+  event.preventDefault();
+};
+
+const AppPasswordInput = ({ status, ...inputProps }: PasswordInputProps) => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!visible) return;
+
+    const hidePassword = () => setVisible(false);
+
+    window.addEventListener("pointerup", hidePassword);
+    window.addEventListener("blur", hidePassword);
+
+    return () => {
+      window.removeEventListener("pointerup", hidePassword);
+      window.removeEventListener("blur", hidePassword);
+    };
+  }, [visible]);
+
+  const showPassword = (event: PointerEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    setVisible(true);
+  };
+
+  const hidePassword = () => setVisible(false);
+
+  return (
+    <Input.Password
+      {...inputProps}
+      className="w-full"
+      status={status}
+      onContextMenu={preventPasswordContextMenu}
+      onCopy={preventPasswordExport}
+      onCut={preventPasswordExport}
+      onDragStart={preventPasswordExport}
+      visibilityToggle={{
+        visible,
+        onVisibleChange: () => undefined,
+      }}
+      iconRender={(isVisible) => (
+        <span
+          className="inline-flex cursor-pointer touch-none select-none"
+          onContextMenu={preventPasswordContextMenu}
+          onPointerCancel={hidePassword}
+          onPointerDown={showPassword}
+          onPointerLeave={hidePassword}
+          onPointerUp={hidePassword}
+        >
+          {isVisible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+        </span>
+      )}
+    />
+  );
+};
 
 export const AppInput = ({
   addonBefore,
@@ -50,16 +127,19 @@ export const AppInput = ({
     addonBefore
   );
 
-  const InputComponent = type === "password" ? Input.Password : Input;
+  const fieldStatus = errorMsg ? "error" : status;
 
-  const inputElement = (
-    <InputComponent
-      {...inputProps}
-      type={type === "password" ? undefined : type}
-      className="w-full"
-      status={errorMsg ? "error" : status}
-    />
-  );
+  const inputElement =
+    type === "password" ? (
+      <AppPasswordInput {...inputProps} status={fieldStatus} />
+    ) : (
+      <Input
+        {...inputProps}
+        type={type}
+        className="w-full"
+        status={fieldStatus}
+      />
+    );
 
   return (
     <AppFieldWrapper

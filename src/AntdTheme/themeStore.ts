@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { ThemeMode } from "./cssVariables";
+import type { AppThemeMode } from "./resolveAppliedTheme";
 
-export type AppThemeMode = Exclude<ThemeMode, "auth">;
+export type { AppThemeMode };
 
 type ThemeState = {
   mode: AppThemeMode;
@@ -10,16 +10,21 @@ type ThemeState = {
   toggleMode: () => void;
 };
 
+const nextThemeMode = (mode: AppThemeMode): AppThemeMode => {
+  if (mode === "light") return "dark";
+  if (mode === "dark") return "system";
+  return "light";
+};
+
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       mode: "light",
       setMode: (mode) => set({ mode }),
-      toggleMode: () =>
-        set({ mode: get().mode === "light" ? "dark" : "light" }),
+      toggleMode: () => set({ mode: nextThemeMode(get().mode) }),
     }),
     {
-      name: "alharmeen-theme-mode",
+      name: "ccg-theme-mode",
     },
   ),
 );

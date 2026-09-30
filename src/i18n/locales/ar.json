@@ -12,8 +12,16 @@
     "language": "اللغة",
     "english": "English",
     "arabic": "العربية",
+    "theme": "المظهر",
     "darkMode": "داكن",
-    "lightMode": "فاتح"
+    "lightMode": "فاتح",
+    "systemMode": "النظام",
+    "menu": "القائمة",
+    "logout": "تسجيل الخروج",
+    "unexpectedError": "حدث خطأ غير متوقع",
+    "networkError": "تعذر الاتصال. تحقق من اتصال الإنترنت وحاول مرة أخرى.",
+    "timeoutError": "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
+    "serverError": "حدث خطأ من جانبنا. يرجى المحاولة لاحقًا."
   },
   "auth": {
     "login": {
@@ -22,7 +30,7 @@
       "emailPlaceholder": "admin@company.com",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "أدخل كلمة المرور",
-      "rememberMe": "إبقائي متصلاً",
+      "rememberMe": "تذكرني ",
       "forgotPassword": "نسيت كلمة المرور؟",
       "submit": "تسجيل الدخول",
       "noAccount": "ليس لديك حساب؟",
@@ -30,15 +38,26 @@
     },
     "signup": {
       "title": "إنشاء حساب",
-      "fullNameLabel": "الاسم الكامل",
-      "fullNamePlaceholder": "اسمك الكامل",
+      "firstNameLabel": "الاسم الأول",
+      "firstNamePlaceholder": "اسمك الأول",
+      "lastNameLabel": "اسم العائلة",
+      "lastNamePlaceholder": "اسم عائلتك",
       "emailLabel": "البريد الإلكتروني",
       "emailPlaceholder": "name@company.com",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "أنشئ كلمة مرور",
       "confirmPasswordLabel": "تأكيد كلمة المرور",
       "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
-      "acceptTerms": "أوافق على الشروط والأحكام",
+      "phoneNumberLabel": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "extraPhoneLabel": "رقم هاتف إضافي",
+      "extraPhonePlaceholder": "أدخل رقم هاتف إضافي",
+      "nationalIdLabel": "الرقم القومي",
+      "nationalIdPlaceholder": "أدخل الرقم القومي",
+      "dateOfBirthLabel": "تاريخ الميلاد",
+      "dateOfBirthPlaceholder": "اختر تاريخ ميلادك",
+      "fullAddressLabel": "العنوان بالكامل",
+      "fullAddressPlaceholder": "أدخل عنوانك بالكامل",
       "submit": "إنشاء حساب",
       "hasAccount": "لديك حساب بالفعل؟",
       "loginLink": "تسجيل الدخول"
@@ -49,7 +68,9 @@
       "emailLabel": "البريد الإلكتروني",
       "emailPlaceholder": "name@company.com",
       "submit": "إرسال رابط إعادة التعيين",
-      "backToLogin": "العودة لتسجيل الدخول"
+      "backToLogin": "العودة لتسجيل الدخول",
+      "successTitle": "تحقق من بريدك الإلكتروني",
+      "successDescription": "إذا كان هناك حساب مرتبط بهذا البريد، فقد أرسلنا رابطًا لإعادة تعيين كلمة المرور."
     },
     "resetPassword": {
       "title": "إعادة تعيين كلمة المرور",
@@ -62,6 +83,37 @@
       "missingParamsTitle": "رابط إعادة التعيين غير صالح",
       "missingParamsDescription": "هذا الرابط يفتقد معلومات مطلوبة. اطلب إعادة تعيين جديدة ثم حاول مرة أخرى.",
       "requestNewLink": "طلب رابط جديد",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "successTitle": "تم تحديث كلمة المرور",
+      "successDescription": "تم تحديث كلمة المرور. يمكنك تسجيل الدخول بكلمة المرور الجديدة."
+    },
+    "verifyAccount": {
+      "badge": "التحقق من الحساب",
+      "title": "أكمل التحقق من حسابك",
+      "subtitle": "بعض الإجراءات تحتاج تأكيد البريد والهاتف. يمكنك متابعة استخدام التطبيق والعودة إلى هنا في أي وقت.",
+      "emailLabel": "البريد الإلكتروني",
+      "phoneLabel": "الهاتف",
+      "confirmed": "مؤكد",
+      "pending": "قيد الانتظار",
+      "resendEmail": "إعادة إرسال بريد التأكيد",
+      "sendWhatsApp": "إرسال تحقق واتساب",
+      "autoCheckHint": "يتم تحديث الحالة تلقائيًا كل 20 ثانية",
+      "backToHome": "العودة للرئيسية",
+      "progress": "{{done}} من {{total}} مكتمل"
+    },
+    "companyDisabled": "هذه الشركة معطلة ولا يمكن اختيارها.",
+    "noCompany": "لا توجد شركة متاحة.",
+    "confirmEmail": {
+      "title": "تأكيد البريد الإلكتروني",
+      "idle": "استخدم الزر أدناه لتأكيد عنوان بريدك الإلكتروني.",
+      "confirm": "تأكيد البريد",
+      "pending": "جارٍ تأكيد بريدك الإلكتروني…",
+      "success": "تم تأكيد بريدك الإلكتروني.",
+      "failed": "تعذر تأكيد بريدك الإلكتروني.",
+      "error": "فشل تأكيد البريد الإلكتروني",
+      "continue": "متابعة",
+      "missingParamsTitle": "رابط التأكيد غير صالح",
+      "missingParamsDescription": "هذا الرابط يفتقد معلومات مطلوبة. اطلب بريد تأكيد جديد ثم حاول مرة أخرى.",
       "backToLogin": "العودة لتسجيل الدخول"
     },
     "showcase": {
@@ -91,7 +143,8 @@
   "notFound": {
     "title": "الصفحة غير موجودة",
     "description": "الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.",
-    "goHome": "العودة للرئيسية"
+    "goHome": "العودة للرئيسية",
+    "goLogin": "الذهاب لتسجيل الدخول"
   },
 
   "upload": {
@@ -103,6 +156,155 @@
     "required": "هذا الحقل مطلوب",
     "email": "أدخل بريدًا إلكترونيًا صالحًا",
     "passwordMin": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
-    "passwordMatch": "كلمتا المرور غير متطابقتين"
+    "passwordMatch": "كلمتا المرور غير متطابقتين",
+    "passwordComplexity": "يجب أن تتضمن كلمة المرور حرفًا كبيرًا وصغيرًا ورقمًا ورمزًا",
+    "maxLength50": "يجب ألا يزيد عن 50 حرفًا",
+    "phoneInvalid": "أدخل رقم هاتف مصري صالح (مثال: +2010XXXXXXXX)",
+    "nationalIdLength": "يجب أن يتكون الرقم القومي من 14 رقمًا بالضبط",
+    "dateOfBirthPast": "يجب أن يكون تاريخ الميلاد في الماضي",
+    "imageType": "ارفع صورة بصيغة JPG أو PNG",
+    "imageMaxSize": "يجب ألا يتجاوز حجم الصورة 5 ميغابايت"
+  },
+
+  "user": {
+    "profile": {
+      "navLabel": "الملف الشخصي",
+      "title": "الملف الشخصي",
+      "loadError": "تعذر تحميل ملفك الشخصي. يرجى المحاولة مرة أخرى.",
+      "imageSection": "صورة الملف الشخصي",
+      "accountSection": "بيانات الحساب",
+      "personalSection": "المعلومات الشخصية",
+      "formDescription": "حدّث بياناتك الشخصية. يتم حفظ التغييرات في حسابك.",
+      "phoneSection": "رقم الهاتف",
+      "phoneHint": "أدخل رقمًا جديدًا لتفعيل التغيير. ستحتاج إلى التحقق منه قبل اكتمال التحديث.",
+      "imageAlt": "صورة الملف الشخصي",
+      "noImage": "لا توجد صورة",
+      "uploadImage": "رفع صورة",
+      "changePhoto": "تغيير الصورة",
+      "deleteImage": "حذف الصورة",
+      "imageRequiresCompany": "يجب أن يكون هناك شركة على حسابك قبل رفع صورة الملف الشخصي.",
+      "imageUploadSuccess": "تم تحديث صورة الملف الشخصي",
+      "imageDeleteSuccess": "تم حذف صورة الملف الشخصي",
+      "idLabel": "معرف المستخدم",
+      "emailLabel": "البريد الإلكتروني",
+      "userNameLabel": "اسم المستخدم",
+      "userTypeLabel": "نوع المستخدم",
+      "companyIdLabel": "معرف الشركة",
+      "noCompany": "لا يوجد",
+      "isManagerLabel": "مدير",
+      "isActiveLabel": "نشط",
+      "activeStatus": "نشط",
+      "inactiveStatus": "غير نشط",
+      "yes": "نعم",
+      "no": "لا",
+      "firstNameLabel": "الاسم الأول",
+      "firstNamePlaceholder": "اسمك الأول",
+      "lastNameLabel": "اسم العائلة",
+      "lastNamePlaceholder": "اسم عائلتك",
+      "extraPhoneLabel": "رقم هاتف إضافي",
+      "extraPhonePlaceholder": "أدخل رقم هاتف إضافي",
+      "nationalIdLabel": "الرقم القومي",
+      "nationalIdPlaceholder": "أدخل الرقم القومي",
+      "dateOfBirthLabel": "تاريخ الميلاد",
+      "dateOfBirthPlaceholder": "اختر تاريخ ميلادك",
+      "fullAddressLabel": "العنوان بالكامل",
+      "fullAddressPlaceholder": "أدخل عنوانك بالكامل",
+      "phoneNumberLabel": "رقم الهاتف",
+      "phoneNumberPlaceholder": "أدخل رقم هاتفك",
+      "save": "حفظ التغييرات",
+      "saveSuccess": "تم تحديث الملف الشخصي",
+      "changePhone": "تغيير رقم الهاتف",
+      "changePhoneSuccess": "تم تحديث رقم الهاتف"
+    }
+  },
+
+  "company": {
+    "page": {
+      "title": "الشركة",
+      "loadError": "تعذر تحميل معلومات الشركة. يرجى المحاولة مرة أخرى."
+    },
+    "switcher": {
+      "label": "الشركة الحالية",
+      "details": " تفاصيل الشركة المختارة",
+      "settings": "إعدادات الشركة",
+      "active": "الشركة النشطة",
+      "disabled": "معطلة",
+      "manager": "مدير"
+    },
+    "create": {
+      "title": "إنشاء شركة",
+      "subtitle": "أضف شركة للبدء في استخدام مساحة العمل.",
+      "navLabel": "إنشاء شركة",
+      "submit": "إنشاء شركة",
+      "success": "تم إنشاء الشركة بنجاح"
+    },
+    "onboarding": {
+      "title": "إنشاء شركة أو الانضمام إليها",
+      "subtitle": "أنت على وشك البدء. اختر كيف تريد المتابعة.",
+      "createTitle": "إنشاء شركة",
+      "createDescription": "أنشئ شركتك وابدأ في إدارة مساحة العمل.",
+      "createAction": "إنشاء شركة",
+      "joinTitle": "الانضمام إلى شركة",
+      "joinDescription": "انضم إلى شركة موجودة عبر دعوة تُرسل إلى البريد الإلكتروني لحسابك.",
+      "joinAction": "الانضمام إلى شركة",
+      "backToDashboard": "العودة إلى لوحة التحكم"
+    },
+    "join": {
+      "title": "الانضمام إلى شركة",
+      "subtitle": "انضم إلى شركة موجودة",
+      "workspace": "مساحة عمل CCG",
+      "headline": "ابنِ شيئًا رائعًا.",
+      "intro": "مساحة عمل الشركة هي المكان الذي تجتمع فيه الفرق والمشاريع والأفكار.",
+      "emailLabel": "البريد الإلكتروني لحسابك",
+      "emailUnavailable": "البريد الإلكتروني غير متاح",
+      "copy": "نسخ البريد",
+      "copied": "تم النسخ",
+      "copyAria": "نسخ عنوان البريد الإلكتروني {{email}}",
+      "explanation": "للانضمام إلى شركة، يجب أن يرسل مدير الشركة دعوة إلى عنوان البريد الإلكتروني هذا.",
+      "shareHint": "شارك هذا البريد الإلكتروني مع مدير الشركة حتى يتمكن من دعوتك.",
+      "nextTitle": "ماذا يحدث بعد ذلك؟",
+      "stepShare": "أعطِ هذا البريد الإلكتروني لمدير الشركة.",
+      "stepInvite": "يرسل المدير دعوة إلى هذا العنوان.",
+      "stepJoin": "بعد استلام الدعوة، يمكنك الانضمام إلى الشركة من حسابك.",
+      "footer": "© {{year}} Construct Code Group",
+      "back": "رجوع"
+    },
+    "edit": {
+      "section": "معلومات الشركة",
+      "description": "حدّث بيانات الشركة المستخدمة في مساحة العمل.",
+      "save": "حفظ التغييرات",
+      "success": "تم تحديث الشركة بنجاح"
+    },
+    "delete": {
+      "section": "حذف الشركة",
+      "action": "حذف الشركة",
+      "confirmTitle": "هل تريد حذف هذه الشركة؟",
+      "confirmMessage": "سيتم حذف الشركة الحالية نهائيًا. لا يمكن التراجع عن هذا الإجراء بسهولة.",
+      "success": "تم حذف الشركة بنجاح"
+    },
+    "details": {
+      "section": "تفاصيل الشركة"
+    },
+    "logo": {
+      "section": "شعار الشركة",
+      "alt": "شعار الشركة",
+      "empty": "لا يوجد شعار",
+      "upload": "رفع الشعار",
+      "change": "تغيير الشعار",
+      "delete": "حذف الشعار",
+      "uploadSuccess": "تم رفع شعار الشركة",
+      "deleteSuccess": "تم حذف شعار الشركة"
+    },
+    "fields": {
+      "id": "معرف الشركة",
+      "name": "اسم الشركة",
+      "namePlaceholder": "أدخل اسم الشركة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "أدخل وصفًا",
+      "address": "العنوان",
+      "addressPlaceholder": "أدخل عنوان الشركة",
+      "timeZone": "المنطقة الزمنية",
+      "timeZonePlaceholder": "اختر منطقة زمنية"
+    }
   }
 }
