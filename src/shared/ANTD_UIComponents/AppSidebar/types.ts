@@ -58,10 +58,15 @@ export interface AppSidebarProps {
    */
   collapsedWidth?: string;
   /**
-   * Viewport width (px) below which the sidebar auto-collapses on load and
-   * when resizing. Set to `false` to disable. Defaults to `1024` (tablet).
+   * Viewport width (px) below which the sidebar starts collapsed.
+   * Does not permanently force collapse after the user expands it.
+   * Set to `false` to disable. Defaults to `1024` (tablet).
    */
   autoCollapseBelow?: number | false;
+  /** Hide the edge collapse control (e.g. mobile drawer). */
+  hideCollapseControl?: boolean;
+  /** Called after a navigable menu item is selected. */
+  onNavigate?: () => void;
 }
 
 /**
@@ -74,4 +79,5 @@ export interface SidebarContextValue {
   isRtl: boolean;
   menuConfig: MenuItemConfig[];
   permissions: string[];
+  onNavigate?: () => void;
 }

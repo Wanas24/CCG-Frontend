@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { AppLocaleSwitcher } from "@/i18n";
 import CompanySwitcher from "@/modules/company/components/CompanySwitcher";
 import AppThemeToggle from "@/shared/components/AppThemeToggle";
-import NavbarAiSubscriptionsAction from "./NavbarAiSubscriptionsAction";
 import NavbarLogoutAction from "./NavbarLogoutAction";
 import NavbarProfileAction from "./NavbarProfileAction";
 
@@ -18,7 +17,6 @@ const MobileNavbarMenu = ({ logout, isPending, onNavigate }: Props) => {
   return (
     <nav className="flex flex-col items-start  gap-3" aria-label={t("common.menu")}>
       <CompanySwitcher />
-      <NavbarAiSubscriptionsAction showLabel onNavigate={onNavigate} />
       <NavbarProfileAction showLabel onNavigate={onNavigate} />
       <AppLocaleSwitcher showLabel />
       <AppThemeToggle showLabel />

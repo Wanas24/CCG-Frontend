@@ -1,14 +1,22 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
-import { Menu } from "lucide-react";
+import { Menu, PanelLeft } from "lucide-react";
 import { useLocale } from "@/i18n/useLocale";
 import { useLogoutManager } from "@/modules/authentication/hooks/useLogoutManager";
 import { AppButton, AppDrawer } from "@/shared/ANTD_UIComponents";
 import DesktopNavbarActions from "./DesktopNavbarActions";
 import MobileNavbarMenu from "./MobileNavbarMenu";
 
-const AppNavbar = () => {
+type Props = {
+  showSidebarTrigger?: boolean;
+  onOpenSidebar?: () => void;
+};
+
+const AppNavbar = ({
+  showSidebarTrigger = false,
+  onOpenSidebar,
+}: Props) => {
   const { t } = useTranslation();
   const { isRtl } = useLocale();
   const location = useLocation();
@@ -32,12 +40,25 @@ const AppNavbar = () => {
   }, []);
 
   return (
-    <header className="flex items-center justify-between gap-3 border-b border-(--Grey300) px-6 py-4">
-      <h1 className="min-w-0 truncate text-lg font-semibold text-(--app-text)">
-        {t("common.appName")}
-      </h1>
+    <header className="flex shrink-0 items-center justify-between gap-3 border-b border-(--Grey300) px-4 py-4 sm:px-6">
+      <div className="flex min-w-0 items-center gap-2">
+        {showSidebarTrigger && (
+          <AppButton
+            variant="default"
+            icon={<PanelLeft size={18} />}
+            aria-label={t("common.menu")}
+            onClick={onOpenSidebar}
+          />
+        )}
+        <h1 className="m-0 min-w-0 truncate text-lg font-semibold text-(--app-text)">
+          {/* {t("common.appName")} */}
+        </h1>
+      </div>
 
-      <nav className="hidden md:flex items-center gap-1" aria-label={t("common.menu")}>
+      <nav
+        className="hidden items-center gap-1 md:flex"
+        aria-label={t("common.menu")}
+      >
         <DesktopNavbarActions logout={logout} isPending={isPending} />
       </nav>
 
