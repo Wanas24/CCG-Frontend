@@ -1,0 +1,204 @@
+.root {
+  position: relative;
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--app-bg);
+}
+
+.wash {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at 50% 38%,
+      var(--Primary100) 0%,
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse at 72% 78%,
+      color-mix(in srgb, var(--Secondary300) 35%, transparent) 0%,
+      transparent 48%
+    );
+}
+
+.glow {
+  pointer-events: none;
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--Primary300) 12%, transparent);
+  filter: blur(48px);
+  animation: glow 3.2s ease-in-out infinite;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  animation: rise 0.55s ease-out both;
+}
+
+.brand {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--Primary400) 70%, transparent);
+}
+
+.spinner {
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.ringTrack {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--Primary100) 80%, transparent);
+}
+
+.ringCore {
+  position: absolute;
+  inset: 5px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--Primary100) 35%, transparent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.ringOuter {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  border-top-color: var(--Primary400);
+  border-right-color: color-mix(in srgb, var(--Primary300) 70%, transparent);
+  animation: spin 1.15s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+.ringInner {
+  position: absolute;
+  inset: 7px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  border-bottom-color: color-mix(in srgb, var(--Primary300) 55%, transparent);
+  border-left-color: color-mix(in srgb, var(--Primary400) 40%, transparent);
+  animation: spin 1.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite reverse;
+}
+
+.ringDot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background: var(--Primary400);
+  transform: translate(-50%, -50%);
+  animation: fade 2.4s ease-in-out infinite;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin: 0;
+  font-size: 0.875rem;
+  letter-spacing: 0.12em;
+  color: var(--Grey600);
+}
+
+.dots {
+  display: inline-flex;
+  width: 1.25rem;
+  justify-content: flex-start;
+}
+
+.dot {
+  animation: dot 1.2s ease-in-out infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+}
+
+@keyframes dot {
+  0%,
+  20% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}

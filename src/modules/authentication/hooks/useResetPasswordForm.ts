@@ -1,36 +1,62 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  resetPasswordSchema,
-  type ResetPasswordFormValues,
-} from "../schemas";
-import type { ResetPasswordParams } from "../types/auth";
+  applyApiFieldErrors,
+  getSimpleResultFromAxiosError,
+} from "@/lib/api/applyApiFieldErrors";
+import { resetPasswordSchema, type ResetPasswordFormValues } from "../schemas";
+import type { TResetPasswordParams } from "../types";
+import { useResetPassword } from "../api/hooks/useResetPassword";
 
 export const useResetPasswordForm = ({
-  userId,
+  email,
   token,
-}: ResetPasswordParams) => {
+}: TResetPasswordParams) => {
   const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ResetPasswordFormValues>({
+    mutate: resetPasswordMutate,
+    isPending,
+    isSuccess,
+    data,
+    reset,
+  } = useResetPassword();
+
+  const { control, handleSubmit, setError } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
+    mode: "all",
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
   });
 
-  const onSubmit = (_values: ResetPasswordFormValues) => {
-    void userId;
-    void token;
+  const onSubmit = (values: ResetPasswordFormValues) => {
+    reset();
+    resetPasswordMutate(
+      {
+        email,
+        token,
+        newPassword: values.password,
+      },
+      {
+        onSuccess: (response) => {
+          if (!response.isSuccess) {
+            applyApiFieldErrors(setError, response.data);
+          }
+        },
+        onError: (error) => {
+          const result = getSimpleResultFromAxiosError(error);
+          applyApiFieldErrors(setError, result?.data);
+        },
+      },
+    );
   };
 
   return {
     control,
     handleSubmit,
-    errors,
     onSubmit,
+    isPending,
+    isSuccess: isSuccess && Boolean(data?.isSuccess),
+    successMessage: data?.message,
   };
 };

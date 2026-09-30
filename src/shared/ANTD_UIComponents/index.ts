@@ -7,11 +7,14 @@ export {
 } from "./AppButton/AppButton";
 export { AppInput, type AppInputProps } from "./AppInput";
 export {
+  AppPhoneInput,
+  type AppPhoneInputProps,
+} from "./AppPhoneInput";
+export {
   AppDropDownSelect,
   type AppDropDownSelectProps,
 } from "./AppDropDownSelect";
-export { AppTextArea, type AppTextAreaProps } from "./AppTextArea";
-export {
+export { AppTextArea, type AppTextAreaProps } from "./AppTextArea";export {
   AppDatePicker,
   type AppDatePickerProps,
 } from "./DateAndTimePickers/AppDatePicker";
