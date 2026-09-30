@@ -1,0 +1,119 @@
+const auth = {
+  "login": {
+    "title": "Welcome back",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "admin@company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Keep me signed in",
+    "forgotPassword": "Forgot password?",
+    "submit": "Login",
+    "noAccount": "Don't have an account?",
+    "signupLink": "Create account"
+  },
+  "signup": {
+    "title": "Create account",
+    "firstNameLabel": "First name",
+    "firstNamePlaceholder": "Your first name",
+    "lastNameLabel": "Last name",
+    "lastNamePlaceholder": "Your last name",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name@company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Create a password",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "phoneNumberLabel": "Phone number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "extraPhoneLabel": "Extra phone",
+    "extraPhonePlaceholder": "Enter an additional phone number",
+    "nationalIdLabel": "National ID",
+    "nationalIdPlaceholder": "Enter your national ID",
+    "dateOfBirthLabel": "Date of birth",
+    "dateOfBirthPlaceholder": "Select your date of birth",
+    "fullAddressLabel": "Full address",
+    "fullAddressPlaceholder": "Enter your full address",
+    "submit": "Create account",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Sign in"
+  },
+  "forgotPassword": {
+    "title": "Forgot password",
+    "subtitle": "Enter your email and we'll send you a reset link",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name@company.com",
+    "submit": "Send reset link",
+    "backToLogin": "Back to sign in",
+    "successTitle": "Check your email",
+    "successDescription": "If an account exists for that email, we sent a password reset link."
+  },
+  "resetPassword": {
+    "title": "Reset password",
+    "subtitle": "Choose a new password for your account",
+    "passwordLabel": "New password",
+    "passwordPlaceholder": "Enter a new password",
+    "confirmPasswordLabel": "Confirm new password",
+    "confirmPasswordPlaceholder": "Repeat your new password",
+    "submit": "Update password",
+    "missingParamsTitle": "Invalid reset link",
+    "missingParamsDescription": "This reset link is missing required information. Request a new password reset and try again.",
+    "requestNewLink": "Request a new link",
+    "backToLogin": "Back to sign in",
+    "successTitle": "Password updated",
+    "successDescription": "Your password has been updated. You can sign in with your new password."
+  },
+  "verifyAccount": {
+    "badge": "Account verification",
+    "title": "Finish verifying your account",
+    "subtitle": "Some actions need a confirmed email and phone. You can keep using the app and return here anytime.",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "resendEmail": "Resend confirmation email",
+    "sendWhatsApp": "Send WhatsApp verification",
+    "autoCheckHint": "Status updates automatically every 20 seconds",
+    "backToHome": "Back to home",
+    "progress": "{{done}} of {{total}} complete"
+  },
+  "companyDisabled": "This company is disabled and cannot be selected.",
+  "noCompany": "No company is available.",
+  "confirmEmail": {
+    "title": "Email confirmation",
+    "idle": "Use the button below to confirm your email address.",
+    "confirm": "Confirm email",
+    "pending": "Confirming your email…",
+    "success": "Your email has been confirmed.",
+    "failed": "We could not confirm your email.",
+    "error": "Email confirmation failed",
+    "continue": "Continue",
+    "missingParamsTitle": "Invalid confirmation link",
+    "missingParamsDescription": "This confirmation link is missing required information. Request a new confirmation email and try again.",
+    "backToLogin": "Back to sign in"
+  },
+  "showcase": {
+    "badge": "Construction Management ERP",
+    "eyebrow": "Construction Management ERP",
+    "headline": "Manage every construction project from one platform.",
+    "description": "Construct Code Group provides a comprehensive construction management ERP that centralizes projects, procurement, inventory, workforce, and financial operations in one secure platform—helping teams deliver projects on time and within budget.",
+    "contact": {
+      "info": {
+        "title": "Info",
+        "subtitle": "General inquiries and support",
+        "email": "Info@construct-code.com"
+      },
+      "sales": {
+        "title": "Sales",
+        "subtitle": "Product demos and pricing",
+        "email": "Sales@construct-code.com"
+      },
+      "hr": {
+        "title": "HR",
+        "subtitle": "Careers and recruitment",
+        "email": "Hr@construct-code.com"
+      }
+    }
+  }
+} as const;
+
+export default auth;

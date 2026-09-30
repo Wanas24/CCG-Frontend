@@ -17,7 +17,9 @@ type CompanyMarkProps = {
 };
 
 const CompanyMark = ({ logo, name }: CompanyMarkProps) => {
-  if (logo) {
+  const [failedLogo, setFailedLogo] = useState<string | null>(null);
+  const showImage = Boolean(logo) && logo !== failedLogo;
+  if (showImage && logo) {
     return (
       <img
         src={logo}
@@ -26,6 +28,7 @@ const CompanyMark = ({ logo, name }: CompanyMarkProps) => {
           DesignTokens.media.avatarSm,
           "shrink-0 rounded-full object-cover border border-(--Grey300)",
         )}
+        onError={() => setFailedLogo(logo)}
       />
     );
   }
@@ -190,22 +193,17 @@ const CompanySwitcher = () => {
             DesignTokens.layout.switcherMenu,
           )}
         >
-          {companies.map((company) => {
-            const isSelected =
-              company.isCurrent || company.id === currentCompanyId;
-
-            return (
-              <CompanyRow
-                key={company.id}
-                company={company}
-                currentCompanyId={currentCompanyId}
-                logo={isSelected ? currentCompanyLogo : null}
-                disabled={isSwitching}
-                onSelect={onSelectCompany}
-                onClose={closeMenu}
-              />
-            );
-          })}
+          {companies.map((company) => (
+            <CompanyRow
+              key={company.id}
+              company={company}
+              currentCompanyId={currentCompanyId}
+              logo={company.profileUrl}
+              disabled={isSwitching}
+              onSelect={onSelectCompany}
+              onClose={closeMenu}
+            />
+          ))}
 
           <AppDivider className="mx-2!" />
 
@@ -235,10 +233,7 @@ const CompanySwitcher = () => {
         className="h-auto! min-w-0 py-1!"
       >
         <span className={DesignTokens.layout.switcherTrigger}>
-          <CompanyMark
-            logo={currentCompanyLogo}
-            name={currentName}
-          />
+          <CompanyMark logo={currentCompanyLogo} name={currentName} />
           <span className="flex min-w-0 flex-1 flex-col items-start">
             <span
               className={clsx(

@@ -1,94 +1,113 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "@/lib/queryClient";
 import { hint } from "@/lib/feedback/hint";
-import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/availableCompaniesQueryKey";
+import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
+import { authService } from "@/modules/authentication/api/services/authentication.service";
+import { establishSession } from "@/modules/authentication/hooks/establishSession";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
-import { userMeQueryKey } from "@/modules/user/api/hooks/useGetMe";
-import { refreshPermissions } from "@/modules/user/api/hooks/permissionsQueryKey";
-import { userService } from "@/modules/user/api/services/user.service";
-import { mapUserInfoToSessionUser } from "@/modules/user/utils/mapUserInfoToSessionUser";
-import { connectHub, disconnectHub } from "@/services/hub";
+import type {
+  TAuthPayload,
+  TLoginResponse,
+  TSimpleResult,
+} from "@/modules/authentication/types";
 import { useDeleteCompany } from "../api/hooks/useDeleteCompany";
-import {
-  companyLogoQueryKey,
-  currentCompanyQueryKey,
-} from "../api/hooks/companyQueryKeys";
+import { refreshAfterCompanySwitch } from "../utils/refreshAfterCompanySwitch";
+import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 
-const reconcileSessionAfterDelete = async (deletedCompanyId: number) => {
-  const currentUser = useAuthStore.getState().user;
-  let nextCompanyId: number | null = null;
+type DeleteCompanyResult =
+  | { ok: true }
+  | { ok: false; reason: "password"; response: TSimpleResult }
+  | { ok: false; reason: "delete" | "session" | "reauth" };
 
-  try {
-    const me = await userService.getMe();
-
-    if (me.isSuccess && me.data && currentUser) {
-      const profileCompanyId = me.data.companyId;
-
-      if (
-        profileCompanyId !== null &&
-        profileCompanyId !== deletedCompanyId
-      ) {
-        nextCompanyId = profileCompanyId;
-      }
-
-      useAuthStore.getState().setUser(
-        mapUserInfoToSessionUser(
-          { ...me.data, companyId: nextCompanyId },
-          currentUser,
-        ),
-      );
-    } else if (currentUser) {
-      useAuthStore.getState().setUser({
-        ...currentUser,
-        companyId: null,
-      });
-    }
-  } catch {
-    if (currentUser) {
-      useAuthStore.getState().setUser({
-        ...currentUser,
-        companyId: null,
-      });
-    }
+const getAuthPayload = (
+  response: TLoginResponse,
+): TAuthPayload | null => {
+  if (
+    !response.isSuccess ||
+    !response.data?.token ||
+    !response.data.isAuthenticated
+  ) {
+    return null;
   }
 
-  queryClient.removeQueries({ queryKey: currentCompanyQueryKey });
-  queryClient.removeQueries({ queryKey: companyLogoQueryKey });
+  return response.data;
+};
 
-  await Promise.all([
-    queryClient.invalidateQueries({ queryKey: availableCompaniesQueryKey }),
-    queryClient.invalidateQueries({ queryKey: userMeQueryKey }),
-    refreshPermissions(),
-  ]);
-
-  disconnectHub();
-  connectHub();
+const forceLogoutToLogin = (
+  navigate: ReturnType<typeof useNavigate>,
+) => {
+  useAuthStore.getState().logout();
+  queryClient.clear();
+  navigate(AUTH_ROUTES.login, { replace: true });
 };
 
 export const useDeleteCompanyManager = () => {
   const { t } = useTranslation();
-  const { mutateAsync: deleteCompanyMutate, isPending } = useDeleteCompany();
+  const navigate = useNavigate();
+  const { mutateAsync: deleteCompanyMutate } = useDeleteCompany();
+  const [isPending, setIsPending] = useState(false);
   const companyId = useAuthStore((state) => state.user?.companyId ?? null);
+  const email = useAuthStore((state) => state.user?.email ?? null);
 
-  const deleteCompany = async () => {
+  const deleteCompany = async (
+    password: string,
+  ): Promise<DeleteCompanyResult> => {
     if (companyId === null) {
       hint("auth.noCompany");
-      return false;
+      return { ok: false, reason: "session" };
     }
 
-    try {
-      const response = await deleteCompanyMutate();
+    if (!email) {
+      return { ok: false, reason: "session" };
+    }
 
-      if (!response.isSuccess) {
-        return false;
+    if (isPending) {
+      return { ok: false, reason: "session" };
+    }
+
+    setIsPending(true);
+
+    try {
+      const verifyResponse = await authService.login({
+        email,
+        password,
+        rememberMe: false,
+      });
+
+      if (!getAuthPayload(verifyResponse)) {
+        return { ok: false, reason: "password", response: verifyResponse };
       }
 
-      toast.success(response.message || t("company.delete.success"));
-      await reconcileSessionAfterDelete(companyId);
-      return true;
+      const deleteResponse = await deleteCompanyMutate();
+
+      if (!deleteResponse.isSuccess) {
+        return { ok: false, reason: "delete" };
+      }
+
+      const reauthResponse = await authService.login({
+        email,
+        password,
+        rememberMe: false,
+      });
+      const authPayload = getAuthPayload(reauthResponse);
+
+      if (!authPayload) {
+        forceLogoutToLogin(navigate);
+        return { ok: false, reason: "reauth" };
+      }
+
+      establishSession(authPayload);
+      await refreshAfterCompanySwitch();
+      navigate(APP_ROUTES.home);
+      toast.success(deleteResponse.message || t("company.delete.success"));
+      return { ok: true };
     } catch {
-      return false;
+      return { ok: false, reason: "session" };
+    } finally {
+      setIsPending(false);
     }
   };
 

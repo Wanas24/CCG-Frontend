@@ -11,11 +11,10 @@ import { buildMenuItems, buildMenuPaths, getSelectedKey } from "./utils";
  * current pathname changes — not on every parent render.
  */
 const SidebarMenu = memo(function SidebarMenu() {
-  const { collapsed, menuConfig, permissions } = useSidebar();
+  const { collapsed, menuConfig, permissions, onNavigate } = useSidebar();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Recompute only when config or permissions change — not on every render.
   const menuItems = useMemo(
     () => buildMenuItems(menuConfig, permissions),
     [menuConfig, permissions],
@@ -31,13 +30,16 @@ const SidebarMenu = memo(function SidebarMenu() {
   const handleMenuClick = useCallback(
     ({ key }: { key: string }) => {
       const path = menuPaths[key];
-      if (path) navigate(path);
+      if (path) {
+        navigate(path);
+        onNavigate?.();
+      }
     },
-    [menuPaths, navigate],
+    [menuPaths, navigate, onNavigate],
   );
 
   return (
-    <div className={`flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll`}>
+    <div className="sidebar-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
       <Menu
         overflowedIndicator={null}
         selectedKeys={selectedKeys}
