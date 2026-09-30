@@ -40,7 +40,7 @@ const AiChatHeader = ({
         </p>
       </div>
 
-      <div className="flex min-[901px]:hidden">
+      <div className="flex min-[651px]:hidden">
         <AppButton
           variant="default"
           aria-label={t("ai.chat.openUsage")}

@@ -13,7 +13,10 @@ import AiUsageCard from "./AiUsageCard";
 
 type Props = {
   className?: string;
+  layout?: UsageLayout;
 };
+
+type UsageLayout = "panel" | "footer";
 
 type QuotaMetricProps = {
   title: string;
@@ -27,6 +30,7 @@ type QuotaMetricProps = {
   unlimitedLabel: string;
   exhausted: boolean;
   primaryColor: string;
+  layout: UsageLayout;
 };
 
 const QuotaMetric = ({
@@ -41,9 +45,49 @@ const QuotaMetric = ({
   unlimitedLabel,
   exhausted,
   primaryColor,
+  layout,
 }: QuotaMetricProps) => {
   const progress = unlimited ? null : clampAiUsageProgress(used, limit);
   const hasRemaining = remaining !== undefined && remaining !== null;
+
+  if (layout === "footer") {
+    return (
+      <div className="flex min-w-0 flex-col gap-1 rounded-lg border border-(--Grey300) bg-(--app-surface) p-2">
+        <p className="m-0 truncate text-[0.7rem] font-medium text-(--Grey600)">
+          {title}
+        </p>
+        <p
+          className="m-0 truncate text-sm font-semibold text-(--app-text)"
+          dir="ltr"
+        >
+          {formatAiUsageNumber(used, locale)}
+          {!unlimited && (
+            <span className="font-normal text-(--Grey600)">
+              {" "}
+              / {formatAiUsageNumber(limit, locale)}
+            </span>
+          )}
+        </p>
+        {unlimited ? (
+          <p className="m-0 truncate text-[0.7rem] text-(--Grey600)">
+            {unlimitedLabel}
+          </p>
+        ) : (
+          progress !== null && (
+            <Progress
+              percent={progress}
+              showInfo={false}
+              size="small"
+              status="normal"
+              strokeColor={exhausted ? undefined : primaryColor}
+              aria-label={title}
+              className="m-0! leading-none [&_.ant-progress-outer]:pe-0!"
+            />
+          )
+        )}
+      </div>
+    );
+  }
 
   return (
     <AiUsageCard title={title}>
@@ -98,7 +142,7 @@ const QuotaMetric = ({
 const isExhausted = (remaining?: number | null) =>
   remaining !== undefined && remaining !== null && remaining <= 0;
 
-const AiUsagePanel = ({ className }: Props) => {
+const AiUsagePanel = ({ className, layout = "panel" }: Props) => {
   const { t } = useTranslation();
   const { locale } = useLocale();
   const { token } = theme.useToken();
@@ -106,23 +150,67 @@ const AiUsagePanel = ({ className }: Props) => {
 
   const usage = data?.isSuccess ? data.data : undefined;
   const period: TAiQuotaSnapshot | null | undefined = usage?.currentPeriod;
+  const isFooter = layout === "footer";
 
   return (
     <aside
       className={clsx(
-        "flex w-68 shrink-0 flex-col gap-3 overflow-y-auto border-s border-(--Grey300) bg-(--Grey100) p-4",
+        "flex flex-col bg-(--Grey100)",
+        isFooter
+          ? "shrink-0 gap-1.5 px-3 pb-3 pt-1"
+          : "min-h-0 w-full flex-1 gap-3 overflow-y-auto p-3",
         className,
       )}
     >
-      <h3 className="m-0 text-base font-semibold text-(--app-text)">
+      <h3
+        className={clsx(
+          "m-0 font-semibold text-(--app-text)",
+          isFooter ? "text-xs" : "text-base",
+        )}
+      >
         {t("ai.usage.title")}
       </h3>
 
       {isPending && (
-        <div className="flex flex-col gap-3" aria-busy="true" aria-live="polite">
-          <p className="m-0 text-xs text-(--Grey600)">{t("ai.usage.loading")}</p>
-          <AppSkeleton active paragraph={{ rows: 3 }} title={{ width: "40%" }} />
-          <AppSkeleton active paragraph={{ rows: 3 }} title={{ width: "45%" }} />
+        <div
+          className={clsx(
+            isFooter ? "grid grid-cols-2 gap-2" : "flex flex-col gap-3",
+          )}
+          aria-busy="true"
+          aria-live="polite"
+        >
+          {isFooter ? (
+            <>
+              <AppSkeleton
+                active
+                paragraph={{ rows: 1 }}
+                title={{ width: "60%" }}
+                className="rounded-lg border border-(--Grey300) bg-(--app-surface) p-2"
+              />
+              <AppSkeleton
+                active
+                paragraph={{ rows: 1 }}
+                title={{ width: "60%" }}
+                className="rounded-lg border border-(--Grey300) bg-(--app-surface) p-2"
+              />
+            </>
+          ) : (
+            <>
+              <p className="m-0 text-xs text-(--Grey600)">
+                {t("ai.usage.loading")}
+              </p>
+              <AppSkeleton
+                active
+                paragraph={{ rows: 3 }}
+                title={{ width: "40%" }}
+              />
+              <AppSkeleton
+                active
+                paragraph={{ rows: 3 }}
+                title={{ width: "45%" }}
+              />
+            </>
+          )}
         </div>
       )}
 
@@ -165,7 +253,11 @@ const AiUsagePanel = ({ className }: Props) => {
       {!isPending && !isError && usage && (
         <>
           {period ? (
-            <>
+            <div
+              className={clsx(
+                isFooter ? "grid grid-cols-2 gap-2" : "flex flex-col gap-3",
+              )}
+            >
               <QuotaMetric
                 title={t("ai.usage.tokens")}
                 used={period.usedTokens}
@@ -178,6 +270,7 @@ const AiUsagePanel = ({ className }: Props) => {
                 unlimitedLabel={t("ai.usage.unlimited")}
                 exhausted={isExhausted(period.remainingTokens)}
                 primaryColor={token.colorPrimary}
+                layout={layout}
               />
 
               <QuotaMetric
@@ -192,8 +285,9 @@ const AiUsagePanel = ({ className }: Props) => {
                 unlimitedLabel={t("ai.usage.unlimited")}
                 exhausted={isExhausted(period.remainingMessages)}
                 primaryColor={token.colorPrimary}
+                layout={layout}
               />
-            </>
+            </div>
           ) : (
             <AiUsageCard
               title={t("ai.usage.period")}

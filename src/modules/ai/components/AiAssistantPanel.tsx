@@ -323,8 +323,6 @@ const AiAssistantPanel = ({ onClose }: Props) => {
         />
       </div>
 
-      <AiUsagePanel className="max-[900px]:hidden" />
-
       <AppDrawer
         {...sharedDrawerProps}
         open={isChatSidebarOpen}
@@ -347,7 +345,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
         onClose={() => setIsUsageOpen(false)}
         placement={isRtl ? "left" : "right"}
         title={t("ai.usage.title")}
-        rootClassName="min-[901px]:hidden"
+        rootClassName="min-[651px]:hidden"
       >
         <AiUsagePanel className={embeddedPanelClassName} />
       </AppDrawer>

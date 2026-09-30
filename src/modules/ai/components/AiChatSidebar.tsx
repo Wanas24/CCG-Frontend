@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { Plus, Sparkles } from "lucide-react";
 import { AppButton, AppSkeleton } from "@/shared/ANTD_UIComponents";
 import { useGetAiChats } from "../api/hooks/useGetAiChats";
+import AiUsagePanel from "./AiUsagePanel";
 import {
   groupAiChatsByUpdatedAt,
   type TAiChatGroupKey,
@@ -41,24 +42,20 @@ const AiChatSidebar = ({
   return (
     <aside
       className={clsx(
-        "flex w-62 shrink-0 flex-col gap-4 border-e border-(--Grey300) bg-(--Grey100) p-4",
+        "flex h-full min-h-0 w-56 shrink-0 flex-col border-e border-(--Grey300) bg-(--Grey100)",
         className,
       )}
     >
-      <div className="flex items-center gap-2 text-(--app-text)">
+      <div className="flex shrink-0 items-center gap-2 px-3 pt-3 text-(--app-text)">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-(--Primary100) text-(--Primary400)">
           <Sparkles size={18} aria-hidden="true" />
         </span>
-        <p className="m-0 text-base font-semibold">{t("ai.title")}</p>
+        <p className="m-0 text-sm font-semibold">{t("ai.title")}</p>
       </div>
-
-      <AppButton block icon={<Plus size={18} />} onClick={onNewChat}>
-        {t("ai.sidebar.newChat")}
-      </AppButton>
 
       <nav
         aria-label={t("ai.sidebar.conversations")}
-        className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto"
+        className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-3 py-3"
       >
         {isPending && (
           <div className="flex flex-col gap-2" aria-busy="true">
@@ -113,6 +110,22 @@ const AiChatSidebar = ({
             </div>
           ))}
       </nav>
+
+      <div className="flex shrink-0 flex-col border-t border-(--Grey300)">
+        <div className="px-3 pt-2 pb-1">
+          <AppButton
+            block
+            size="small"
+            icon={<Plus size={16} />}
+            onClick={onNewChat}
+            className="h-8! text-xs! font-medium"
+          >
+            {t("ai.sidebar.newChat")}
+          </AppButton>
+        </div>
+
+        <AiUsagePanel layout="footer" />
+      </div>
     </aside>
   );
 };
