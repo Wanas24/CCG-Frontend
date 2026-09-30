@@ -1,25 +1,52 @@
 import { useState } from "react";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
+import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
+import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import AiAssistantHint from "./AiAssistantHint";
 import AiAssistantLauncher from "./AiAssistantLauncher";
 import AiAssistantPanel from "./AiAssistantPanel";
 
 const AiAssistant = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [openForCompanyId, setOpenForCompanyId] = useState<number | null>(
+    null,
+  );
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const companyId = useAuthStore((state) => state.user?.companyId ?? null);
+  const { hasPermission, isLoading: isPermissionsLoading } = usePermissions();
+
+  const isOpen =
+    companyId !== null &&
+    openForCompanyId !== null &&
+    openForCompanyId === companyId;
+
+  if (!isAuthenticated || isPermissionsLoading) {
+    return null;
+  }
+
+  if (!companyId) {
+    return null;
+  }
+
+  if (!hasPermission(PermissionsList.AiAssistantChat)) {
+    return null;
+  }
 
   return (
     <>
       {!isOpen && <AiAssistantHint />}
       {isOpen && (
         <AiAssistantPanel
-          key={companyId ?? "no-company"}
-          onClose={() => setIsOpen(false)}
+          key={companyId}
+          onClose={() => setOpenForCompanyId(null)}
         />
       )}
       <AiAssistantLauncher
         isOpen={isOpen}
-        onToggle={() => setIsOpen((current) => !current)}
+        onToggle={() => {
+          setOpenForCompanyId((current) =>
+            current === companyId ? null : companyId,
+          );
+        }}
       />
     </>
   );

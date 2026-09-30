@@ -12,6 +12,10 @@ export const refreshPermissions = async () => {
     return;
   }
 
+  if (useAuthStore.getState().user?.companyId == null) {
+    return;
+  }
+
   await queryClient.fetchQuery({
     queryKey: permissionsQueryKey,
     queryFn: userService.getCurrentUserPermissions,

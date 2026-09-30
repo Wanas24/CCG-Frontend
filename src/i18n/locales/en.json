@@ -222,7 +222,8 @@
   "company": {
     "page": {
       "title": "Company",
-      "loadError": "Unable to load company information. Please try again."
+      "loadError": "Unable to load company information. Please try again.",
+      "noCompanyDescription": "No company is available. Please create a company to continue."
     },
     "switcher": {
       "label": "Current company",
@@ -280,7 +281,10 @@
       "section": "Delete company",
       "action": "Delete company",
       "confirmTitle": "Delete this company?",
-      "confirmMessage": "This will permanently delete the current company. This action cannot be undone.",
+      "confirmMessage": "This will permanently delete the current company. Enter your account password to confirm. This action cannot be undone.",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "passwordInvalid": "Incorrect password. The company was not deleted.",
       "success": "Company deleted successfully"
     },
     "details": {

@@ -34,6 +34,7 @@ export const useSwitchCompanyManager = () => {
       return false;
     }
 
+    const activeCompanyId = useAuthStore.getState().user?.companyId ?? null;
     const selected = companies.find((company) => company.id === companyId);
 
     if (selected?.isDisabled) {
@@ -41,13 +42,20 @@ export const useSwitchCompanyManager = () => {
       return false;
     }
 
-    if (selected?.isCurrent || companyId === currentCompanyId) {
+    // Only trust the authenticated session companyId. A companies-list
+    // `isCurrent` flag can be ahead of the JWT/store (e.g. after create while
+    // companyId was null) and must not skip establishSession.
+    if (companyId === activeCompanyId) {
       return true;
     }
 
     const response = await switchCompanyMutate({ companyId });
 
-    if (!response.isSuccess || !response.data?.token || !response.data.isAuthenticated) {
+    if (
+      !response.isSuccess ||
+      !response.data?.token ||
+      !response.data.isAuthenticated
+    ) {
       return false;
     }
 

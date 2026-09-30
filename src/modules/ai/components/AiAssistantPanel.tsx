@@ -4,6 +4,7 @@ import axios from "axios";
 import { useLocale } from "@/i18n";
 import { queryClient } from "@/lib/queryClient";
 import { AppDrawer } from "@/shared/ANTD_UIComponents";
+import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { useGetAiChats } from "../api/hooks/useGetAiChats";
 import { useSendAiChat } from "../api/hooks/useSendAiChat";
 import {
@@ -58,6 +59,7 @@ const isAbortError = (error: unknown) => {
 const AiAssistantPanel = ({ onClose }: Props) => {
   const { t } = useTranslation();
   const { isRtl } = useLocale();
+  const companyId = useAuthStore((state) => state.user?.companyId ?? null);
   const [isChatSidebarOpen, setIsChatSidebarOpen] = useState(false);
   const [isUsageOpen, setIsUsageOpen] = useState(false);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -130,7 +132,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
   };
 
   const handleSend = async (payload: TAiComposerSendPayload) => {
-    if (isSendingRef.current || isSending) {
+    if (!companyId || isSendingRef.current || isSending) {
       return { ok: false, restore: payload };
     }
 

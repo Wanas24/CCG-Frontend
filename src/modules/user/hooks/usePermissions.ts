@@ -7,6 +7,7 @@ const emptyPermissions: TPermission[] = [];
 
 export const usePermissions = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const companyId = useAuthStore((state) => state.user?.companyId ?? null);
   const query = useGetCurrentUserPermissions();
   const current = query.data?.isSuccess ? query.data.data : undefined;
 
@@ -19,15 +20,17 @@ export const usePermissions = () => {
     [permissions],
   );
 
+  const canResolvePermissions = isAuthenticated && companyId !== null;
+
   const hasPermission = useCallback(
     (permission: string) => {
-      if (!isAuthenticated || query.isPending || !query.data?.isSuccess) {
+      if (!canResolvePermissions || query.isPending || !query.data?.isSuccess) {
         return false;
       }
 
       return grantedNames.has(permission);
     },
-    [grantedNames, isAuthenticated, query.data?.isSuccess, query.isPending],
+    [canResolvePermissions, grantedNames, query.data?.isSuccess, query.isPending],
   );
 
   return {
@@ -35,7 +38,7 @@ export const usePermissions = () => {
     isAdmin,
     isManager,
     hasPermission,
-    isLoading: isAuthenticated && query.isPending,
+    isLoading: canResolvePermissions && query.isPending,
     isError: query.isError || Boolean(query.data && !query.data.isSuccess),
   };
 };

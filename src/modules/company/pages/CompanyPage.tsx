@@ -29,14 +29,27 @@ const CompanyPage = () => {
       <div className="p-6">
         <AppFormPage title={t("company.page.title")}>
           <AppFormSection>
-            <p
-              className={`${DesignTokens.inputs.labelFontSize} ${DesignTokens.typography.muted}`}
-            >
-              {t("auth.noCompany")}
-            </p>
-            <Link to={COMPANY_ROUTES.create}>
-              <AppButton variant="primary">{t("company.create.navLabel")}</AppButton>
-            </Link>
+            <div className="flex min-h-[280px] flex-col items-center justify-center text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
+                <span className="text-2xl">🏢</span>
+              </div>
+  
+              <h3 className="mb-2 text-base font-semibold">
+                {t("auth.noCompany")}
+              </h3>
+  
+              <p
+                className={`${DesignTokens.typography.muted} mb-6 max-w-md`}
+              >
+                {t("company.page.noCompanyDescription")}
+              </p>
+  
+              <Link to={COMPANY_ROUTES.create}>
+                <AppButton variant="primary">
+                  {t("company.create.navLabel")}
+                </AppButton>
+              </Link>
+            </div>
           </AppFormSection>
         </AppFormPage>
       </div>

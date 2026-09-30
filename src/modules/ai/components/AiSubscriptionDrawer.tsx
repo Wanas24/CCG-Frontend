@@ -145,7 +145,7 @@ const AiSubscriptionDrawer = ({
             response.message || t("ai.subscriptions.saveSuccess"),
           );
           void queryClient.invalidateQueries({
-            queryKey: ["ai", "subscriptions"],
+            queryKey: ["ai", "subscriptions"] as const,
           });
           void queryClient.invalidateQueries({
             queryKey: aiSubscriptionQueryKey(userId),

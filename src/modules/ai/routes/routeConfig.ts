@@ -19,7 +19,7 @@ const aiRouteConfig: AppRouteObject[] = [
             path: AI_ROUTES.subscriptions,
             Component: AiSubscriptionManagementPage,
             label: "ai.subscriptions.title",
-            showInMenu: true,
+            showInMenu: false,
             order: 40,
           },
         ],

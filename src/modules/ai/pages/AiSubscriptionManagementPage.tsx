@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Navigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { Input, Select } from "antd";
 import {
@@ -8,6 +9,7 @@ import {
 } from "@/shared/ANTD_UIComponents";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
+import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useGetAiSubscriptions } from "../api/hooks/useGetAiSubscriptions";
@@ -61,15 +63,7 @@ const AiSubscriptionManagementPage = () => {
   }
 
   if (!canGet) {
-    return (
-      <div className="p-6">
-        <AppFormPage title={t("ai.subscriptions.title")}>
-          <AppFormSection>
-            <AppErrorContainer error={t("ai.subscriptions.noPermission")} />
-          </AppFormSection>
-        </AppFormPage>
-      </div>
-    );
+    return <Navigate to={APP_ROUTES.home} replace />;
   }
 
   return (
