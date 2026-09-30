@@ -1,7 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import en from "./locales/en.json";
-import ar from "./locales/ar.json";
+import en from "./en";
+import ar from "./ar";
 
 export const SUPPORTED_LOCALES = ["en", "ar"] as const;
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number];
