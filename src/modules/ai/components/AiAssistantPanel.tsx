@@ -9,6 +9,7 @@ import { useSendAiChat } from "../api/hooks/useSendAiChat";
 import {
   aiChatsQueryKey,
   aiMessagesQueryKey,
+  aiUsageQueryKey,
 } from "../api/queryKeys/aiQueryKeys";
 import type {
   TAiAssistantUiMeta,
@@ -246,6 +247,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
         queryClient.invalidateQueries({
           queryKey: aiMessagesQueryKey(chatId),
         }),
+        queryClient.invalidateQueries({ queryKey: aiUsageQueryKey }),
       ]);
 
       if (!controller.signal.aborted) {

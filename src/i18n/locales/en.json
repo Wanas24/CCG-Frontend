@@ -381,17 +381,17 @@
     },
     "usage": {
       "title": "Usage & limits",
-      "tokens": "Monthly tokens",
-      "messages": "Monthly messages",
-      "noUsage": "No usage data yet",
-      "subscription": "Subscription",
-      "subscriptionNotLoaded": "Not loaded",
-      "response": "Current response",
-      "responseWaiting": "Waiting for a response",
-      "tools": "Tools used",
-      "noTools": "No tools used",
-      "warnings": "Warnings",
-      "noWarnings": "No warnings"
+      "tokens": "Tokens",
+      "messages": "Messages",
+      "used": "Used",
+      "remaining": "Remaining",
+      "unlimited": "Unlimited",
+      "loading": "Loading usage…",
+      "errorTitle": "Unable to load usage",
+      "errorDescription": "Usage information could not be loaded. Please try again.",
+      "retry": "Retry",
+      "period": "Current period",
+      "periodUnavailable": "Usage information is currently unavailable."
     }
   }
 }
