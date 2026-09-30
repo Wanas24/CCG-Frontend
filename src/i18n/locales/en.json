@@ -392,6 +392,69 @@
       "retry": "Retry",
       "period": "Current period",
       "periodUnavailable": "Usage information is currently unavailable."
+    },
+    "subscriptions": {
+      "title": "AI Subscription Management",
+      "navLabel": "AI Subscriptions",
+      "description": "Manage AI access and usage limits for company users",
+      "searchPlaceholder": "Search users…",
+      "drawerTitle": "User AI Subscription",
+      "viewEdit": "View / Edit",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "saveSuccess": "Subscription updated successfully",
+      "loadingDetails": "Loading subscription…",
+      "loadError": "Unable to load subscription data. Please try again.",
+      "retry": "Retry",
+      "empty": "No users found",
+      "emptyValue": "—",
+      "noPermission": "You do not have permission to view AI subscriptions.",
+      "subscribed": "Subscribed",
+      "notSubscribed": "Not subscribed",
+      "unlimited": "Unlimited",
+      "tokensShort": "tokens",
+      "messagesShort": "messages",
+      "paginationTotal": "{{from}}–{{to}} of {{total}}",
+      "columns": {
+        "user": "User",
+        "email": "Email",
+        "role": "Role",
+        "subscription": "AI Subscription",
+        "renewalDate": "Renewal Date",
+        "usage": "Usage",
+        "actions": "Actions"
+      },
+      "role": {
+        "manager": "Manager",
+        "employee": "Employee"
+      },
+      "filters": {
+        "manager": "Role",
+        "managerAll": "All roles",
+        "managers": "Managers",
+        "nonManagers": "Non-managers"
+      },
+      "sections": {
+        "subscription": "Subscription",
+        "usage": "Usage",
+        "configuration": "Configuration"
+      },
+      "fields": {
+        "isSubscribed": "Subscribed",
+        "from": "From",
+        "to": "To / Renewal",
+        "unlimited": "Unlimited usage",
+        "monthlyTokens": "Monthly tokens",
+        "monthlyMessages": "Monthly messages",
+        "historyMessages": "History messages",
+        "historyMessagesHint": "The default is 10 messages. Increasing this value gives the AI more conversation context and may improve response accuracy, but it also consumes more tokens."
+      },
+      "validation": {
+        "integer": "Enter a whole number",
+        "nonNegative": "Value cannot be negative",
+        "historyRange": "History messages must be between 0 and 100",
+        "dateRange": "End date must be on or after the start date"
+      }
     }
   }
 }

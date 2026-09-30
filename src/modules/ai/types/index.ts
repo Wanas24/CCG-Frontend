@@ -52,7 +52,7 @@ export type TArchiveAiChatResponse = TSimpleResult;
 export type TGetAiUsageResponse = TSimpleResult<TAiUsageStatusResponse>;
 
 export type TGetAiSubscriptionsResponse = TSimpleResult<
-  TPagedResult<TAiCompanyUserSubscriptionResponse>
+  TAiPagedResult<TAiCompanyUserSubscriptionResponse>
 >;
 
 export type TGetAiSubscriptionResponse =
