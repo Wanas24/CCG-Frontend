@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { UploadProps } from "antd";
 import { Upload } from "antd";
 import { queryClient } from "@/lib/queryClient";
+import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/availableCompaniesQueryKey";
 import { VALIDATION } from "@/shared/validation";
 import { useDeleteCompanyLogo } from "../api/hooks/useDeleteCompanyLogo";
 import { useUploadCompanyLogo } from "../api/hooks/useUploadCompanyLogo";
@@ -17,6 +18,7 @@ const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
 const invalidateCompanyLogo = () => {
   void queryClient.invalidateQueries({ queryKey: currentCompanyQueryKey });
   void queryClient.invalidateQueries({ queryKey: companyLogoQueryKey });
+  void queryClient.invalidateQueries({ queryKey: availableCompaniesQueryKey });
 };
 
 export const useCompanyLogoManager = () => {

@@ -3,30 +3,24 @@ import { establishSession } from "@/modules/authentication/hooks/establishSessio
 import { useSwitchCompany } from "@/modules/authentication/api/hooks/useSwitchCompany";
 import { useGetAvailableCompanies } from "@/modules/authentication/api/hooks/useGetAvailableCompanies";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
-import { useGetCurrentCompany } from "../api/hooks/useGetCurrentCompany";
 import { refreshAfterCompanySwitch } from "../utils/refreshAfterCompanySwitch";
 
 export const useSwitchCompanyManager = () => {
   const { mutateAsync: switchCompanyMutate, isPending } = useSwitchCompany();
   const { data: companiesResponse } = useGetAvailableCompanies();
-  const { data: currentCompanyResponse } = useGetCurrentCompany();
   const companies = companiesResponse?.isSuccess
     ? (companiesResponse.data ?? [])
     : [];
   const currentCompanyId = useAuthStore((state) => state.user?.companyId ?? null);
-  const currentCompanyDetails = currentCompanyResponse?.isSuccess
-    ? currentCompanyResponse.data
-    : undefined;
 
   const currentCompany =
     companies.find((company) => company.isCurrent) ??
     companies.find((company) => company.id === currentCompanyId) ??
     null;
 
-  const currentCompanyLogo =
-    currentCompanyDetails && currentCompanyDetails.id === currentCompanyId
-      ? currentCompanyDetails.logo
-      : null;
+  const currentCompanyLogo = currentCompany?.profileUrl?.trim()
+    ? currentCompany.profileUrl
+    : null;
 
   const switchCompany = async (companyId: number) => {
     if (!companyId) {

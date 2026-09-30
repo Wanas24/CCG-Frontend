@@ -10,6 +10,7 @@ export type TCompany = {
 export type TUserCompany = {
   id: number;
   name: string;
+  profileUrl: string | null;
   isDisabled: boolean;
   isManager: boolean;
   isCurrent: boolean;
