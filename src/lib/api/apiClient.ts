@@ -54,11 +54,17 @@ const getRefreshedAccessToken = async (): Promise<string> => {
   return refreshAccessToken();
 };
 
+const isRequestCanceled = (error: AxiosError) =>
+  axios.isCancel(error) ||
+  error.code === "ERR_CANCELED" ||
+  error.name === "CanceledError" ||
+  error.name === "AbortError";
+
 const handleTransportError = (
   error: AxiosError,
   toastOptions: ToastOptions,
 ) => {
-  if (toastOptions.skipToast) {
+  if (toastOptions.skipToast || isRequestCanceled(error)) {
     return Promise.reject(error);
   }
 
@@ -197,6 +203,11 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const payload = error.response?.data as TSimpleResult | undefined;
     const toastOptions: ToastOptions = { skipToast: config.skipToast };
+
+    // Intentional AbortController / Axios cancel — not a transport failure.
+    if (isRequestCanceled(error)) {
+      return Promise.reject(error);
+    }
 
     if (!error.response) {
       return handleTransportError(error, toastOptions);

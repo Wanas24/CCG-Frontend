@@ -1,5 +1,6 @@
 import type { ComponentProps } from "react";
 import { Upload } from "antd";
+import clsx from "clsx";
 import {
   AppFieldWrapper,
   type AppFieldLabelDirection,
@@ -28,9 +29,11 @@ export const AppUpload = ({
   tooltip,
   ...uploadProps
 }: AppUploadProps) => {
+  const hasCustomTrigger = Boolean(children);
+
   return (
     <AppFieldWrapper
-      className={className}
+      className={clsx(hasCustomTrigger && "w-full sm:w-fit", className)}
       customLabelDirection={customLabelDirection}
       errorBorderClassName={errorBorderClassName}
       errorMsg={errorMsg}
@@ -40,9 +43,15 @@ export const AppUpload = ({
       rowLabelAlign="start"
       tooltip={tooltip}
     >
-      <Dragger {...uploadProps} className={`w-full`}>
-        {children ?? <DefaultDraggerContent />}
-      </Dragger>
+      {hasCustomTrigger ? (
+        <Upload {...uploadProps} className="w-full sm:w-fit">
+          {children}
+        </Upload>
+      ) : (
+        <Dragger {...uploadProps} className="w-full">
+          <DefaultDraggerContent />
+        </Dragger>
+      )}
     </AppFieldWrapper>
   );
 };

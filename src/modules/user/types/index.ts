@@ -22,3 +22,9 @@ export type {
   TUpdateThemeRequest,
   TUpdateThemeResponse,
 } from "./preferences";
+
+export type {
+  TCurrentUserPermissions,
+  TGetCurrentUserPermissionsResponse,
+  TPermission,
+} from "./permissions";

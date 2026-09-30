@@ -34,3 +34,8 @@ export type {
 } from "./verification";
 
 export { isAccountVerified } from "./verification";
+
+export type {
+  TSwitchCompanyRequest,
+  TSwitchCompanyResponse,
+} from "./switchCompany";

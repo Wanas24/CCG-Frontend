@@ -4,6 +4,9 @@ import type { MenuItemConfig, AntMenuItem } from "./types";
 /** Default max viewport width treated as tablet for sidebar auto-collapse. */
 export const SIDEBAR_TABLET_BREAKPOINT = 1024;
 
+/** Mobile layout uses a drawer instead of an inline sidebar. */
+export const SIDEBAR_MOBILE_BREAKPOINT = 768;
+
 function isBelowSidebarBreakpoint(width: number, breakpoint: number) {
   return width < breakpoint;
 }
@@ -30,25 +33,29 @@ export function useSidebarTabletBreakpoint(
   return isBelowSidebarBreakpoint(viewportWidth, autoCollapseBelow);
 }
 
-// ---------------------------------------------------------------------------
-// Permission helpers
-// ---------------------------------------------------------------------------
+export function useIsMobileSidebar(
+  mobileBreakpoint: number = SIDEBAR_MOBILE_BREAKPOINT,
+) {
+  const [isMobile, setIsMobile] = useState(
+    () => window.innerWidth < mobileBreakpoint,
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia(`(max-width: ${mobileBreakpoint - 1}px)`);
+    const onChange = () => setIsMobile(media.matches);
+    onChange();
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, [mobileBreakpoint]);
+
+  return isMobile;
+}
 
 function hasAccess(item: MenuItemConfig, userPermissions: string[]): boolean {
   if (!item.permissions || item.permissions.length === 0) return true;
   return item.permissions.some((p) => userPermissions.includes(p));
 }
 
-// ---------------------------------------------------------------------------
-// Menu item builders (recursive — supports unlimited nesting)
-// ---------------------------------------------------------------------------
-
-/**
- * Convert a MenuItemConfig tree into the format Ant Design Menu expects,
- * filtering out items the current user cannot access.
- *
- * This is a pure function — memoize with useMemo at the call site.
- */
 export function buildMenuItems(
   items: MenuItemConfig[],
   userPermissions: string[] = [],
@@ -69,12 +76,6 @@ export function buildMenuItems(
     });
 }
 
-/**
- * Recursively extract every key → path mapping from the config tree.
- * Items without a `path` are skipped (they are non-navigable groups).
- *
- * This is a pure function — memoize with useMemo at the call site.
- */
 export function buildMenuPaths(
   items: MenuItemConfig[],
   result: Record<string, string> = {},
@@ -86,21 +87,6 @@ export function buildMenuPaths(
   return result;
 }
 
-// ---------------------------------------------------------------------------
-// Active-route resolver
-// ---------------------------------------------------------------------------
-
-/**
- * Find the best-matching menu key for a given URL pathname.
- *
- * Matching rules (in order):
- *  1. Exact match: `pathname === path`
- *  2. Prefix match: `pathname` starts with `path` and the next character is `/`
- *     (prevents `/foo` from matching `/foobar`).
- *
- * Returns a tuple `[key]` as required by Ant Design's `selectedKeys` prop,
- * falling back to `[fallback]` when no match is found.
- */
 export function getSelectedKey(
   pathname: string,
   menuPaths: Record<string, string>,
