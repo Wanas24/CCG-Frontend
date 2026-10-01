@@ -17,6 +17,6 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
     label: t("ai.subscriptions.navLabel"),
     path: AI_ROUTES.subscriptions,
     icon: <ShieldCheck size={18} />,
-    permissions: [PermissionsList.AiSubscriptionGet],
+    permissions: [PermissionsList.Ai.AiSubscriptionGet],
   },
 ];

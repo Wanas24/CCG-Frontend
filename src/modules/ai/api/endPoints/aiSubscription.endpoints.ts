@@ -6,18 +6,18 @@ export const aiSubscriptionEndpoints = {
     method: "GET",
     path: `/AiSubscription`,
     auth: "required",
-    permissions: [PermissionsList.AiSubscriptionGet],
+    permissions: [PermissionsList.Ai.AiSubscriptionGet],
   }),
   get: createEndpoint({
     method: "GET",
     path: `/AiSubscription/:userId`,
     auth: "required",
-    permissions: [PermissionsList.AiSubscriptionGet],
+    permissions: [PermissionsList.Ai.AiSubscriptionGet],
   }),
   update: createEndpoint({
     method: "PUT",
     path: `/AiSubscription/:userId`,
     auth: "required",
-    permissions: [PermissionsList.AiSubscriptionUpdate],
+    permissions: [PermissionsList.Ai.AiSubscriptionUpdate],
   }),
 };
