@@ -63,6 +63,11 @@ export interface AppSidebarProps {
    * Set to `false` to disable. Defaults to `1024` (tablet).
    */
   autoCollapseBelow?: number | false;
+  /**
+   * When true, the sidebar stays collapsed until hovered, then expands.
+   * The manual collapse control is not used in this mode.
+   */
+  expandOnHover?: boolean;
   /** Hide the edge collapse control (e.g. mobile drawer). */
   hideCollapseControl?: boolean;
   /** Called after a navigable menu item is selected. */

@@ -5,13 +5,16 @@ import { useLocale } from "@/i18n/useLocale";
 import { AppNavbar } from "@/shared/components";
 import { AppDrawer, AppSidebar } from "@/shared/ANTD_UIComponents";
 import { NavigationProgressFallback } from "@/shared/components/NavigationProgress/NavigationProgress";
-import { useIsMobileSidebar } from "@/shared/ANTD_UIComponents/AppSidebar/utils";
+import {
+  SIDEBAR_TABLET_BREAKPOINT,
+  useIsMobileSidebar,
+} from "@/shared/ANTD_UIComponents/AppSidebar/utils";
 import { useAppSidebarNavigation } from "./navigation/useAppSidebarNavigation";
 
 const AppLayout = () => {
   const { menuConfig, grantedPermissions } = useAppSidebarNavigation();
   const { isRtl } = useLocale();
-  const isMobile = useIsMobileSidebar();
+  const isMobile = useIsMobileSidebar(SIDEBAR_TABLET_BREAKPOINT);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const closeMobileSidebar = () => setMobileOpen(false);
@@ -26,6 +29,8 @@ const AppLayout = () => {
       {!isMobile && (
         <AppSidebar
           {...sidebarProps}
+          expandOnHover
+          defaultCollapsed
           expandedWidth="15rem"
           collapsedWidth="4.5rem"
         />
