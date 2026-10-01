@@ -12,9 +12,10 @@ const buildPath = (path: string, params?: Record<string, string | number>) => {
 
 interface RequestOptions<TBody = unknown> {
   pathParams?: Record<string, string | number>;
-  queryParams?: Record<string, string | number>;
+  queryParams?: Record<string, string | number | boolean | undefined>;
   body?: TBody;
   headers?: Record<string, string>;
+  signal?: AbortSignal;
 }
 
 export const callEndpoint = async <TResponse, TBody = unknown>(
@@ -29,6 +30,7 @@ export const callEndpoint = async <TResponse, TBody = unknown>(
     params: options.queryParams,
     data: options.body,
     headers: options.headers,
+    signal: options.signal,
     skipToast: endpoint.skipToast,
   });
 

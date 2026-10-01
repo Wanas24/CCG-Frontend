@@ -52,4 +52,14 @@ export const authEndpoints = {
     path: `/auth/confirmation-status`,
     auth: "required",
   }),
+  getCompanies: createEndpoint({
+    method: "GET",
+    path: `/Auth/companies`,
+    auth: "required",
+  }),
+  switchCompany: createEndpoint({
+    method: "POST",
+    path: `/Auth/switch-company`,
+    auth: "required",
+  }),
 };

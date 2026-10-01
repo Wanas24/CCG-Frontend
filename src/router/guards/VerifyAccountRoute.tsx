@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from "react-router";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { isAccountVerified } from "@/modules/authentication/types";
+import { getPostVerificationPath } from "@/modules/authentication/utils/getPostVerificationPath";
 import PageLoader from "@/shared/components/PageLoader/PageLoader";
 
 /**
@@ -21,7 +21,7 @@ const VerifyAccountRoute = () => {
   }
 
   if (isAccountVerified(confirmationStatus)) {
-    return <Navigate to={APP_ROUTES.home} replace />;
+    return <Navigate to={getPostVerificationPath()} replace />;
   }
 
   return <Outlet />;

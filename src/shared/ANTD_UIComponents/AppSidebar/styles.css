@@ -21,24 +21,64 @@
 .app-sidebar .ant-menu {
   width: 95% !important;
   margin: auto !important;
+  background: transparent !important;
+  color: var(--app-surface) !important;
+}
+
+.app-sidebar .ant-menu-item,
+.app-sidebar .ant-menu-submenu-title {
+  color: var(--app-surface) !important;
+}
+
+.app-sidebar .ant-menu-item .ant-menu-item-icon,
+.app-sidebar .ant-menu-submenu-title .ant-menu-item-icon,
+.app-sidebar .ant-menu-item .anticon,
+.app-sidebar .ant-menu-submenu-title .anticon,
+.app-sidebar .ant-menu-submenu-arrow {
+  color: var(--app-surface) !important;
+}
+
+.app-sidebar .ant-menu-item:not(.ant-menu-item-selected):hover,
+.app-sidebar .ant-menu-submenu-title:hover {
+  background-color: var(--Primary300) !important;
+  color: var(--app-surface) !important;
 }
 
 .app-sidebar .ant-menu-item.ant-menu-item-selected {
   border: 2px solid var(--Primary300) !important;
+  background-color: var(--Primary300) !important;
   margin-inline: 0px !important;
   width: 90% !important;
   margin: auto !important;
+  color: var(--app-surface) !important;
 }
 
 .app-sidebar .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open {
   border: 2px solid var(--Primary300) !important;
-  background-color: var(--sidebarActiveContainerColor) !important;
+  background-color: var(--Primary300) !important;
   margin-bottom: 10px !important;
 }
 
-/* Sidebar Vertical Menu */
+/* Collapsed flyout submenu (portaled outside .app-sidebar) */
 .ant-menu.ant-menu-sub.ant-menu-vertical {
   background: var(--Primary400) !important;
+  color: var(--app-surface) !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-vertical .ant-menu-item,
+.ant-menu.ant-menu-sub.ant-menu-vertical .ant-menu-item .ant-menu-item-icon,
+.ant-menu.ant-menu-sub.ant-menu-vertical .ant-menu-item .anticon {
+  color: var(--app-surface) !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-vertical
+  .ant-menu-item:not(.ant-menu-item-selected):hover {
+  background-color: var(--Primary300) !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-vertical .ant-menu-item.ant-menu-item-selected {
+  background-color: var(--Primary300) !important;
+  color: var(--app-surface) !important;
 }
 
 .app-sidebar .ant-menu-item.ant-menu-item-selected {

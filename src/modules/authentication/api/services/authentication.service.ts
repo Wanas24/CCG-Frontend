@@ -13,7 +13,10 @@ import type {
   TRevokeTokenPayload,
   TSendEmailConfirmationPayload,
   TSimpleResult,
+  TSwitchCompanyRequest,
+  TSwitchCompanyResponse,
 } from "../../types";
+import type { TGetAvailableCompaniesResponse } from "@/modules/company/types";
 import { authEndpoints } from "../endPoints/authentication.endpoints";
 import { callEndpoint } from "@/lib/api/callEndpoint";
 import { getDeviceId } from "@/services/deviceId";
@@ -57,5 +60,17 @@ export const authService = {
   getConfirmationStatus: () =>
     callEndpoint<TConfirmationStatusResponse>(
       authEndpoints.confirmationStatus,
+    ),
+  getCompanies: (isDisabled?: boolean) =>
+    callEndpoint<TGetAvailableCompaniesResponse>(authEndpoints.getCompanies, {
+      queryParams:
+        isDisabled === undefined
+          ? undefined
+          : { isDisabled: String(isDisabled) },
+    }),
+  switchCompany: (body: TSwitchCompanyRequest) =>
+    callEndpoint<TSwitchCompanyResponse, TSwitchCompanyRequest>(
+      authEndpoints.switchCompany,
+      { body },
     ),
 };

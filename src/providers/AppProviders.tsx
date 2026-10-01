@@ -7,6 +7,7 @@ import { AppThemeProvider } from "@/AntdTheme";
 import { useLocale } from "@/i18n/useLocale";
 import { queryClient } from "@/lib/queryClient";
 import AuthInitializer from "@/modules/authentication/components/AuthInitializer";
+import CurrentUserPermissions from "@/modules/user/components/CurrentUserPermissions";
 
 type Props = {
   children: ReactNode;
@@ -19,6 +20,7 @@ const AppProviders = ({ children }: Props) => {
     <QueryClientProvider client={queryClient}>
       <AppThemeProvider>
         <AuthInitializer />
+        <CurrentUserPermissions />
         {children}
         <ToastContainer
           position={isRtl ? "top-left" : "top-right"}

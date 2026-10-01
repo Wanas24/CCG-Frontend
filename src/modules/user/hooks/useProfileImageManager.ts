@@ -1,29 +1,39 @@
 import { toast } from "react-toastify";
+
 import { useTranslation } from "react-i18next";
+
 import type { UploadProps } from "antd";
+
 import { Upload } from "antd";
+
 import { queryClient } from "@/lib/queryClient";
+
 import { VALIDATION } from "@/shared/validation";
+
 import { userMeQueryKey } from "../api/hooks/useGetMe";
+
 import { useDeleteProfileImage } from "../api/hooks/useDeleteProfileImage";
+
 import { useUploadProfileImage } from "../api/hooks/useUploadProfileImage";
 
 const MAX_PROFILE_IMAGE_BYTES = 5 * 1024 * 1024;
+
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
 
-export const useProfileImageManager = (hasCompany: boolean) => {
+export const useProfileImageManager = () => {
   const { t } = useTranslation();
-  const { mutate: uploadMutate, isPending: isUploading } =
-    useUploadProfileImage();
-  const { mutate: deleteMutate, isPending: isDeleting } =
-    useDeleteProfileImage();
+
+  const {
+    mutate: uploadMutate,
+    isPending: isUploading,
+  } = useUploadProfileImage();
+
+  const {
+    mutate: deleteMutate,
+    isPending: isDeleting,
+  } = useDeleteProfileImage();
 
   const beforeUpload: NonNullable<UploadProps["beforeUpload"]> = (file) => {
-    if (!hasCompany) {
-      toast.error(t("user.profile.imageRequiresCompany"));
-      return Upload.LIST_IGNORE;
-    }
-
     if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
       toast.error(t(VALIDATION.imageType));
       return Upload.LIST_IGNORE;
@@ -54,9 +64,14 @@ export const useProfileImageManager = (hasCompany: boolean) => {
         toast.success(
           response.message || t("user.profile.imageUploadSuccess"),
         );
-        void queryClient.invalidateQueries({ queryKey: userMeQueryKey });
+
+        void queryClient.invalidateQueries({
+          queryKey: userMeQueryKey,
+        });
+
         onSuccess?.(response);
       },
+
       onError: (error) => {
         onError?.(error as Error);
       },
@@ -73,7 +88,10 @@ export const useProfileImageManager = (hasCompany: boolean) => {
         toast.success(
           response.message || t("user.profile.imageDeleteSuccess"),
         );
-        void queryClient.invalidateQueries({ queryKey: userMeQueryKey });
+
+        void queryClient.invalidateQueries({
+          queryKey: userMeQueryKey,
+        });
       },
     });
   };

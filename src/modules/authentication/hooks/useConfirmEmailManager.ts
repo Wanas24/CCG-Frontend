@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
-import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { useConfirmEmail } from "../api/hooks/useConfirmEmail";
 import { fetchConfirmationStatus } from "../api/hooks/useConfirmationStatus";
 import { useAuthStore } from "../store/authStore";
 import type { TConfirmEmailParams } from "../types";
 import { isAccountVerified } from "../types";
+import { getPostVerificationPath } from "../utils/getPostVerificationPath";
 
 export const useConfirmEmailManager = ({
   userId,
@@ -33,7 +33,7 @@ export const useConfirmEmailManager = ({
             setConfirmationStatus(status);
 
             if (isAccountVerified(status)) {
-              navigate(APP_ROUTES.home, { replace: true });
+              navigate(getPostVerificationPath(), { replace: true });
             }
           } catch {
             // Status refresh failed — stay on confirm page

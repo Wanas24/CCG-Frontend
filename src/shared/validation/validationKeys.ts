@@ -1,4 +1,4 @@
-import type en from "@/i18n/locales/en.json";
+import type en from "@/i18n/en";
 
 type ValidationMessages = (typeof en)["validation"];
 
