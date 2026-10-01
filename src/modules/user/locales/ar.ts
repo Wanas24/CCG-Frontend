@@ -47,6 +47,9 @@ const user = {
     "saveSuccess": "تم تحديث الملف الشخصي",
     "changePhone": "تغيير رقم الهاتف",
     "changePhoneSuccess": "تم تحديث رقم الهاتف"
+  },
+  "notifications": {
+    "generic": "لديك إشعار جديد"
   }
 } as const;
 

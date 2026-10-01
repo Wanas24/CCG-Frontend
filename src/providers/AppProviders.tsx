@@ -8,6 +8,7 @@ import { useLocale } from "@/i18n/useLocale";
 import { queryClient } from "@/lib/queryClient";
 import AuthInitializer from "@/modules/authentication/components/AuthInitializer";
 import CurrentUserPermissions from "@/modules/user/components/CurrentUserPermissions";
+import NotificationsRuntime from "@/modules/user/components/NotificationsRuntime";
 
 type Props = {
   children: ReactNode;
@@ -21,6 +22,7 @@ const AppProviders = ({ children }: Props) => {
       <AppThemeProvider>
         <AuthInitializer />
         <CurrentUserPermissions />
+        <NotificationsRuntime />
         {children}
         <ToastContainer
           position={isRtl ? "top-left" : "top-right"}

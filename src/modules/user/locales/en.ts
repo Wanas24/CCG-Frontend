@@ -47,6 +47,9 @@ const user = {
     "saveSuccess": "Profile updated",
     "changePhone": "Change phone number",
     "changePhoneSuccess": "Phone number updated"
+  },
+  "notifications": {
+    "generic": "You have a new notification"
   }
 } as const;
 
