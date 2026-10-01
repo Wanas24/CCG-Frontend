@@ -8,12 +8,29 @@ import type {
   TEditProfileResponse,
   TGetCurrentUserPermissionsResponse,
   TGetMeResponse,
+  TGetNotificationsParams,
+  TMarkAllNotificationsReadResponse,
+  TMarkNotificationReadResponse,
+  TMarkNotificationUnreadResponse,
+  TNotificationListResponse,
   TUpdateLanguageRequest,
   TUpdateLanguageResponse,
   TUpdateThemeRequest,
   TUpdateThemeResponse,
   TUploadProfileImageResponse,
 } from "../../types";
+
+const DEFAULT_NOTIFICATIONS_PAGE = 1;
+
+const toNotificationsQueryParams = (params: TGetNotificationsParams) => {
+  const page = params.page ?? DEFAULT_NOTIFICATIONS_PAGE;
+
+  return {
+    page,
+    pageSize: params.pageSize,
+    ...(params.isRead !== undefined ? { isRead: params.isRead } : {}),
+  };
+};
 
 export const userService = {
   getMe: () => callEndpoint<TGetMeResponse>(userEndpoints.getMe),
@@ -51,5 +68,23 @@ export const userService = {
   getCurrentUserPermissions: () =>
     callEndpoint<TGetCurrentUserPermissionsResponse>(
       userEndpoints.getCurrentUserPermissions,
+    ),
+  getNotifications: (params: TGetNotificationsParams) =>
+    callEndpoint<TNotificationListResponse>(userEndpoints.getNotifications, {
+      queryParams: toNotificationsQueryParams(params),
+    }),
+  markNotificationRead: (notificationId: string) =>
+    callEndpoint<TMarkNotificationReadResponse>(
+      userEndpoints.markNotificationRead,
+      { pathParams: { notificationId } },
+    ),
+  markNotificationUnread: (notificationId: string) =>
+    callEndpoint<TMarkNotificationUnreadResponse>(
+      userEndpoints.markNotificationUnread,
+      { pathParams: { notificationId } },
+    ),
+  markAllNotificationsRead: () =>
+    callEndpoint<TMarkAllNotificationsReadResponse>(
+      userEndpoints.markAllNotificationsRead,
     ),
 };

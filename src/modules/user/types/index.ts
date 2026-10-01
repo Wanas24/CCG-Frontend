@@ -28,3 +28,13 @@ export type {
   TGetCurrentUserPermissionsResponse,
   TPermission,
 } from "./permissions";
+
+export type {
+  TGetNotificationsParams,
+  TMarkAllNotificationsReadResponse,
+  TMarkNotificationReadResponse,
+  TMarkNotificationUnreadResponse,
+  TNotification,
+  TNotificationListData,
+  TNotificationListResponse,
+} from "./notification";

@@ -42,4 +42,24 @@ export const userEndpoints = {
     auth: "required",
     permissions: [],
   }),
+  getNotifications: createEndpoint({
+    method: "GET",
+    path: `/User/notifications`,
+    auth: "required",
+  }),
+  markNotificationRead: createEndpoint({
+    method: "POST",
+    path: `/User/notifications/:notificationId/read`,
+    auth: "required",
+  }),
+  markNotificationUnread: createEndpoint({
+    method: "POST",
+    path: `/User/notifications/:notificationId/unread`,
+    auth: "required",
+  }),
+  markAllNotificationsRead: createEndpoint({
+    method: "POST",
+    path: `/User/notifications/read-all`,
+    auth: "required",
+  }),
 };
