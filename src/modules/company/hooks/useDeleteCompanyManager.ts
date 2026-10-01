@@ -13,6 +13,7 @@ import type {
   TLoginResponse,
   TSimpleResult,
 } from "@/modules/authentication/types";
+import { disconnectHub } from "@/services/hub";
 import { useDeleteCompany } from "../api/hooks/useDeleteCompany";
 import { refreshAfterCompanySwitch } from "../utils/refreshAfterCompanySwitch";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
@@ -39,6 +40,7 @@ const getAuthPayload = (
 const forceLogoutToLogin = (
   navigate: ReturnType<typeof useNavigate>,
 ) => {
+  disconnectHub();
   useAuthStore.getState().logout();
   queryClient.clear();
   navigate(AUTH_ROUTES.login, { replace: true });

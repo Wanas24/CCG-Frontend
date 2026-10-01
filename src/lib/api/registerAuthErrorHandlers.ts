@@ -1,6 +1,7 @@
 import { AUTH_ROUTES } from "@/modules/authentication/routes/paths";
 import { isPublicAuthPath } from "@/modules/authentication/routes/isPublicAuthPath";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
+import { disconnectHub } from "@/services/hub";
 import { ErrorCode } from "./errorCodes";
 import { registerErrorHandler } from "./apiResultHandler";
 
@@ -31,6 +32,7 @@ export const registerAuthErrorHandlers = () => {
   });
 
   const logoutHandler = () => {
+    disconnectHub();
     useAuthStore.getState().logout();
 
     if (!isPublicAuthPath(window.location.pathname)) {
