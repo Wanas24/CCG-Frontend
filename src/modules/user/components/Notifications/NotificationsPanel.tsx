@@ -1,27 +1,44 @@
 import clsx from "clsx";
+import { Segmented } from "antd";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
-import {
-  AppButton,
-  AppSkeleton,
-} from "@/shared/ANTD_UIComponents";
+import { AppButton, AppSkeleton } from "@/shared/ANTD_UIComponents";
 import type { TNotification } from "../../types";
+import type { NotificationFilter } from "./notificationsConstants";
 import NotificationListItem from "./NotificationListItem";
 
 type Props = {
   notifications: TNotification[];
+  filter: NotificationFilter;
   isLoading: boolean;
   isError: boolean;
   isFetching: boolean;
+  isMarkingAll: boolean;
+  pendingNotificationId: string | null;
+  areActionsDisabled: boolean;
+  canMarkAll: boolean;
+  onFilterChange: (filter: NotificationFilter) => void;
   onRetry: () => void;
+  onMarkRead: (notificationId: string) => void;
+  onMarkUnread: (notificationId: string) => void;
+  onMarkAllRead: () => void;
 };
 
 const NotificationsPanel = ({
   notifications,
+  filter,
   isLoading,
   isError,
   isFetching,
+  isMarkingAll,
+  pendingNotificationId,
+  areActionsDisabled,
+  canMarkAll,
+  onFilterChange,
   onRetry,
+  onMarkRead,
+  onMarkUnread,
+  onMarkAllRead,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -30,14 +47,40 @@ const NotificationsPanel = ({
       role="dialog"
       aria-label={t("user.notifications.title")}
       className={clsx(
-        "flex max-h-96 flex-col overflow-hidden rounded-xl border border-(--Grey300) bg-(--app-surface) shadow",
-        DesignTokens.layout.switcherMenu,
+        "flex max-h-96 w-80 max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-xl border border-(--Grey300) bg-(--app-surface) shadow",
       )}
     >
-      <div className="border-b border-(--Grey300) px-3 py-2">
-        <h2 className={clsx(DesignTokens.typography.headingSm, "m-0")}>
-          {t("user.notifications.title")}
-        </h2>
+      <div className="flex flex-col gap-2 border-b border-(--Grey300) px-3 py-2">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className={clsx(DesignTokens.typography.headingSm, "m-0")}>
+            {t("user.notifications.title")}
+          </h2>
+          <AppButton
+            variant="secondary"
+            loading={isMarkingAll}
+            disabled={!canMarkAll || areActionsDisabled}
+            onClick={onMarkAllRead}
+            aria-label={t("user.notifications.markAllAsRead")}
+            className="shrink-0!"
+          >
+            {t("user.notifications.markAllAsRead")}
+          </AppButton>
+        </div>
+
+        <Segmented<NotificationFilter>
+          block
+          value={filter}
+          aria-label={t("user.notifications.filtersLabel")}
+          options={[
+            { label: t("user.notifications.filters.all"), value: "all" },
+            {
+              label: t("user.notifications.filters.unread"),
+              value: "unread",
+            },
+            { label: t("user.notifications.filters.read"), value: "read" },
+          ]}
+          onChange={onFilterChange}
+        />
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-1">
@@ -87,7 +130,13 @@ const NotificationsPanel = ({
           <ul className="m-0 flex list-none flex-col gap-1 p-0">
             {notifications.map((notification) => (
               <li key={notification.id}>
-                <NotificationListItem notification={notification} />
+                <NotificationListItem
+                  notification={notification}
+                  isActionLoading={pendingNotificationId === notification.id}
+                  isActionDisabled={areActionsDisabled}
+                  onMarkRead={onMarkRead}
+                  onMarkUnread={onMarkUnread}
+                />
               </li>
             ))}
           </ul>

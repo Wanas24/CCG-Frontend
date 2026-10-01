@@ -1,48 +1,54 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Badge, Dropdown } from "antd";
 import { Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import { useGetNotifications } from "../../api/hooks/useGetNotifications";
-import { NOTIFICATIONS_PAGE_SIZE } from "./notificationsConstants";
+import { useMarkAllNotificationsRead } from "../../api/hooks/useMarkAllNotificationsRead";
+import { useMarkNotificationRead } from "../../api/hooks/useMarkNotificationRead";
+import { useMarkNotificationUnread } from "../../api/hooks/useMarkNotificationUnread";
+import {
+  buildNotificationListParams,
+  notificationUnreadCountParams,
+  type NotificationFilter,
+} from "./notificationsConstants";
 import NotificationsPanel from "./NotificationsPanel";
 
 type Props = {
   showLabel?: boolean;
 };
 
-const unreadParams = {
-  page: 1,
-  pageSize: NOTIFICATIONS_PAGE_SIZE,
-  isRead: false,
-} as const;
-
-const latestParams = {
-  page: 1,
-  pageSize: NOTIFICATIONS_PAGE_SIZE,
-} as const;
-
 const NotificationsBell = ({ showLabel = false }: Props) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [filter, setFilter] = useState<NotificationFilter>("all");
   const label = t("user.notifications.title");
 
-  const unreadQuery = useGetNotifications(unreadParams);
+  const listParams = useMemo(
+    () => buildNotificationListParams(filter),
+    [filter],
+  );
+
+  const unreadQuery = useGetNotifications(notificationUnreadCountParams);
   const {
-    data: latestData,
-    isPending: isLatestPending,
-    isError: isLatestError,
-    isFetching: isLatestFetching,
-    refetch: refetchLatest,
-  } = useGetNotifications(latestParams, open);
+    data: listData,
+    isPending: isListPending,
+    isError: isListError,
+    isFetching: isListFetching,
+    refetch: refetchList,
+  } = useGetNotifications(listParams, open);
+
+  const markReadMutation = useMarkNotificationRead();
+  const markUnreadMutation = useMarkNotificationUnread();
+  const markAllMutation = useMarkAllNotificationsRead();
 
   useEffect(() => {
     if (!open) {
       return;
     }
 
-    void refetchLatest();
-  }, [open, refetchLatest]);
+    void refetchList();
+  }, [open, filter, refetchList]);
 
   const unreadCount =
     unreadQuery.data?.isSuccess && unreadQuery.data.data
@@ -50,7 +56,17 @@ const NotificationsBell = ({ showLabel = false }: Props) => {
       : 0;
 
   const notifications =
-    latestData?.isSuccess && latestData.data ? latestData.data.data : [];
+    listData?.isSuccess && listData.data ? listData.data.data : [];
+
+  const pendingNotificationId =
+    markReadMutation.isPending && markReadMutation.variables
+      ? markReadMutation.variables
+      : markUnreadMutation.isPending && markUnreadMutation.variables
+        ? markUnreadMutation.variables
+        : null;
+
+  const areActionsDisabled =
+    Boolean(pendingNotificationId) || markAllMutation.isPending;
 
   const trigger = (
     <AppButton
@@ -79,13 +95,26 @@ const NotificationsBell = ({ showLabel = false }: Props) => {
       popupRender={() => (
         <NotificationsPanel
           notifications={notifications}
-          isLoading={isLatestPending && !latestData}
-          isError={
-            isLatestError || Boolean(latestData && !latestData.isSuccess)
-          }
-          isFetching={isLatestFetching}
+          filter={filter}
+          isLoading={isListPending && !listData}
+          isError={isListError || Boolean(listData && !listData.isSuccess)}
+          isFetching={isListFetching}
+          isMarkingAll={markAllMutation.isPending}
+          pendingNotificationId={pendingNotificationId}
+          areActionsDisabled={areActionsDisabled}
+          canMarkAll={unreadCount > 0}
+          onFilterChange={setFilter}
           onRetry={() => {
-            void refetchLatest();
+            void refetchList();
+          }}
+          onMarkRead={(notificationId) => {
+            markReadMutation.mutate(notificationId);
+          }}
+          onMarkUnread={(notificationId) => {
+            markUnreadMutation.mutate(notificationId);
+          }}
+          onMarkAllRead={() => {
+            markAllMutation.mutate();
           }}
         />
       )}

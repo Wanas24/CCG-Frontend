@@ -54,7 +54,16 @@ const user = {
     "empty": "No notifications yet",
     "loadError": "Unable to load notifications. Please try again.",
     "retry": "Retry",
-    "unknownDate": "Unknown date"
+    "unknownDate": "Unknown date",
+    "filtersLabel": "Notification filters",
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read"
+    },
+    "markAsRead": "Mark as read",
+    "markAsUnread": "Mark as unread",
+    "markAllAsRead": "Mark all as read"
   }
 } as const;
 

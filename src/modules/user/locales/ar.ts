@@ -54,7 +54,16 @@ const user = {
     "empty": "لا توجد إشعارات بعد",
     "loadError": "تعذر تحميل الإشعارات. يرجى المحاولة مرة أخرى.",
     "retry": "إعادة المحاولة",
-    "unknownDate": "تاريخ غير معروف"
+    "unknownDate": "تاريخ غير معروف",
+    "filtersLabel": "فلاتر الإشعارات",
+    "filters": {
+      "all": "الكل",
+      "unread": "غير مقروء",
+      "read": "مقروء"
+    },
+    "markAsRead": "تعليم كمقروء",
+    "markAsUnread": "تعليم كغير مقروء",
+    "markAllAsRead": "تعليم الكل كمقروء"
   }
 } as const;
 
