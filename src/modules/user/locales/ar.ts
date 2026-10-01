@@ -49,7 +49,12 @@ const user = {
     "changePhoneSuccess": "تم تحديث رقم الهاتف"
   },
   "notifications": {
-    "generic": "لديك إشعار جديد"
+    "title": "الإشعارات",
+    "generic": "لديك إشعار جديد",
+    "empty": "لا توجد إشعارات بعد",
+    "loadError": "تعذر تحميل الإشعارات. يرجى المحاولة مرة أخرى.",
+    "retry": "إعادة المحاولة",
+    "unknownDate": "تاريخ غير معروف"
   }
 } as const;
 

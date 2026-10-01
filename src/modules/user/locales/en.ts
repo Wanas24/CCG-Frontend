@@ -49,7 +49,12 @@ const user = {
     "changePhoneSuccess": "Phone number updated"
   },
   "notifications": {
-    "generic": "You have a new notification"
+    "title": "Notifications",
+    "generic": "You have a new notification",
+    "empty": "No notifications yet",
+    "loadError": "Unable to load notifications. Please try again.",
+    "retry": "Retry",
+    "unknownDate": "Unknown date"
   }
 } as const;
 
