@@ -12,9 +12,10 @@ import { getTimeZoneOptions } from "../utils/timeZones";
 
 type Props = {
   control: Control<CompanyFormValues>;
+  disabled?: boolean;
 };
 
-const CompanyFormFields = ({ control }: Props) => {
+const CompanyFormFields = ({ control, disabled = false }: Props) => {
   const { t } = useTranslation();
   const translateError = useTranslatedFormError();
   const timeZoneOptions = getTimeZoneOptions().map((timeZoneId) => ({
@@ -33,6 +34,7 @@ const CompanyFormFields = ({ control }: Props) => {
             label={t("company.fields.name")}
             placeholder={t("company.fields.namePlaceholder")}
             required
+            disabled={disabled}
             errorMsg={translateError(fieldState.error?.message)}
           />
         )}
@@ -47,6 +49,7 @@ const CompanyFormFields = ({ control }: Props) => {
             label={t("company.fields.description")}
             placeholder={t("company.fields.descriptionPlaceholder")}
             rows={3}
+            disabled={disabled}
             errorMsg={translateError(fieldState.error?.message)}
           />
         )}
@@ -61,6 +64,7 @@ const CompanyFormFields = ({ control }: Props) => {
             label={t("company.fields.address")}
             placeholder={t("company.fields.addressPlaceholder")}
             required
+            disabled={disabled}
             errorMsg={translateError(fieldState.error?.message)}
           />
         )}
@@ -80,6 +84,7 @@ const CompanyFormFields = ({ control }: Props) => {
             label={t("company.fields.timeZone")}
             placeholder={t("company.fields.timeZonePlaceholder")}
             required
+            disabled={disabled}
             errorMsg={translateError(fieldState.error?.message)}
           />
         )}
