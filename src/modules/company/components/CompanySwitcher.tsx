@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Dropdown, Tooltip } from "antd";
 import { Building2, ChevronDown, Plus, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -148,6 +148,7 @@ const CompanyRow = ({
 };
 
 const CompanySwitcher = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const {
@@ -163,9 +164,14 @@ const CompanySwitcher = () => {
 
   const closeMenu = () => setOpen(false);
 
-  const onSelectCompany = (companyId: number) => {
+  const onSelectCompany = async (companyId: number) => {
     closeMenu();
-    void switchCompany(companyId);
+
+    const switched = await switchCompany(companyId);
+
+    if (switched) {
+      navigate("/home");
+    }
   };
 
   return (
