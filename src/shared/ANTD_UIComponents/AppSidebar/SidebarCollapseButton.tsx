@@ -18,10 +18,10 @@ const SidebarCollapseButton = memo(function SidebarCollapseButton() {
         "absolute top-[9%] z-20",
         "flex h-10 w-[22px] items-center justify-center",
         "bg-(--Primary400) text-white",
-        "cursor-pointer transition-all duration-200",
+        "cursor-pointer transition-all duration-200 rounded-e-md",
         isRtl
-          ? "right-full rounded-s-md"
-          : "left-full rounded-e-md",
+          ? "right-full"
+          : "left-full",
       ].join(" ")}
     >
       {showLeftChevron ? (
