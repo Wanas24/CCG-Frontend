@@ -18,8 +18,8 @@ const LoginForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       noValidate
     >
-      <div className="w-10 h-10 rounded-xl bg-[#E8F5F0] flex items-center justify-center">
-        <KeyRound className="w-6 h-6 text-[#3D7A6A]" />
+      <div className="w-10 h-10 rounded-xl bg-(--Primary100) flex items-center justify-center">
+        <KeyRound className="w-6 h-6 text-(--Primary400)" />
       </div>
 
       <div>

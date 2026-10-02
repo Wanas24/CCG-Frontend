@@ -25,7 +25,7 @@ const AppLayout = () => {
   };
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-(--app-bg) text-(--app-text)">
+    <div className="flex h-dvh overflow-hidden bg-transparent text-(--app-text)">
       {!isMobile && (
         <AppSidebar
           {...sidebarProps}
@@ -48,7 +48,7 @@ const AppLayout = () => {
             header: { display: "none" },
           }}
           classNames={{
-            body: "bg-(--Primary400)!",
+            body: "sidebar-bg",
           }}
         >
           <AppSidebar

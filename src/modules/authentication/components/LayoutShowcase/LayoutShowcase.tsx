@@ -25,59 +25,64 @@ const LayoutShowcase = () => {
   ] as const;
 
   return (
-    <div className="relative flex flex-col w-full min-h-dvh text-white overflow-hidden bg-[#16241F]">
+    <div
+      className="relative flex flex-col w-full min-h-dvh overflow-hidden"
+      style={{
+        background: "color-mix(in srgb, var(--Primary400) 5%, var(--app-bg))",
+      }}
+    >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 60% 55% at 30% 40%, rgba(74,122,104,0.35) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 55% at 30% 40%, color-mix(in srgb, var(--Primary400) 12%, transparent) 0%, transparent 70%)",
         }}
       />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 40% 40% at 85% 30%, rgba(120,160,140,0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 40% 40% at 85% 30%, color-mix(in srgb, var(--Secondary300) 8%, transparent) 0%, transparent 70%)",
         }}
       />
 
       <div className="relative z-10 flex flex-col h-full px-10 py-8 min-h-dvh">
         <div className="flex w-full flex-wrap items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-(--Primary100) border border-(--Grey300) flex items-center justify-center">
             <ShieldCheck
-              className="w-4.5 h-4.5 text-white"
+              className="w-4.5 h-4.5 text-(--Primary400)"
               strokeWidth={1.75}
               aria-hidden
             />
           </div>
-          <span className="text-lg font-bold tracking-wide">
+          <span className="text-lg font-bold tracking-wide text-(--app-text)">
             {t("common.appName")}
           </span>
-          <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white/70 tracking-widest uppercase">
+          <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-(--Primary100) text-(--Primary400) tracking-widest uppercase">
             {t("auth.showcase.badge")}
           </span>
-          <div className="ms-auto rounded-xl bg-white/[0.08]">
-            <AppLocaleSwitcher whiteIcon />
+          <div className="ms-auto rounded-xl bg-(--Grey200)">
+            <AppLocaleSwitcher />
           </div>
         </div>
 
         <div className="flex flex-col flex-1 justify-center gap-5 py-12 max-w-xl">
           <div className="flex items-center gap-2">
             <Sparkles
-              className="w-4 h-4 text-white/55"
+              className="w-4 h-4 text-(--Primary400)"
               strokeWidth={1.75}
               aria-hidden
             />
-            <span className="text-[11px] font-semibold tracking-widest uppercase text-white/55">
+            <span className="text-[11px] font-semibold tracking-widest uppercase text-(--Grey600)">
               {t("auth.showcase.eyebrow")}
             </span>
           </div>
 
-          <h1 className="text-5xl font-bold leading-[1.1] tracking-tight">
+          <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-(--app-text)">
             {t("auth.showcase.headline")}
           </h1>
 
-          <p className="text-[15px] text-white/55 max-w-md leading-relaxed">
+          <p className="text-[15px] text-(--Grey600) max-w-md leading-relaxed">
             {t("auth.showcase.description")}
           </p>
         </div>
@@ -87,7 +92,7 @@ const LayoutShowcase = () => {
             <a
               key={email}
               href={`mailto:${email}`}
-              className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 rounded-2xl"
+              className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--Primary400) rounded-2xl"
               aria-label={`${title}: ${email}`}
             >
               <FeatureCard

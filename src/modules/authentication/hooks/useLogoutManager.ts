@@ -4,6 +4,7 @@ import { useRevokeToken } from "../api/hooks/useRevokeToken";
 import { useAuthStore } from "../store/authStore";
 import { queryClient } from "@/lib/queryClient";
 import { disconnectHub } from "@/services/hub";
+import { useThemeStore } from "@/AntdTheme";
 
 export const useLogoutManager = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export const useLogoutManager = () => {
     } finally {
       disconnectHub();
       storeLogout();
+      useThemeStore.getState().setMode("light");
       queryClient.clear();
       navigate(AUTH_ROUTES.login, { replace: true });
     }

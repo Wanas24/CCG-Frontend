@@ -18,6 +18,17 @@
    Portal popups (collapsed flyouts) render outside this element in the body,
    so they are never matched and keep their natural Ant Design sizing.        */
 
+.app-sidebar,
+.ant-menu.ant-menu-sub.ant-menu-vertical {
+  --sidebar-item-hover-bg: color-mix(in srgb, white 22%, var(--Primary400));
+  --sidebar-item-active-bg: color-mix(in srgb, white 34%, var(--Primary400));
+}
+
+/* Gradient background shared by the inline sidebar and the collapsed flyout */
+.sidebar-bg {
+  background: linear-gradient(160deg, var(--Primary400), var(--Secondary300)) !important;
+}
+
 .app-sidebar .ant-menu {
   width: 95% !important;
   margin: auto !important;
@@ -40,13 +51,13 @@
 
 .app-sidebar .ant-menu-item:not(.ant-menu-item-selected):hover,
 .app-sidebar .ant-menu-submenu-title:hover {
-  background-color: var(--Primary300) !important;
+  background-color: var(--sidebar-item-hover-bg) !important;
   color: var(--app-surface) !important;
 }
 
 .app-sidebar .ant-menu-item.ant-menu-item-selected {
-  border: 2px solid var(--Primary300) !important;
-  background-color: var(--Primary300) !important;
+  border: 2px solid var(--sidebar-item-active-bg) !important;
+  background-color: var(--sidebar-item-active-bg) !important;
   margin-inline: 0px !important;
   width: 90% !important;
   margin: auto !important;
@@ -54,14 +65,14 @@
 }
 
 .app-sidebar .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open {
-  border: 2px solid var(--Primary300) !important;
-  background-color: var(--Primary300) !important;
+  border: 2px solid var(--sidebar-item-active-bg) !important;
+  background-color: var(--sidebar-item-active-bg) !important;
   margin-bottom: 10px !important;
 }
 
 /* Collapsed flyout submenu (portaled outside .app-sidebar) */
 .ant-menu.ant-menu-sub.ant-menu-vertical {
-  background: var(--Primary400) !important;
+  background: linear-gradient(160deg, var(--Primary400), var(--Secondary300)) !important;
   color: var(--app-surface) !important;
 }
 
@@ -73,11 +84,11 @@
 
 .ant-menu.ant-menu-sub.ant-menu-vertical
   .ant-menu-item:not(.ant-menu-item-selected):hover {
-  background-color: var(--Primary300) !important;
+  background-color: var(--sidebar-item-hover-bg) !important;
 }
 
 .ant-menu.ant-menu-sub.ant-menu-vertical .ant-menu-item.ant-menu-item-selected {
-  background-color: var(--Primary300) !important;
+  background-color: var(--sidebar-item-active-bg) !important;
   color: var(--app-surface) !important;
 }
 

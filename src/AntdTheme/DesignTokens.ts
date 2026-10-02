@@ -5,7 +5,7 @@ export const DesignTokens = {
   },
   radius: {
     sm: 6,
-    md: 8,
+    md: 10,
     lg: 12,
     xl: 16,
   },
