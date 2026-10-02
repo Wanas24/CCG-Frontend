@@ -17,6 +17,12 @@
   font-display: swap;
 }
 
+:root {
+  --gradient-primary: linear-gradient(135deg, var(--Primary400), var(--Secondary300));
+  --glow-primary: 0 0 0 1px color-mix(in srgb, var(--Primary400) 30%, transparent),
+    0 8px 24px -8px color-mix(in srgb, var(--Primary400) 45%, transparent);
+}
+
 html,
 body,
 #root {
@@ -25,9 +31,47 @@ body,
 
 body {
   margin: 0;
-  background: var(--app-bg);
+  background-color: var(--app-bg);
+  background-image:
+    radial-gradient(
+      1200px 600px at 10% -10%,
+      color-mix(in srgb, var(--Primary400) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 110% 10%,
+      color-mix(in srgb, var(--Secondary300) 14%, transparent),
+      transparent 60%
+    );
+  background-attachment: fixed;
   color: var(--app-text);
   font-family: "IBM Plex Sans", sans-serif;
+}
+
+/* ── Primary button gradient ───────────────────────────────────────────────── */
+.ant-btn.ant-btn-variant-solid.ant-btn-color-primary {
+  background: var(--gradient-primary) !important;
+  box-shadow: var(--glow-primary) !important;
+  border-color: transparent !important;
+}
+
+.ant-btn.ant-btn-variant-solid.ant-btn-color-primary:not(:disabled):hover {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--Primary400) 80%, white),
+    color-mix(in srgb, var(--Secondary300) 80%, white)
+  ) !important;
+}
+
+/* ── Segmented active thumb gradient ──────────────────────────────────────── */
+.ant-segmented .ant-segmented-thumb {
+  background: var(--gradient-primary) !important;
+  box-shadow: var(--glow-primary) !important;
+}
+
+.ant-segmented .ant-segmented-item-selected {
+  color: #fff !important;
+  background: transparent !important;
 }
 
 * {

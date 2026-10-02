@@ -95,7 +95,7 @@ const AppSidebar = ({
       >
         <div
           style={{ width: collapsed ? collapsedWidth : expandedWidth }}
-          className="app-sidebar flex h-full overflow-hidden bg-(--Primary400)! transition-[width] duration-300 ease-in-out"
+          className="app-sidebar sidebar-bg flex h-full overflow-hidden transition-[width] duration-300 ease-in-out"
         >
           <div className="flex h-full w-full flex-col gap-2">
             <SidebarHeader />
