@@ -6,7 +6,7 @@ export const aiEndpoints = {
     method: "POST",
     path: `/ai/chat`,
     auth: "required",
-    permissions: [PermissionsList.AiAssistantChat],
+    permissions: [PermissionsList.Ai.AiAssistantChat],
   }),
   chats: createEndpoint({
     method: "GET",
