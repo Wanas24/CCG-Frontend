@@ -1,6 +1,7 @@
 import { mapAuthPayloadToUser } from "../utils/mapAuthPayloadToUser";
 import { applySessionAppearance } from "../utils/applySessionAppearance";
 import { useAuthStore } from "../store/authStore";
+import { connectHub } from "@/services/hub";
 import type { TAuthPayload } from "../types";
 
 export const establishSession = (data: TAuthPayload): void => {
@@ -12,4 +13,5 @@ export const establishSession = (data: TAuthPayload): void => {
   });
 
   applySessionAppearance(user);
+  connectHub();
 };

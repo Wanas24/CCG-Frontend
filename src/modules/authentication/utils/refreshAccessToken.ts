@@ -2,6 +2,7 @@ import { AUTH_ROUTES } from "../routes/paths";
 import { isPublicAuthPath } from "../routes/isPublicAuthPath";
 import { authService } from "../api/services/authentication.service";
 import { useAuthStore } from "../store/authStore";
+import { disconnectHub } from "@/services/hub";
 import { mapAuthPayloadToUser } from "./mapAuthPayloadToUser";
 
 let refreshPromise: Promise<string> | null = null;
@@ -36,6 +37,7 @@ export const refreshAccessToken = (): Promise<string> => {
 
       return data.token;
     } catch (error) {
+      disconnectHub();
       useAuthStore.getState().logout();
       redirectToLogin();
       throw error;

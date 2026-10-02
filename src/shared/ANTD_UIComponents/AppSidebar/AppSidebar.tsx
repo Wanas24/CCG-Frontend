@@ -2,7 +2,6 @@ import { memo, useCallback, useContext, useEffect, useRef, useState } from "reac
 import { ConfigProvider } from "antd";
 import { SidebarProvider } from "./SidebarContext";
 import SidebarMenu from "./SidebarMenu";
-import SidebarCollapseButton from "./SidebarCollapseButton";
 import SidebarHeader from "./SidebarHeader";
 import { defaultMenuConfig } from "./menuConfig";
 import type { AppSidebarProps } from "./types";
@@ -21,18 +20,22 @@ const AppSidebar = ({
   expandedWidth = "15rem",
   collapsedWidth = "4.5rem",
   autoCollapseBelow = SIDEBAR_TABLET_BREAKPOINT,
-  hideCollapseControl = false,
+  expandOnHover = false,
   onNavigate,
 }: AppSidebarProps) => {
-  const isBelowTablet = useSidebarTabletBreakpoint(autoCollapseBelow);
+  const isBelowTablet = useSidebarTabletBreakpoint(
+    expandOnHover ? false : autoCollapseBelow,
+  );
   const [internalCollapsed, setInternalCollapsed] = useState(() => {
-    if (defaultCollapsed) return true;
+    if (expandOnHover || defaultCollapsed) return true;
     if (autoCollapseBelow === false) return false;
     return window.innerWidth < autoCollapseBelow;
   });
+  const [hovered, setHovered] = useState(false);
   const previousBelowTabletRef = useRef(isBelowTablet);
 
   useEffect(() => {
+    if (expandOnHover) return;
     if (collapsedProp !== undefined) return;
     if (autoCollapseBelow === false) return;
 
@@ -40,46 +43,68 @@ const AppSidebar = ({
       setInternalCollapsed(isBelowTablet);
       previousBelowTabletRef.current = isBelowTablet;
     }
-  }, [autoCollapseBelow, collapsedProp, isBelowTablet]);
+  }, [autoCollapseBelow, collapsedProp, expandOnHover, isBelowTablet]);
 
   const isControlled = collapsedProp !== undefined;
-  const collapsed = isControlled ? collapsedProp : internalCollapsed;
+  const collapsed = isControlled
+    ? collapsedProp
+    : expandOnHover
+      ? !hovered
+      : internalCollapsed;
 
   const toggleCollapse = useCallback(() => {
+    if (expandOnHover) {
+      return;
+    }
+
     if (onCollapse) {
       onCollapse();
     } else if (!isControlled) {
       setInternalCollapsed((prev) => !prev);
     }
-  }, [isControlled, onCollapse]);
+  }, [expandOnHover, isControlled, onCollapse]);
 
   const { direction } = useContext(ConfigProvider.ConfigContext);
   const isRtl = direction === "rtl";
 
   return (
     <SidebarProvider
-  collapsed={collapsed}
-  onToggle={toggleCollapse}
-  isRtl={isRtl}
-  menuConfig={menuConfig}
-  permissions={permissions}
-  onNavigate={onNavigate}
->
-  <div className="relative h-full shrink-0">
-    <div
-      style={{ width: collapsed ? collapsedWidth : expandedWidth }}
-      className="app-sidebar flex h-full overflow-hidden bg-(--Primary400)! transition-[width] duration-300 ease-in-out"
+      collapsed={collapsed}
+      onToggle={toggleCollapse}
+      isRtl={isRtl}
+      menuConfig={menuConfig}
+      permissions={permissions}
+      onNavigate={onNavigate}
     >
-      <div className="flex h-full w-full flex-col gap-2">
-        <SidebarHeader />
-        <SidebarMenu />
-        <div className="h-5 shrink-0" />
+      <div
+        className="relative h-full shrink-0"
+        onMouseEnter={
+          expandOnHover
+            ? () => {
+                setHovered(true);
+              }
+            : undefined
+        }
+        onMouseLeave={
+          expandOnHover
+            ? () => {
+                setHovered(false);
+              }
+            : undefined
+        }
+      >
+        <div
+          style={{ width: collapsed ? collapsedWidth : expandedWidth }}
+          className="app-sidebar flex h-full overflow-hidden bg-(--Primary400)! transition-[width] duration-300 ease-in-out"
+        >
+          <div className="flex h-full w-full flex-col gap-2">
+            <SidebarHeader />
+            <SidebarMenu />
+            <div className="h-5 shrink-0" />
+          </div>
+        </div>
       </div>
-    </div>
-
-    {!hideCollapseControl && <SidebarCollapseButton />}
-  </div>
-</SidebarProvider>
+    </SidebarProvider>
   );
 };
 

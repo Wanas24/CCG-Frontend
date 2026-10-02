@@ -6,9 +6,10 @@ import CompanyFormFields from "./CompanyFormFields";
 
 type Props = {
   company: TCompany;
+  canEdit: boolean;
 };
 
-const CompanyForm = ({ company }: Props) => {
+const CompanyForm = ({ company, canEdit }: Props) => {
   const { t } = useTranslation();
   const { control, handleSubmit, onSubmit, isPending } =
     useUpdateCompanyManager(company);
@@ -16,13 +17,21 @@ const CompanyForm = ({ company }: Props) => {
   return (
     <form
       className="flex flex-col gap-6"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={
+        canEdit
+          ? handleSubmit(onSubmit)
+          : (event) => {
+              event.preventDefault();
+            }
+      }
       noValidate
     >
-      <CompanyFormFields control={control} />
-      <AppButton htmlType="submit" variant="primary" loading={isPending}>
-        {t("company.edit.save")}
-      </AppButton>
+      <CompanyFormFields control={control} disabled={!canEdit} />
+      {canEdit ? (
+        <AppButton htmlType="submit" variant="primary" loading={isPending}>
+          {t("company.edit.save")}
+        </AppButton>
+      ) : null}
     </form>
   );
 };

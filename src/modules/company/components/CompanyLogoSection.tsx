@@ -8,9 +8,16 @@ import { useCompanyLogoManager } from "../hooks/useCompanyLogoManager";
 type Props = {
   logo: string | null;
   details?: ReactNode;
+  canUpload?: boolean;
+  canDelete?: boolean;
 };
 
-const CompanyLogoSection = ({ logo, details }: Props) => {
+const CompanyLogoSection = ({
+  logo,
+  details,
+  canUpload = false,
+  canDelete = false,
+}: Props) => {
   const { t } = useTranslation();
   const {
     beforeUpload,
@@ -20,6 +27,8 @@ const CompanyLogoSection = ({ logo, details }: Props) => {
     isDeleting,
     isPending,
   } = useCompanyLogoManager();
+
+  const showActions = canUpload || (canDelete && Boolean(logo));
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -40,42 +49,46 @@ const CompanyLogoSection = ({ logo, details }: Props) => {
 
       {details}
 
-      <div className="flex w-full flex-wrap items-center justify-center gap-2">
-        <div className="flex justify-center">
-          <AppUpload
-            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-            maxCount={1}
-            showUploadList={false}
-            disabled={isPending}
-            beforeUpload={beforeUpload}
-            customRequest={customRequest}
-          >
-            <AppButton
-              variant="primary"
-              htmlType="button"
-              loading={isUploading}
-              disabled={isPending}
-            >
-              {t("company.logo.change")}
-            </AppButton>
-          </AppUpload>
-        </div>
+      {showActions ? (
+        <div className="flex w-full flex-wrap items-center justify-center gap-2">
+          {canUpload ? (
+            <div className="flex justify-center">
+              <AppUpload
+                accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                maxCount={1}
+                showUploadList={false}
+                disabled={isPending}
+                beforeUpload={beforeUpload}
+                customRequest={customRequest}
+              >
+                <AppButton
+                  variant="primary"
+                  htmlType="button"
+                  loading={isUploading}
+                  disabled={isPending}
+                >
+                  {t("company.logo.change")}
+                </AppButton>
+              </AppUpload>
+            </div>
+          ) : null}
 
-        {logo && (
-          <div className="flex justify-center">
-            <AppButton
-              variant="delete"
-              htmlType="button"
-              loading={isDeleting}
-              disabled={isUploading}
-              onClick={onDelete}
-              aria-label={t("company.logo.delete")}
-            >
-              {t("company.logo.delete")}
-            </AppButton>
-          </div>
-        )}
-      </div>
+          {canDelete && logo ? (
+            <div className="flex justify-center">
+              <AppButton
+                variant="delete"
+                htmlType="button"
+                loading={isDeleting}
+                disabled={isUploading}
+                onClick={onDelete}
+                aria-label={t("company.logo.delete")}
+              >
+                {t("company.logo.delete")}
+              </AppButton>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 };

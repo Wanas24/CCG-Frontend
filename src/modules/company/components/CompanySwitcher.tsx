@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Dropdown, Tooltip } from "antd";
 import { Building2, ChevronDown, Plus, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,8 @@ import clsx from "clsx";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { hint } from "@/lib/feedback/hint";
 import { AppButton, AppDivider } from "@/shared/ANTD_UIComponents";
+import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
+import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useSwitchCompanyManager } from "../hooks/useSwitchCompanyManager";
 import { COMPANY_ROUTES } from "../routes/paths";
 import type { TUserCompany } from "../types";
@@ -71,6 +73,7 @@ type CompanyRowProps = {
   currentCompanyId: number | null;
   logo?: string | null;
   disabled: boolean;
+  showSettings: boolean;
   onSelect: (companyId: number) => void;
   onClose: () => void;
 };
@@ -80,6 +83,7 @@ const CompanyRow = ({
   currentCompanyId,
   logo,
   disabled,
+  showSettings,
   onSelect,
   onClose,
 }: CompanyRowProps) => {
@@ -127,7 +131,7 @@ const CompanyRow = ({
         </span>
       </button>
 
-      {isSelected ? (
+      {isSelected && showSettings ? (
         <Tooltip title={t("company.switcher.settings")}>
           <Link
             to={COMPANY_ROUTES.root}
@@ -148,8 +152,13 @@ const CompanyRow = ({
 };
 
 const CompanySwitcher = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const { hasPermission, isLoading: isPermissionsLoading } = usePermissions();
+  const canGetCompanyInfo =
+    !isPermissionsLoading &&
+    hasPermission(PermissionsList.Company.GetCompanyInfo);
   const {
     companies,
     currentCompany,
@@ -163,9 +172,14 @@ const CompanySwitcher = () => {
 
   const closeMenu = () => setOpen(false);
 
-  const onSelectCompany = (companyId: number) => {
+  const onSelectCompany = async (companyId: number) => {
     closeMenu();
-    void switchCompany(companyId);
+
+    const switched = await switchCompany(companyId);
+
+    if (switched) {
+      navigate("/home");
+    }
   };
 
   return (
@@ -200,6 +214,7 @@ const CompanySwitcher = () => {
               currentCompanyId={currentCompanyId}
               logo={company.profileUrl}
               disabled={isSwitching}
+              showSettings={canGetCompanyInfo}
               onSelect={onSelectCompany}
               onClose={closeMenu}
             />

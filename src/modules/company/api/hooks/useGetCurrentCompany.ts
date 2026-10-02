@@ -4,13 +4,13 @@ import { companyService } from "../services/company.service";
 import { currentCompanyQueryKey } from "./companyQueryKeys";
 import type { TGetCurrentCompanyResponse } from "../../types";
 
-export const useGetCurrentCompany = () => {
+export const useGetCurrentCompany = (enabled = true) => {
   const companyId = useAuthStore((state) => state.user?.companyId ?? null);
 
   return useQuery<TGetCurrentCompanyResponse>({
     queryKey: currentCompanyQueryKey,
     queryFn: companyService.getCurrent,
-    enabled: companyId !== null,
+    enabled: enabled && companyId !== null,
     staleTime: 0,
     refetchOnMount: true,
   });

@@ -1,10 +1,12 @@
 import { createEndpoint } from "@/lib/api/createEndpoint";
+import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 
 export const companyEndpoints = {
   getCurrent: createEndpoint({
     method: "GET",
     path: `/Company`,
     auth: "required",
+    permissions: [PermissionsList.Company.GetCompanyInfo]
   }),
   create: createEndpoint({
     method: "POST",
@@ -15,6 +17,7 @@ export const companyEndpoints = {
     method: "PUT",
     path: `/Company`,
     auth: "required",
+    permissions: [PermissionsList.Company.Edit],
   }),
   delete: createEndpoint({
     method: "DELETE",
@@ -25,15 +28,18 @@ export const companyEndpoints = {
     method: "GET",
     path: `/Company/logo`,
     auth: "required",
+    permissions: [PermissionsList.Company.GetLogo],
   }),
   uploadLogo: createEndpoint({
     method: "POST",
     path: `/Company/logo`,
     auth: "required",
+    permissions: [PermissionsList.Company.UploadLogo],
   }),
   deleteLogo: createEndpoint({
     method: "DELETE",
     path: `/Company/logo`,
     auth: "required",
+    permissions: [PermissionsList.Company.DeleteLogo],
   }),
 };

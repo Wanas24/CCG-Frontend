@@ -24,8 +24,8 @@ import AiSubscriptionTable from "../components/AiSubscriptionTable";
 const AiSubscriptionManagementPage = () => {
   const { t } = useTranslation();
   const { hasPermission, isLoading: isPermissionsLoading } = usePermissions();
-  const canGet = hasPermission(PermissionsList.AiSubscriptionGet);
-  const canUpdate = hasPermission(PermissionsList.AiSubscriptionUpdate);
+  const canGet = hasPermission(PermissionsList.Ai.AiSubscriptionGet);
+  const canUpdate = hasPermission(PermissionsList.Ai.AiSubscriptionUpdate);
 
   const listState = useAiSubscriptionListState();
   const { data, isPending, isError, isFetching, refetch } =

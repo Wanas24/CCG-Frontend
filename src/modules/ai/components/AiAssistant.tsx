@@ -27,7 +27,7 @@ const AiAssistant = () => {
     return null;
   }
 
-  if (!hasPermission(PermissionsList.AiAssistantChat)) {
+  if (!hasPermission(PermissionsList.Ai.AiAssistantChat)) {
     return null;
   }
 

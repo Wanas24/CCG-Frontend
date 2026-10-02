@@ -47,6 +47,23 @@ const user = {
     "saveSuccess": "Profile updated",
     "changePhone": "Change phone number",
     "changePhoneSuccess": "Phone number updated"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "generic": "You have a new notification",
+    "empty": "No notifications yet",
+    "loadError": "Unable to load notifications. Please try again.",
+    "retry": "Retry",
+    "unknownDate": "Unknown date",
+    "filtersLabel": "Notification filters",
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read"
+    },
+    "markAsRead": "Mark as read",
+    "markAsUnread": "Mark as unread",
+    "markAllAsRead": "Mark all as read"
   }
 } as const;
 
