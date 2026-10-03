@@ -1,33 +1,46 @@
 import { useMemo, useState, type CSSProperties } from "react";
-import { Table } from "antd";
+import { Table, type TablePaginationConfig } from "antd";
 import clsx from "clsx";
 import { SlidersHorizontal } from "lucide-react";
 import AppChevron from "../AppChevron/AppChevron";
 import "./appTableStyles.css";
-import type { AppTableProps, IDataType } from "./Types/tableTypes";
+import type {
+  AppTableProps,
+  AppTableServerPagination,
+  IDataType,
+} from "./Types/tableTypes";
 import { Tablecolumns } from "./TableColumns";
 import AppButton from "../AppButton/AppButton";
 import { filterDataByColumnSearch } from "./columnSearchUtils";
 import { applyColumnSort } from "./columnSortUtils";
-import {
-  createSkeletonDataSource,
-  getSkeletonRowCount,
-  isTableLoading,
-  resolveTableColumns,
-} from "./tableLoadingUtils";
 import { useColumnHeaderSearch } from "./useColumnHeaderSearch";
 import { useResizableColumns } from "./useResizableColumns";
 
-const AppTable = <T extends IDataType = IDataType>({
+const PAGE_SIZE_OPTIONS = ["10", "20", "50", "100"];
+
+const toControlledPagination = (
+  serverPagination: AppTableServerPagination,
+) => ({
+  current: serverPagination.page,
+  pageSize: serverPagination.pageSize,
+  total: serverPagination.total,
+  onChange: (nextPage: number, nextPageSize: number) => {
+    const pageSizeChanged = nextPageSize !== serverPagination.pageSize;
+    serverPagination.onChange(pageSizeChanged ? 1 : nextPage, nextPageSize);
+  },
+});
+
+const AppTable = <T extends object = IDataType>({
   filterContent,
   filterPanelWidth = "20%",
   columns = Tablecolumns as AppTableProps<T>["columns"],
   dataSource = [] as T[],
   className,
-  scroll = { x: "max-content", y: 55 * 8 },
+  scroll,
   footerContent,
   loading,
   pagination: paginationProp,
+  serverPagination,
   rowSelection,
   resizableColumns: resizableColumnsEnabled = true,
   columnHeaderSearch: columnHeaderSearchEnabled = false,
@@ -36,12 +49,33 @@ const AppTable = <T extends IDataType = IDataType>({
 }: AppTableProps<T>) => {
   const [isFilterOpen, setIsPreferenceOpen] = useState(false);
   const hasFilterPanel = Boolean(filterContent);
-  const isLoading = isTableLoading(loading);
 
-  const skeletonRowCount = useMemo(
-    () => getSkeletonRowCount(scroll, paginationProp),
-    [scroll, paginationProp],
-  );
+  const paginationConfig: TablePaginationConfig | false =
+    paginationProp === false
+      ? false
+      : {
+          hideOnSinglePage: false,
+          position: ["bottomRight"],
+          showQuickJumper: true,
+          showSizeChanger: true,
+          pageSizeOptions: PAGE_SIZE_OPTIONS,
+          nextIcon: (
+            <AppChevron
+              direction="next"
+              size={35}
+              className="bg-white p-1 rounded-lg border border-(--Grey200)"
+            />
+          ),
+          prevIcon: (
+            <AppChevron
+              direction="previous"
+              size={35}
+              className="bg-white p-1 rounded-lg border border-(--Grey200)"
+            />
+          ),
+          ...paginationProp,
+          ...(serverPagination ? toControlledPagination(serverPagination) : {}),
+        };
 
   const { columns: resizedColumns, components: resizableComponents } =
     useResizableColumns({
@@ -50,21 +84,23 @@ const AppTable = <T extends IDataType = IDataType>({
       components: userComponents,
     });
 
-  const { columns: searchableColumns, searchValues, sortStates } =
-    useColumnHeaderSearch({
-      columns: resizedColumns,
-      enabled: columnHeaderSearchEnabled,
-    });
-
-  const displayColumns = useMemo(
-    () => resolveTableColumns(searchableColumns, isLoading),
-    [searchableColumns, isLoading],
-  );
+  const {
+    columns: searchableColumns,
+    searchValues,
+    sortStates,
+  } = useColumnHeaderSearch({
+    columns: resizedColumns,
+    enabled: columnHeaderSearchEnabled,
+  });
 
   const filteredDataSource = useMemo(() => {
     if (!columnHeaderSearchEnabled) return dataSource;
 
-    const searched = filterDataByColumnSearch(dataSource, columns, searchValues);
+    const searched = filterDataByColumnSearch(
+      dataSource,
+      columns,
+      searchValues,
+    );
     return applyColumnSort(searched, columns, sortStates);
   }, [
     columnHeaderSearchEnabled,
@@ -73,28 +109,6 @@ const AppTable = <T extends IDataType = IDataType>({
     searchValues,
     sortStates,
   ]);
-
-  const displayDataSource = useMemo(
-    () =>
-      isLoading
-        ? createSkeletonDataSource<T>(skeletonRowCount)
-        : filteredDataSource,
-    [isLoading, filteredDataSource, skeletonRowCount],
-  );
-
-  const displayRowSelection = useMemo(() => {
-    if (!rowSelection || !isLoading) return rowSelection;
-
-    const { getCheckboxProps, ...rest } = rowSelection;
-
-    return {
-      ...rest,
-      getCheckboxProps: (record: T) => ({
-        ...getCheckboxProps?.(record),
-        disabled: true,
-      }),
-    };
-  }, [rowSelection, isLoading]);
 
   return (
     <div className="flex w-full h-fit relative">
@@ -130,8 +144,8 @@ const AppTable = <T extends IDataType = IDataType>({
           } satisfies CSSProperties
         }
       >
-        <div className="flex h-fit py-1 items-center justify-start pr-2">
-          {hasFilterPanel && (
+        {hasFilterPanel && (
+          <div className="flex h-fit py-1 items-center justify-start pr-2">
             <AppButton
               variant="secondary"
               icon={<SlidersHorizontal size={16} />}
@@ -140,42 +154,20 @@ const AppTable = <T extends IDataType = IDataType>({
             >
               Table Filters
             </AppButton>
-          )}
-        </div>
+          </div>
+        )}
 
         <Table<T>
           {...tableProps}
           className={clsx("app-table", className)}
           components={resizableComponents}
-          columns={displayColumns}
+          columns={searchableColumns}
           tableLayout={tableProps.tableLayout ?? "fixed"}
-          dataSource={displayDataSource}
-          rowSelection={displayRowSelection}
+          dataSource={filteredDataSource}
+          rowSelection={rowSelection}
+          loading={loading}
           scroll={scroll}
-          pagination={
-            paginationProp === false
-              ? false
-              : {
-                  hideOnSinglePage: false,
-                  position: ["bottomRight"],
-                  showQuickJumper: true,
-                  nextIcon: (
-                    <AppChevron
-                      direction="next"
-                      size={35}
-                      className="bg-white p-1 rounded-lg border border-(--Grey200)"
-                    />
-                  ),
-                  prevIcon: (
-                    <AppChevron
-                      direction="previous"
-                      size={35}
-                      className="bg-white p-1 rounded-lg border border-(--Grey200)"
-                    />
-                  ),
-                  ...paginationProp,
-                }
-          }
+          pagination={paginationConfig}
         />
       </div>
       {footerContent && (

@@ -79,3 +79,9 @@ export {
   AppInfoRows,
   type AppInfoRow,
 } from "./AppIdentityLayout";
+export { default as AppTable } from "./AppTable/AppTable";
+export { useAppTablePagination } from "./AppTable/useAppTablePagination";
+export type {
+  AppTableProps,
+  AppTableServerPagination,
+} from "./AppTable/Types/tableTypes";

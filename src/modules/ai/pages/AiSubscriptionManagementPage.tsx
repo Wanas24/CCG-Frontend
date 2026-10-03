@@ -67,7 +67,7 @@ const AiSubscriptionManagementPage = () => {
   }
 
   return (
-    <div className="p-4 sm:p-6">
+    <>
       <AppFormPage title={t("ai.subscriptions.title")} className="gap-4!">
         <AppFormSection className="gap-4!">
           <p className={`m-0 ${DesignTokens.typography.muted}`}>
@@ -126,12 +126,9 @@ const AiSubscriptionManagementPage = () => {
             <AiSubscriptionTable
               rows={rows}
               loading={isPending || isFetching}
-              page={listState.page}
-              pageSize={listState.pageSize}
-              totalCount={totalCount}
-              onPageChange={(nextPage, nextPageSize) => {
-                listState.setPage(nextPage);
-                listState.setPageSize(nextPageSize);
+              pagination={{
+                ...listState.pagination,
+                total: totalCount,
               }}
               onOpenUser={openUser}
             />
@@ -145,7 +142,7 @@ const AiSubscriptionManagementPage = () => {
         canUpdate={canUpdate}
         onClose={closeDrawer}
       />
-    </div>
+    </>
   );
 };
 

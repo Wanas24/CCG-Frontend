@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { Table, type TableColumnsType, type TablePaginationConfig } from "antd";
-import { AppButton } from "@/shared/ANTD_UIComponents";
+import type { TableColumnsType } from "antd";
+import { AppButton, AppTable } from "@/shared/ANTD_UIComponents";
+import type { AppTableServerPagination } from "@/shared/ANTD_UIComponents/AppTable/Types/tableTypes";
 import { useLocale } from "@/i18n";
 import type { TAiCompanyUserSubscriptionResponse } from "../types";
 import { formatAiSubscriptionDate } from "../utils/aiSubscriptionDates";
@@ -9,20 +10,14 @@ import { formatAiUsageNumber } from "../utils/aiUsageFormat";
 type Props = {
   rows: TAiCompanyUserSubscriptionResponse[];
   loading: boolean;
-  page: number;
-  pageSize: number;
-  totalCount: number;
-  onPageChange: (page: number, pageSize: number) => void;
+  pagination: AppTableServerPagination;
   onOpenUser: (user: TAiCompanyUserSubscriptionResponse) => void;
 };
 
 const AiSubscriptionTable = ({
   rows,
   loading,
-  page,
-  pageSize,
-  totalCount,
-  onPageChange,
+  pagination,
   onOpenUser,
 }: Props) => {
   const { t } = useTranslation();
@@ -50,7 +45,6 @@ const AiSubscriptionTable = ({
     {
       title: t("ai.subscriptions.columns.role"),
       key: "role",
-      width: 120,
       render: (_, row) =>
         row.isManager
           ? t("ai.subscriptions.role.manager")
@@ -59,7 +53,6 @@ const AiSubscriptionTable = ({
     {
       title: t("ai.subscriptions.columns.subscription"),
       key: "subscription",
-      width: 150,
       render: (_, row) => {
         if (!row.isSubscribed) {
           return t("ai.subscriptions.notSubscribed");
@@ -82,7 +75,6 @@ const AiSubscriptionTable = ({
     {
       title: t("ai.subscriptions.columns.renewalDate"),
       key: "renewalDate",
-      width: 140,
       render: (_, row) => {
         const renewalDate = formatAiSubscriptionDate(
           row.subscribedToUtc,
@@ -94,7 +86,6 @@ const AiSubscriptionTable = ({
     {
       title: t("ai.subscriptions.columns.usage"),
       key: "usage",
-      width: 180,
       render: (_, row) => {
         if (!row.isSubscribed) {
           return t("ai.subscriptions.emptyValue");
@@ -126,8 +117,6 @@ const AiSubscriptionTable = ({
     {
       title: t("ai.subscriptions.columns.actions"),
       key: "actions",
-      width: 110,
-      fixed: "right",
       render: (_, row) => (
         <AppButton
           variant="tertiary"
@@ -140,29 +129,22 @@ const AiSubscriptionTable = ({
     },
   ];
 
-  const pagination: TablePaginationConfig = {
-    current: page,
-    pageSize,
-    total: totalCount,
-    showSizeChanger: true,
-    pageSizeOptions: ["10", "20", "50", "100"],
-    onChange: onPageChange,
-    showTotal: (total, range) =>
-      t("ai.subscriptions.paginationTotal", {
-        from: range[0],
-        to: range[1],
-        total,
-      }),
-  };
-
   return (
-    <Table<TAiCompanyUserSubscriptionResponse>
+    <AppTable<TAiCompanyUserSubscriptionResponse>
       rowKey="userId"
       columns={columns}
       dataSource={rows}
       loading={loading}
-      pagination={pagination}
-      scroll={{ x: 960 }}
+      serverPagination={pagination}
+      pagination={{
+        showTotal: (total, range) =>
+          t("ai.subscriptions.paginationTotal", {
+            from: range[0],
+            to: range[1],
+            total,
+          }),
+      }}
+      resizableColumns={false}
       locale={{ emptyText: t("ai.subscriptions.empty") }}
       className="overflow-hidden rounded-xl border border-(--Grey300) bg-(--app-surface)"
     />
