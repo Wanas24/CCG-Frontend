@@ -55,12 +55,16 @@
   color: var(--app-surface) !important;
 }
 
+.app-sidebar .ant-menu-inline.ant-menu-root > .ant-menu-item,
+.app-sidebar .ant-menu-inline.ant-menu-root > .ant-menu-submenu {
+  margin-block: 8px !important;
+}
+
 .app-sidebar .ant-menu-item.ant-menu-item-selected {
   border: 2px solid var(--sidebar-item-active-bg) !important;
   background-color: var(--sidebar-item-active-bg) !important;
-  margin-inline: 0px !important;
   width: 90% !important;
-  margin: auto !important;
+  margin-inline: auto !important;
   color: var(--app-surface) !important;
 }
 
@@ -68,6 +72,10 @@
   border: 2px solid var(--sidebar-item-active-bg) !important;
   background-color: var(--sidebar-item-active-bg) !important;
   margin-bottom: 10px !important;
+}
+
+.app-sidebar .ant-menu-sub.ant-menu-inline {
+  background: transparent !important;
 }
 
 /* Collapsed flyout submenu (portaled outside .app-sidebar) */

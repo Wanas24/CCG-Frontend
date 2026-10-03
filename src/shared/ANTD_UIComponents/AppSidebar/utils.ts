@@ -60,20 +60,63 @@ export function buildMenuItems(
   items: MenuItemConfig[],
   userPermissions: string[] = [],
 ): AntMenuItem[] {
-  return items
-    .filter((item) => hasAccess(item, userPermissions))
-    .map((item) => {
-      const children = item.children
-        ? buildMenuItems(item.children, userPermissions)
-        : undefined;
+  const menuItems: AntMenuItem[] = [];
 
-      return {
-        key: item.key,
-        icon: item.icon,
-        label: item.label,
-        children,
-      } as AntMenuItem;
-    });
+  for (const item of items) {
+    if (!hasAccess(item, userPermissions)) continue;
+
+    const children = item.children
+      ? buildMenuItems(item.children, userPermissions)
+      : undefined;
+
+    if (item.children && (!children || children.length === 0)) continue;
+
+    menuItems.push({
+      key: item.key,
+      icon: item.icon,
+      label: item.label,
+      children,
+    } as AntMenuItem);
+  }
+
+  return menuItems;
+}
+
+function matchesMenuPath(pathname: string, path: string) {
+  return (
+    pathname === path ||
+    (pathname.startsWith(path) &&
+      (pathname.length === path.length || pathname[path.length] === "/"))
+  );
+}
+
+function findAncestorKeys(
+  pathname: string,
+  items: MenuItemConfig[],
+  ancestors: string[] = [],
+): string[] | undefined {
+  for (const item of items) {
+    if (item.path && matchesMenuPath(pathname, item.path)) {
+      return ancestors;
+    }
+
+    if (item.children) {
+      const found = findAncestorKeys(pathname, item.children, [
+        ...ancestors,
+        item.key,
+      ]);
+      if (found) return found;
+    }
+  }
+
+  return undefined;
+}
+
+export function getAncestorKeys(
+  pathname: string,
+  items: MenuItemConfig[],
+): string[] {
+  return findAncestorKeys(pathname, items) ?? [];
 }
 
 export function buildMenuPaths(
@@ -95,11 +138,7 @@ export function getSelectedKey(
   const key = Object.keys(menuPaths).find((k) => {
     const p = menuPaths[k];
     if (!p) return false;
-    return (
-      pathname === p ||
-      (pathname.startsWith(p) &&
-        (pathname.length === p.length || pathname[p.length] === "/"))
-    );
+    return matchesMenuPath(pathname, p);
   });
   if (key) return [key];
   return fallback ? [fallback] : [];

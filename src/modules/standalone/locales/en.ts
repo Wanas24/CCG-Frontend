@@ -10,4 +10,8 @@ export const home = {
   navLabel: "Home",
 } as const;
 
+export const settings = {
+  navLabel: "Settings",
+} as const;
+
 export default notFound;

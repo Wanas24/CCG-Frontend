@@ -9,4 +9,8 @@ export const home = {
   navLabel: "الرئيسية",
 } as const;
 
+export const settings = {
+  navLabel: "الإعدادات",
+} as const;
+
 export default notFound;

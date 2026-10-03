@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import { Home, ShieldCheck } from "lucide-react";
+import { Home, Settings, ShieldCheck } from "lucide-react";
 import { AI_ROUTES } from "@/modules/ai/routes/paths";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
@@ -13,10 +13,17 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
     icon: <Home size={18} />,
   },
   {
-    key: "ai-subscriptions",
-    label: t("ai.subscriptions.navLabel"),
-    path: AI_ROUTES.subscriptions,
-    icon: <ShieldCheck size={18} />,
-    permissions: [PermissionsList.Ai.AiSubscriptionGet],
+    key: "settings",
+    label: t("settings.navLabel"),
+    icon: <Settings size={18} />,
+    children: [
+      {
+        key: "ai-subscriptions",
+        label: t("ai.subscriptions.navLabel"),
+        path: AI_ROUTES.subscriptions,
+        icon: <ShieldCheck size={18} />,
+        permissions: [PermissionsList.Ai.AiSubscriptionGet],
+      },
+    ],
   },
 ];

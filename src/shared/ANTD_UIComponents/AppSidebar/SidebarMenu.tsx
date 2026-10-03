@@ -1,8 +1,13 @@
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useEffect, useState } from "react";
 import { Menu } from "antd";
 import { useNavigate, useLocation } from "react-router";
 import { useSidebar } from "./SidebarContext";
-import { buildMenuItems, buildMenuPaths, getSelectedKey } from "./utils";
+import {
+  buildMenuItems,
+  buildMenuPaths,
+  getAncestorKeys,
+  getSelectedKey,
+} from "./utils";
 
 /**
  * Memoized Ant Design Menu wired to React Router.
@@ -27,6 +32,26 @@ const SidebarMenu = memo(function SidebarMenu() {
     return getSelectedKey(location.pathname, menuPaths, fallback);
   }, [location.pathname, menuPaths]);
 
+  const routeOpenKeys = useMemo(
+    () => getAncestorKeys(location.pathname, menuConfig),
+    [location.pathname, menuConfig],
+  );
+
+  const [openKeys, setOpenKeys] = useState(routeOpenKeys);
+
+  useEffect(() => {
+    if (routeOpenKeys.length === 0) return;
+
+    setOpenKeys((current) => {
+      const missing = routeOpenKeys.filter((key) => !current.includes(key));
+      return missing.length === 0 ? current : [...current, ...missing];
+    });
+  }, [routeOpenKeys]);
+
+  const handleOpenChange = useCallback((keys: string[]) => {
+    setOpenKeys(keys);
+  }, []);
+
   const handleMenuClick = useCallback(
     ({ key }: { key: string }) => {
       const path = menuPaths[key];
@@ -43,6 +68,8 @@ const SidebarMenu = memo(function SidebarMenu() {
       <Menu
         overflowedIndicator={null}
         selectedKeys={selectedKeys}
+        openKeys={collapsed ? undefined : openKeys}
+        onOpenChange={collapsed ? undefined : handleOpenChange}
         mode="inline"
         inlineCollapsed={collapsed}
         items={menuItems}

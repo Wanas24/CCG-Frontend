@@ -2,7 +2,7 @@ import auth from "@/modules/authentication/locales/en";
 import company from "@/modules/company/locales/en";
 import ai from "@/modules/ai/locales/en";
 import user from "@/modules/user/locales/en";
-import notFound, { home } from "@/modules/standalone/locales/en";
+import notFound, { home, settings } from "@/modules/standalone/locales/en";
 import shared from "@/shared/locales/en";
 
 const en = {
@@ -13,6 +13,7 @@ const en = {
   user,
   notFound,
   home,
+  settings,
 } as const;
 
 export default en;
