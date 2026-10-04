@@ -27,7 +27,7 @@ export const createAntdTheme = (
     componentOverrides = {},
   }: AntdThemeOptions,
 ): ThemeConfig => {
-  const { Button, Input, ...otherComponents } = componentOverrides;
+  const { Button, Input, Card, ...otherComponents } = componentOverrides;
 
   return {
     algorithm,
@@ -62,7 +62,6 @@ export const createAntdTheme = (
     },
     components: {
       Button: {
-        controlHeight,
         borderRadius: DesignTokens.radius.md,
         ...Button,
       },
@@ -77,11 +76,11 @@ export const createAntdTheme = (
         borderRadius: DesignTokens.radius.md,
         colorBgContainer: cssVariables["--Grey100"],
       },
-      AutoComplete: {
-        controlHeight,
-        borderRadius: DesignTokens.radius.md,
-        colorBgContainer: cssVariables["--Grey100"],
+      Card: {
+        bodyPadding: DesignTokens.Card.bodyPadding,
+        ...Card,
       },
+
       ...otherComponents,
     },
   };

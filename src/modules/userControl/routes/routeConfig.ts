@@ -1,12 +1,9 @@
-import { lazy } from "react";
 import ProtectedRoute from "@/router/guards/ProtectedRoute";
 import type { AppRouteObject } from "@/router/types";
 import AppLayout from "@/layouts/AppLayout";
 import { USER_CONTROL_ROUTES } from "./paths";
 
-const UserControlPage = lazy(() => import("../pages/UserControl"));
-
-const userRouteConfig: AppRouteObject[] = [
+const userControlRouteConfig: AppRouteObject[] = [
   {
     Component: ProtectedRoute,
     children: [
@@ -15,9 +12,12 @@ const userRouteConfig: AppRouteObject[] = [
         children: [
           {
             path: USER_CONTROL_ROUTES.userControl,
-            Component: UserControlPage,
-            label: "User Control",
+            label: "userControl.navLabel",
             showInMenu: false,
+            lazy: async () => {
+              const { default: Component } = await import("../pages/UserControl");
+              return { Component };
+            },
           },
         ],
       },
@@ -25,4 +25,4 @@ const userRouteConfig: AppRouteObject[] = [
   },
 ];
 
-export default userRouteConfig;
+export default userControlRouteConfig;

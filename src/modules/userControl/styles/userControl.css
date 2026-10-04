@@ -1,0 +1,62 @@
+@keyframes ta-slide {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(320%);
+  }
+}
+
+.ta-busy-bar {
+  animation: ta-slide 1s linear infinite;
+}
+
+@keyframes ta-map-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ta-map-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.ta-map-open {
+  animation: ta-map-rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ta-map-edge {
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ta-map-draw 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transition:
+    opacity 0.25s,
+    stroke-width 0.25s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ta-busy-bar,
+  .ta-map-open,
+  .ta-map-edge {
+    animation: none;
+  }
+
+  .ta-map-edge {
+    stroke-dashoffset: 0;
+  }
+}
+
+.ta-0 { --ta-accent: var(--Primary400); --ta-accent-soft: var(--Primary100); }
+.ta-1 { --ta-accent: var(--Secondary300); --ta-accent-soft: var(--Primary100); }
+.ta-2 { --ta-accent: var(--statusB200); --ta-accent-soft: var(--statusB100); }
+.ta-3 { --ta-accent: var(--statusY200); --ta-accent-soft: var(--statusY100); }
+.ta-4 { --ta-accent: var(--statusG200); --ta-accent-soft: var(--statusG100); }
+.ta-5 { --ta-accent: var(--statusR200); --ta-accent-soft: var(--statusR100); }

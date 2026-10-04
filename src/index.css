@@ -48,6 +48,10 @@ body {
   font-family: "IBM Plex Sans", sans-serif;
 }
 
+.gradient {
+  background: var(--gradient-primary);
+}
+
 /* ── Primary button gradient ───────────────────────────────────────────────── */
 .ant-btn.ant-btn-variant-solid.ant-btn-color-primary {
   background: var(--gradient-primary) !important;
@@ -63,15 +67,16 @@ body {
   ) !important;
 }
 
-/* ── Segmented active thumb gradient ──────────────────────────────────────── */
-.ant-segmented .ant-segmented-thumb {
+/* ── Segmented active item gradient ───────────────────────────────────────── */
+.ant-segmented .ant-segmented-thumb,
+.ant-segmented .ant-segmented-item-selected {
   background: var(--gradient-primary) !important;
   box-shadow: var(--glow-primary) !important;
 }
 
-.ant-segmented .ant-segmented-item-selected {
-  color: #fff !important;
-  background: transparent !important;
+.ant-segmented .ant-segmented-item-selected,
+.ant-segmented .ant-segmented-item-selected-text {
+  color: var(--app-surface) !important;
 }
 
 * {

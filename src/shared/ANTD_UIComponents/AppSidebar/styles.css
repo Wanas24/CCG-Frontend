@@ -18,12 +18,6 @@
    Portal popups (collapsed flyouts) render outside this element in the body,
    so they are never matched and keep their natural Ant Design sizing.        */
 
-.app-sidebar,
-.ant-menu.ant-menu-sub.ant-menu-vertical {
-  --sidebar-item-hover-bg: color-mix(in srgb, white 22%, var(--Primary400));
-  --sidebar-item-active-bg: color-mix(in srgb, white 34%, var(--Primary400));
-}
-
 /* Gradient background shared by the inline sidebar and the collapsed flyout */
 .sidebar-bg {
   background: linear-gradient(160deg, var(--Primary400), var(--Secondary300)) !important;
@@ -51,8 +45,16 @@
 
 .app-sidebar .ant-menu-item:not(.ant-menu-item-selected):hover,
 .app-sidebar .ant-menu-submenu-title:hover {
-  background-color: var(--sidebar-item-hover-bg) !important;
-  color: var(--app-surface) !important;
+  background-color: var(--Primary100) !important;
+  color: var(--Grey900) !important;
+}
+
+.app-sidebar .ant-menu-item:not(.ant-menu-item-selected):hover .ant-menu-item-icon,
+.app-sidebar .ant-menu-item:not(.ant-menu-item-selected):hover .anticon,
+.app-sidebar .ant-menu-submenu-title:hover .ant-menu-item-icon,
+.app-sidebar .ant-menu-submenu-title:hover .anticon,
+.app-sidebar .ant-menu-submenu-title:hover .ant-menu-submenu-arrow {
+  color: var(--Grey900) !important;
 }
 
 .app-sidebar .ant-menu-inline.ant-menu-root > .ant-menu-item,
@@ -60,18 +62,21 @@
   margin-block: 8px !important;
 }
 
-.app-sidebar .ant-menu-item.ant-menu-item-selected {
-  border: 2px solid var(--sidebar-item-active-bg) !important;
-  background-color: var(--sidebar-item-active-bg) !important;
-  width: 90% !important;
-  margin-inline: auto !important;
-  color: var(--app-surface) !important;
+.app-sidebar .ant-menu:not(.ant-menu-inline-collapsed) .ant-menu-item,
+.app-sidebar .ant-menu:not(.ant-menu-inline-collapsed) .ant-menu-submenu-title {
+  width: calc(100% - 16px) !important;
+  margin-inline: 8px !important;
+  padding-inline-start: 16px !important;
 }
 
-.app-sidebar .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-open {
-  border: 2px solid var(--sidebar-item-active-bg) !important;
-  background-color: var(--sidebar-item-active-bg) !important;
-  margin-bottom: 10px !important;
+.app-sidebar .ant-menu-item.ant-menu-item-selected {
+  background-color: var(--app-surface) !important;
+  color: var(--Primary400) !important;
+}
+
+.app-sidebar .ant-menu-item.ant-menu-item-selected .ant-menu-item-icon,
+.app-sidebar .ant-menu-item.ant-menu-item-selected .anticon {
+  color: var(--Primary400) !important;
 }
 
 .app-sidebar .ant-menu-sub.ant-menu-inline {
@@ -92,16 +97,31 @@
 
 .ant-menu.ant-menu-sub.ant-menu-vertical
   .ant-menu-item:not(.ant-menu-item-selected):hover {
-  background-color: var(--sidebar-item-hover-bg) !important;
+  background-color: var(--Primary100) !important;
+  color: var(--Grey900) !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-vertical
+  .ant-menu-item:not(.ant-menu-item-selected):hover
+  .ant-menu-item-icon,
+.ant-menu.ant-menu-sub.ant-menu-vertical
+  .ant-menu-item:not(.ant-menu-item-selected):hover
+  .anticon {
+  color: var(--Grey900) !important;
 }
 
 .ant-menu.ant-menu-sub.ant-menu-vertical .ant-menu-item.ant-menu-item-selected {
-  background-color: var(--sidebar-item-active-bg) !important;
-  color: var(--app-surface) !important;
+  background-color: var(--app-surface) !important;
+  color: var(--Primary400) !important;
 }
 
-.app-sidebar .ant-menu-item.ant-menu-item-selected {
-  padding-inline-start: 16px !important;
+.ant-menu.ant-menu-sub.ant-menu-vertical
+  .ant-menu-item.ant-menu-item-selected
+  .ant-menu-item-icon,
+.ant-menu.ant-menu-sub.ant-menu-vertical
+  .ant-menu-item.ant-menu-item-selected
+  .anticon {
+  color: var(--Primary400) !important;
 }
 
 .app-sidebar

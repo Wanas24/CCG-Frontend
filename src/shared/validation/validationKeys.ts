@@ -11,6 +11,8 @@ export const VALIDATION = {
   passwordMatch: "validation.passwordMatch",
   passwordComplexity: "validation.passwordComplexity",
   maxLength50: "validation.maxLength50",
+  maxLength200: "validation.maxLength200",
+  maxLength500: "validation.maxLength500",
   phoneInvalid: "validation.phoneInvalid",
   nationalIdLength: "validation.nationalIdLength",
   dateOfBirthPast: "validation.dateOfBirthPast",
