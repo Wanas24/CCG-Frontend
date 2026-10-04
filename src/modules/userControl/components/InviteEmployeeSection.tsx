@@ -165,8 +165,7 @@ const InviteEmployeeSection = ({ userControl, drag }: Props) => {
                 </span>
               ) : userControl.inviteProjectsStatus === "loading" ? (
                 <AppSkeleton.Button active className="!h-7 !w-28 !min-w-28" />
-              ) : projects.length ===
-                0 ? (
+              ) : projects.length === 0 ? (
                 <span className={faintClass}>
                   {projectSearch
                     ? t("userControl.invite.noProjectMatch")

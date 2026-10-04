@@ -50,3 +50,17 @@ export const setsEqual = <T>(left: Set<T>, right: Set<T>) => {
   }
   return true;
 };
+
+export const withUserRole = (
+  source: Map<string, Set<string>>,
+  userId: string,
+  roleId: string,
+  assigned: boolean,
+): Map<string, Set<string>> => {
+  const next = new Map(source);
+  const roles = new Set(next.get(userId) ?? []);
+  if (assigned) roles.add(roleId);
+  else roles.delete(roleId);
+  next.set(userId, roles);
+  return next;
+};
