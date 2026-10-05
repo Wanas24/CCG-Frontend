@@ -1,14 +1,21 @@
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 
-export const approvalAccessPermissions = [
+export const approvalStudioPermissions = [
   PermissionsList.ApprovalWorkflow.Get,
   PermissionsList.ApprovalWorkflow.Create,
   PermissionsList.ApprovalWorkflow.Update,
   PermissionsList.ApprovalWorkflow.Deactivate,
   PermissionsList.ApprovalWorkflow.GetPendingRequests,
   PermissionsList.ApprovalWorkflow.ForceDecide,
+] as const;
+
+export const approvalReservedPermissions = [
   PermissionsList.ApprovalWorkflow.GetActiveEntityRequest,
   PermissionsList.ApprovalWorkflow.GetEntityRequests,
+] as const;
+
+export const approvalAccessPermissions = [
+  ...approvalStudioPermissions,
 ] as const;
 
 type ApprovalAccessInput = {
@@ -24,5 +31,4 @@ export const canAccessApproval = ({
 }: ApprovalAccessInput) =>
   isAdmin ||
   isManager ||
-  granted.has(PermissionsList.ApprovalWorkflow.Get) ||
-  approvalAccessPermissions.some((permission) => granted.has(permission));
+  granted.has(PermissionsList.ApprovalWorkflow.Get);

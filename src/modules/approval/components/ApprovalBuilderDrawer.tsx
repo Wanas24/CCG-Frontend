@@ -109,6 +109,8 @@ const ApprovalBuilderDrawer = ({ studio }: Props) => {
       };
     }) ?? [];
 
+  const canSave = draft?.id ? studio.canUpdate : studio.canCreate;
+
   return (
     <AppDrawer
       open={open}
@@ -125,12 +127,14 @@ const ApprovalBuilderDrawer = ({ studio }: Props) => {
           <AppButton variant="secondary" onClick={studio.closeBuilder}>
             {t("approval.builder.cancel")}
           </AppButton>
-          <AppButton
-            loading={studio.isSaving}
-            onClick={() => void studio.saveBuilder()}
-          >
-            {t("approval.builder.save")}
-          </AppButton>
+          {canSave ? (
+            <AppButton
+              loading={studio.isSaving}
+              onClick={() => void studio.saveBuilder()}
+            >
+              {t("approval.builder.save")}
+            </AppButton>
+          ) : null}
         </div>
       }
     >

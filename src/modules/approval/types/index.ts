@@ -1,5 +1,4 @@
 import type { TSimpleResult } from "@/modules/authentication/types";
-import type { TPagedResult } from "@/lib/api/pagedResult";
 import type {
   TApprovalEntityType,
   TApprovalPendingRequest,
@@ -31,6 +30,14 @@ export {
   ApprovalRequirementMode,
 } from "./approvalWorkflow";
 
+export type TApprovalPagedResult<T> = {
+  data: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+};
+
 export type TGetApprovalEntityTypesResponse = TSimpleResult<
   TApprovalEntityType[]
 >;
@@ -38,7 +45,7 @@ export type TGetApprovalEntityTypesResponse = TSimpleResult<
 export type TGetApprovalWorkflowsResponse = TSimpleResult<TApprovalWorkflow[]>;
 
 export type TGetPendingApprovalRequestsResponse = TSimpleResult<
-  TPagedResult<TApprovalPendingRequest>
+  TApprovalPagedResult<TApprovalPendingRequest>
 >;
 
 export type TSaveApprovalWorkflowResponse = TSimpleResult<TApprovalWorkflow>;

@@ -290,6 +290,7 @@ export const useApprovalStudio = () => {
   const closeBuilder = () => setBuilder(null);
 
   const openNew = (entityType?: string, scope?: TApprovalActionScope) => {
+    if (!canCreate) return;
     const draft = blankDraft(
       entityType ?? (entityKey !== "all" ? entityKey : ""),
     );
@@ -301,13 +302,15 @@ export const useApprovalStudio = () => {
     const workflow = workflows.find((item) => item.id === workflowId);
     if (!workflow) return;
     if (lockedWorkflowIds.has(workflow.id)) {
-      setRequestsWorkflowId(workflow.id);
+      if (canGetPending) setRequestsWorkflowId(workflow.id);
       return;
     }
+    if (!canUpdate) return;
     openBuilder(workflowToDraft(workflow));
   };
 
   const openCopy = (workflowId: string) => {
+    if (!canCreate) return;
     const workflow = workflows.find((item) => item.id === workflowId);
     if (!workflow) return;
     openBuilder(workflowToDraft(workflow, true));
@@ -374,6 +377,7 @@ export const useApprovalStudio = () => {
 
   const saveBuilder = async () => {
     if (!builder) return false;
+    if (builder.id ? !canUpdate : !canCreate) return false;
     const errors = validateDraft(builder);
     if (errors.length) {
       setBuilder({ ...builder, showErrors: true });
@@ -448,6 +452,7 @@ export const useApprovalStudio = () => {
     openCopy,
     closeBuilder,
     openRequests: (workflowId: string) => {
+      if (!canGetPending) return;
       setRequestsWorkflowId(workflowId);
       setSelectedRequestIds(new Set());
     },
@@ -458,9 +463,11 @@ export const useApprovalStudio = () => {
     saveBuilder,
     validateDraft,
     deactivate: async (id: string) => {
+      if (!canDeactivate) return;
       await deactivateMutation.mutateAsync(id);
     },
     reactivate: async (workflow: TApprovalWorkflow) => {
+      if (!canUpdate) return;
       await updateMutation.mutateAsync({
         id: workflow.id,
         body: {
@@ -488,7 +495,7 @@ export const useApprovalStudio = () => {
     createEmptyApprovalLevel,
     requestsForOpen,
     decide: async (comment?: string) => {
-      if (!decideState) return;
+      if (!decideState || !canForceDecide) return;
       for (const requestId of decideState.requestIds) {
         await decideMutation.mutateAsync({
           requestId,

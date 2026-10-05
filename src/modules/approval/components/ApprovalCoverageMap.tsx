@@ -87,7 +87,12 @@ const ApprovalCoverageMap = ({ studio }: Props) => {
                     entity.key,
                     scope,
                   );
-                  const canOpen = studio.canCreate || studio.canUpdate;
+                  const canEditExisting =
+                    (cell.kind === "exact" || cell.kind === "fallback") &&
+                    studio.canUpdate;
+                  const canCreateMissing =
+                    cell.kind === "none" && studio.canCreate;
+                  const canOpen = canEditExisting || canCreateMissing;
                   return (
                     <td key={scope}>
                       <button
@@ -106,15 +111,17 @@ const ApprovalCoverageMap = ({ studio }: Props) => {
                             : "cursor-not-allowed opacity-70",
                         )}
                         onClick={() => {
-                          if (cell.kind === "exact" && cell.workflow) {
+                          if (
+                            (cell.kind === "exact" || cell.kind === "fallback") &&
+                            cell.workflow &&
+                            studio.canUpdate
+                          ) {
                             studio.openEdit(cell.workflow.id);
                             return;
                           }
-                          if (cell.kind === "fallback" && cell.workflow) {
-                            studio.openEdit(cell.workflow.id);
-                            return;
+                          if (cell.kind === "none" && studio.canCreate) {
+                            studio.openNew(entity.key, scope);
                           }
-                          studio.openNew(entity.key, scope);
                         }}
                       >
                         {cell.kind === "exact" ? (
