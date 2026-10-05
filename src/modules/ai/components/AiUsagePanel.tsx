@@ -156,8 +156,8 @@ const resolveIsUsageActive = (
   }
 
   return (
-    (period.remainingTokens ?? 0) > 0 &&
-    (period.remainingMessages ?? 0) > 0
+    !isExhausted(period.remainingTokens) &&
+    !isExhausted(period.remainingMessages)
   );
 };
 
