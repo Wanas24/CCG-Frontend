@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { LogOutIcon } from "lucide-react";
+import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
+import { navbarIconActionClassName } from "./navbarIconActionClassName";
 
 type Props = {
   logout: () => void | Promise<void>;
@@ -29,7 +31,9 @@ const NavbarLogoutAction = ({
       icon={<LogOutIcon size={18} />}
       aria-label={label}
       title={label}
-      className={showLabel ? "w-full !justify-start" : undefined}
+      className={clsx(
+        showLabel ? "w-full !justify-start" : navbarIconActionClassName,
+      )}
     >
       {showLabel ? label : null}
     </AppButton>

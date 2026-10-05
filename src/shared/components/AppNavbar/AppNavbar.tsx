@@ -7,6 +7,7 @@ import { useLogoutManager } from "@/modules/authentication/hooks/useLogoutManage
 import { AppButton, AppDrawer } from "@/shared/ANTD_UIComponents";
 import DesktopNavbarActions from "./DesktopNavbarActions";
 import MobileNavbarMenu from "./MobileNavbarMenu";
+import { navbarIconActionClassName } from "./navbarIconActionClassName";
 
 type Props = {
   showSidebarTrigger?: boolean;
@@ -48,6 +49,7 @@ const AppNavbar = ({
             icon={<PanelLeft size={18} />}
             aria-label={t("common.menu")}
             onClick={onOpenSidebar}
+            className={navbarIconActionClassName}
           />
         )}
         <h1 className="m-0 min-w-0 truncate text-lg font-semibold text-(--app-text)">
@@ -69,6 +71,7 @@ const AppNavbar = ({
           aria-label={t("common.menu")}
           aria-expanded={mobileOpen}
           onClick={openMobileMenu}
+          className={navbarIconActionClassName}
         />
         <AppDrawer
           open={mobileOpen}

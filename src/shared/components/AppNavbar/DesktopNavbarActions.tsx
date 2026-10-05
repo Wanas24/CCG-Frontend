@@ -10,13 +10,16 @@ type Props = {
   isPending: boolean;
 };
 
+const navbarIconActionClassName =
+  "size-9! shrink-0 justify-center! rounded-lg! border! border-(--Grey300)! px-0! hover:bg-(--Grey100)!";
+
 const DesktopNavbarActions = ({ logout, isPending }: Props) => {
   return (
     <div className="flex items-center gap-1">
       <CompanySwitcher />
-      <NotificationsBell />
-      <AppThemeToggle />
-      <AppLocaleSwitcher />
+      <NotificationsBell className={navbarIconActionClassName} />
+      <AppThemeToggle className={navbarIconActionClassName} />
+      <AppLocaleSwitcher className={navbarIconActionClassName} />
       <NavbarProfileAction />
       <NavbarLogoutAction logout={logout} isPending={isPending} />
     </div>
