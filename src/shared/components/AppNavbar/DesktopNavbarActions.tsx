@@ -8,20 +8,26 @@ import NavbarProfileAction from "./NavbarProfileAction";
 type Props = {
   logout: () => void | Promise<void>;
   isPending: boolean;
+  iconActionClassName: string;
 };
 
-const navbarIconActionClassName =
-  "size-9! shrink-0 justify-center! rounded-lg! border! border-(--Grey300)! px-0! hover:bg-(--Grey100)!";
-
-const DesktopNavbarActions = ({ logout, isPending }: Props) => {
+const DesktopNavbarActions = ({
+  logout,
+  isPending,
+  iconActionClassName,
+}: Props) => {
   return (
     <div className="flex items-center gap-1">
       <CompanySwitcher />
-      <NotificationsBell className={navbarIconActionClassName} />
-      <AppThemeToggle className={navbarIconActionClassName} />
-      <AppLocaleSwitcher className={navbarIconActionClassName} />
-      <NavbarProfileAction />
-      <NavbarLogoutAction logout={logout} isPending={isPending} />
+      <NotificationsBell className={iconActionClassName} />
+      <AppThemeToggle className={iconActionClassName} />
+      <AppLocaleSwitcher className={iconActionClassName} />
+      <NavbarProfileAction className={iconActionClassName} />
+      <NavbarLogoutAction
+        logout={logout}
+        isPending={isPending}
+        className={iconActionClassName}
+      />
     </div>
   );
 };
