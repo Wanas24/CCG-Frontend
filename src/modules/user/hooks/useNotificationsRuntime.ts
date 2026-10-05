@@ -2,12 +2,16 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import i18n from "@/i18n/config";
 import { queryClient } from "@/lib/queryClient";
+import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/availableCompaniesQueryKey";
 import {
   subscribeToNotifications,
   type TReceiveNotificationPayload,
 } from "@/services/hub";
 import { userNotificationsQueryRootKey } from "../api/hooks/notificationsQueryKey";
+import { refreshPermissions } from "../api/hooks/permissionsQueryKey";
 import { parseNotificationJson } from "../utils/parseNotificationJson";
+
+const COMPANY_MEMBERSHIP_TYPE = "CompanyMembershipPayload";
 
 const resolveToastText = (notification: TReceiveNotificationPayload) => {
   const title = notification.title?.trim() || null;
@@ -37,6 +41,13 @@ const handleLiveNotification = (notification: TReceiveNotificationPayload) => {
   void queryClient.invalidateQueries({
     queryKey: userNotificationsQueryRootKey,
   });
+
+  if (notification.type === COMPANY_MEMBERSHIP_TYPE) {
+    void refreshPermissions();
+    void queryClient.invalidateQueries({
+      queryKey: availableCompaniesQueryKey,
+    });
+  }
 };
 
 export const useNotificationsRuntime = () => {
