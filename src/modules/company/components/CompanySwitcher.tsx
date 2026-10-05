@@ -93,17 +93,19 @@ const CompanyRow = ({
   const isSelected = company.isCurrent || company.id === currentCompanyId;
 
   return (
-    <div className="flex min-w-0 items-center gap-1">
+    <div
+      className={clsx(
+        "flex min-w-0 items-center gap-1 rounded-lg",
+        isSelected ? "bg-(--Primary100)" : "hover:bg-(--Grey100)",
+        company.isDisabled && "text-(--Grey500)",
+      )}
+    >
       <button
         type="button"
         role="menuitem"
         disabled={disabled}
         aria-current={isSelected ? "true" : undefined}
-        className={clsx(
-          "flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 text-start",
-          isSelected ? "bg-(--Primary100)" : "hover:bg-(--Grey100)",
-          company.isDisabled && "text-(--Grey500)",
-        )}
+        className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 text-start"
         onClick={() => onSelect(company.id)}
       >
         <CompanyMark logo={logo} name={company.name} />
@@ -137,7 +139,7 @@ const CompanyRow = ({
             to={COMPANY_ROUTES.root}
             role="menuitem"
             aria-label={t("company.switcher.settings")}
-            className="flex shrink-0 items-center justify-center rounded-lg p-2 !text-(--Primary400) hover:bg-(--Grey100)"
+            className="flex shrink-0 items-center justify-center rounded-lg p-2 !text-(--Primary400)"
             onClick={(event) => {
               event.stopPropagation();
               onClose();
@@ -203,7 +205,7 @@ const CompanySwitcher = () => {
         <div
           role="menu"
           className={clsx(
-            "rounded-xl border border-(--Grey300) bg-(--app-surface) shadow",
+            "rounded-xl border border-(--Grey300) bg-(--app-surface) shadow gap-2",
             DesignTokens.layout.switcherMenu,
           )}
         >
