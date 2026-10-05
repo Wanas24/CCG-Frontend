@@ -7,7 +7,6 @@ export const PermissionsList = {
   },
   Company: {
     GetCompanyInfo: "Company.GetCompanyInfo",
-    GetLogo: "Company.GetLogo",
     Edit: "Company.Edit",
     UploadLogo: "Company.UploadLogo",
     DeleteLogo: "Company.DeleteLogo",

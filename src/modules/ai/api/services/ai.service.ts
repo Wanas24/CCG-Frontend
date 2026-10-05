@@ -1,7 +1,6 @@
 import { callEndpoint } from "@/lib/api/callEndpoint";
 import { aiEndpoints } from "../endPoints/ai.endpoints";
 import type {
-  TArchiveAiChatResponse,
   TGetAiChatsResponse,
   TGetAiMessagesResponse,
   TGetAiUsageResponse,
@@ -62,11 +61,6 @@ export const aiService = {
     callEndpoint<TSendAiChatResponse, FormData>(aiEndpoints.chat, {
       body: buildAiChatFormData(request),
       signal,
-    }),
-
-  archiveAiChat: (chatId: string) =>
-    callEndpoint<TArchiveAiChatResponse>(aiEndpoints.archiveChat, {
-      pathParams: { chatId },
     }),
 
   getAiUsage: () => callEndpoint<TGetAiUsageResponse>(aiEndpoints.usage),
