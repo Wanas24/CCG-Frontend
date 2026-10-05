@@ -5,13 +5,13 @@ import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import type { AppThemeMode } from "@/AntdTheme";
 import { useThemePreference } from "@/modules/user/hooks/useThemePreference";
+import { navbarIconActionClassName } from "@/shared/components/AppNavbar/navbarIconActionClassName";
 
 type Props = {
   showLabel?: boolean;
-  className?: string;
 };
 
-const AppThemeToggle = ({ showLabel = false, className }: Props) => {
+const AppThemeToggle = ({ showLabel = false }: Props) => {
   const { t } = useTranslation();
   const { mode, changeTheme } = useThemePreference();
   const label = t("common.theme");
@@ -55,8 +55,7 @@ const AppThemeToggle = ({ showLabel = false, className }: Props) => {
       className={clsx(
         showLabel
           ? "w-full !justify-start hover:bg-(--Grey100)!"
-          : undefined,
-        className,
+          : navbarIconActionClassName,
       )}
       icon={triggerIcon}
     >

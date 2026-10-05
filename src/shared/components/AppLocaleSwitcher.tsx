@@ -5,17 +5,16 @@ import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import { type AppLocale } from "../../i18n/useLocale";
 import { useLanguagePreference } from "@/modules/user/hooks/useLanguagePreference";
+import { navbarIconActionClassName } from "@/shared/components/AppNavbar/navbarIconActionClassName";
 
 type Props = {
   whiteIcon?: boolean;
   showLabel?: boolean;
-  className?: string;
 };
 
 const AppLocaleSwitcher = ({
   whiteIcon = false,
   showLabel = false,
-  className,
 }: Props) => {
   const { t } = useTranslation();
   const { locale, changeLanguage } = useLanguagePreference();
@@ -43,8 +42,7 @@ const AppLocaleSwitcher = ({
       className={clsx(
         showLabel
           ? "w-full !justify-start hover:bg-(--Grey100)!"
-          : undefined,
-        className,
+          : navbarIconActionClassName,
       )}
       icon={
         <Languages
