@@ -465,7 +465,8 @@ const EmployeeCard = ({
           </button>
         ) : null}
       </div>
-      {userControl.projectAccessStatus === "ready" ? (
+      {userControl.projectAccessStatus === "ready" &&
+      (projects.length > 0 || userControl.projectAccessComplete) ? (
         <div
           className="mt-2 overflow-hidden text-[11px] text-ellipsis whitespace-nowrap text-(--Grey500)"
           title={projects.map((project) => project.name).join(", ")}

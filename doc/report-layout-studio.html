@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report Layout Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0f1e; --bg-2:#0e1528; --panel:#111a30; --panel-2:#16213c; --line:#223056; --line-2:#2c3c69;
+  --text:#e8ecff; --muted:#8d9ac5; --faint:#5d6a94;
+  --primary:#6d7cff; --primary-2:#a26bff; --ok:#22c55e; --warn:#f59e0b; --danger:#f04461; --teal:#14b8a6;
+  --radius:16px; --radius-sm:10px;
+  --shadow:0 18px 40px -18px rgba(0,0,0,.6);
+  --glow:0 0 0 1px rgba(109,124,255,.35), 0 10px 30px -10px rgba(109,124,255,.55);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+[data-theme="light"]{
+  --bg:#f3f5fb; --bg-2:#eaeef8; --panel:#ffffff; --panel-2:#f6f8fd; --line:#e2e7f3; --line-2:#cfd7ea;
+  --text:#141b34; --muted:#5b678c; --faint:#97a1bf;
+  --shadow:0 18px 40px -22px rgba(30,40,90,.35);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0;height:100%}
+body{
+  font-family:Inter,system-ui,sans-serif;color:var(--text);font-size:14px;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(109,124,255,.18), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(162,107,255,.14), transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:var(--text)}
+code{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted)}
+svg.i{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- progress ---------- */
+#progress{position:fixed;inset:0 0 auto 0;height:3px;z-index:100;overflow:hidden;opacity:0;transition:opacity .2s}
+#progress.on{opacity:1}
+#progress::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,var(--primary),var(--primary-2),transparent);animation:slide 1s linear infinite}
+@keyframes slide{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:16px;padding:14px 28px;
+  background:color-mix(in srgb,var(--bg) 75%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));box-shadow:var(--glow)}
+.brand h1{font-size:16px;margin:0;font-weight:700;letter-spacing:-.01em}
+.brand p{margin:0;font-size:12px;color:var(--muted)}
+.spacer{flex:1}
+.mode-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line-2);background:var(--panel)}
+.mode-pill i{width:8px;height:8px;border-radius:50%;background:var(--warn);box-shadow:0 0 10px var(--warn)}
+.mode-pill.live i{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);background:var(--panel);padding:9px 14px;border-radius:var(--radius-sm);font-weight:600;font-size:13px;transition:transform .15s var(--ease),background .2s,border-color .2s,box-shadow .2s}
+.btn:hover{border-color:var(--primary);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.primary{border:0;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-2));box-shadow:var(--glow)}
+.btn.success{border:0;color:#fff;background:linear-gradient(135deg,#16a34a,var(--ok))}
+.btn.danger{border:0;color:#fff;background:var(--danger)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:9px}
+.btn:disabled{opacity:.45;pointer-events:none}
+.btn.is-off{opacity:.55;filter:saturate(.6);box-shadow:none}
+.icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);transition:all .15s}
+.icon-btn:hover{background:var(--panel-2);border-color:var(--line-2);color:var(--text)}
+.icon-btn.danger:hover{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
+.icon-btn:disabled{opacity:.35;pointer-events:none}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1760px;margin:0 auto;padding:22px 28px 70px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.stat{position:relative;overflow:hidden;padding:16px 18px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);animation:rise .5s var(--ease) both}
+.stat:nth-child(2){animation-delay:.05s}.stat:nth-child(3){animation-delay:.1s}.stat:nth-child(4){animation-delay:.15s}
+.stat::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--c,var(--primary)) 0%,transparent 70%);opacity:.22}
+.stat small{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.stat b{display:block;font-size:28px;font-weight:800;margin-top:6px;letter-spacing:-.02em}
+.stat b.text{font-size:17px;line-height:1.3;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:12px;color:var(--faint)}
+.stat .quota{margin-top:8px;height:5px;border-radius:99px;background:var(--bg-2);overflow:hidden}
+.stat .quota i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--primary),var(--primary-2));transition:width .6s var(--ease)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.seg{display:inline-flex;padding:4px;border-radius:12px;background:var(--panel);border:1px solid var(--line);position:relative}
+.seg button{position:relative;z-index:1;border:0;background:transparent;padding:8px 16px;border-radius:9px;font-weight:600;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;transition:color .2s}
+.seg button.active{color:#fff}
+.seg .thumb{position:absolute;top:4px;bottom:4px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--primary-2));transition:left .3s var(--ease),width .3s var(--ease);box-shadow:var(--glow)}
+.tip{color:var(--faint);font-size:12px;display:flex;align-items:center;gap:6px}
+.switch{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:13px;cursor:pointer}
+.switch input{appearance:none;width:38px;height:21px;border-radius:99px;background:var(--line-2);position:relative;transition:background .2s;cursor:pointer;flex:none}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:15px;height:15px;border-radius:50%;background:#fff;transition:transform .25s var(--ease)}
+.switch input:checked{background:var(--primary)}
+.switch input:checked::after{transform:translateX(17px)}
+
+.view{display:none;animation:rise .35s var(--ease)}
+.view.active{display:block}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0}
+.panel-head{display:flex;align-items:center;gap:10px;padding:15px 18px 11px;flex-wrap:wrap}
+.panel-head h2{margin:0;font-size:15px;font-weight:700}
+.count{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted)}
+.panel-body{padding:0 18px 18px;overflow:auto}
+.hint{font-size:12px;color:var(--faint)}
+.field{position:relative;display:flex;align-items:center}
+.field svg{position:absolute;left:12px;color:var(--faint)}
+.input{width:100%;padding:9px 11px 9px 34px;border-radius:var(--radius-sm);border:1px solid var(--line-2);background:var(--bg-2);outline:none;transition:border-color .2s,box-shadow .2s}
+.input.plain{padding-left:11px}
+.input:focus{border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 18%,transparent)}
+.input.bad{border-color:color-mix(in srgb,var(--danger) 65%,transparent)}
+textarea.input{resize:vertical;min-height:62px;line-height:1.45}
+select.input{appearance:none;background-image:none}
+
+.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;background:var(--panel-2);border:1px solid var(--line-2);color:var(--muted)}
+.badge.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.badge.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+.badge.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
+.badge.violet{color:var(--primary-2);border-color:color-mix(in srgb,var(--primary-2) 40%,transparent)}
+.badge.teal{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 40%,transparent)}
+
+/* ---------- gallery ---------- */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.lay-card{position:relative;display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);
+  transition:transform .25s var(--ease),border-color .2s,box-shadow .25s;animation:rise .4s var(--ease) both}
+.lay-card:hover{transform:translateY(-3px);border-color:var(--primary)}
+.lay-card.current{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary),var(--shadow)}
+.lay-card.off{opacity:.7}
+.thumb-wrap{position:relative;border-radius:12px;overflow:hidden;background:var(--bg-2);border:1px solid var(--line);display:grid;place-items:center;padding:10px;height:176px}
+.thumb-wrap .paper{box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.lay-top{display:flex;align-items:flex-start;gap:8px}
+.lay-top h3{margin:0;font-size:15px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lay-meta{display:flex;flex-wrap:wrap;gap:6px}
+.lay-desc{color:var(--muted);font-size:12.5px;margin:0;min-height:34px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lay-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+.new-card{display:grid;place-items:center;align-content:center;gap:10px;min-height:260px;border:2px dashed var(--line-2);border-radius:var(--radius);background:transparent;color:var(--muted);font-weight:600;font-size:13px;transition:all .2s;padding:18px;text-align:center;cursor:pointer}
+.new-card:hover{border-color:var(--primary);color:var(--text);background:color-mix(in srgb,var(--primary) 6%,transparent)}
+.new-card .plus{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--panel-2);border:1px solid var(--line-2)}
+
+/* ---------- designer ---------- */
+.designer{display:grid;grid-template-columns:372px minmax(0,1fr) 330px;gap:18px;align-items:start}
+@media (max-width:1500px){.designer{grid-template-columns:350px minmax(0,1fr)}.designer .rail{grid-column:1 / -1;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;align-items:start}}
+@media (max-width:1100px){.designer{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+.sticky{position:sticky;top:78px}
+.rail{display:flex;flex-direction:column;gap:18px}
+.editing-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;margin-bottom:16px;border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow);
+  background:linear-gradient(120deg,color-mix(in srgb,var(--primary) 12%,var(--panel)),var(--panel) 50%)}
+.editing-bar .who{min-width:0}
+.editing-bar .who b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.editing-bar .who span{font-size:12px;color:var(--muted)}
+
+.insp-body{max-height:calc(100vh - 220px);overflow:auto;padding:0 14px 16px}
+.group{border:1px solid var(--line);border-radius:14px;background:var(--panel-2);margin-bottom:10px;overflow:hidden}
+.group summary{list-style:none;display:flex;align-items:center;gap:10px;padding:11px 12px;font-weight:600;cursor:pointer;user-select:none;font-size:13px}
+.group summary::-webkit-details-marker{display:none}
+.group summary .chev{margin-left:auto;transition:transform .25s var(--ease);color:var(--faint)}
+.group[open] summary .chev{transform:rotate(90deg)}
+.group-ico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,hsl(var(--h) 75% 58%),hsl(calc(var(--h) + 40) 75% 48%))}
+.group-ico svg{width:14px;height:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:4px 12px 12px}
+.fw{grid-column:1 / -1}
+.f label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.f label .req{color:var(--danger)}
+.f .help{font-size:11px;color:var(--faint);margin-top:4px;line-height:1.4}
+.f.ignored{opacity:.45}
+.f.ignored .help.why{color:var(--warn);opacity:1}
+.chk{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:var(--panel);border:1px solid var(--line);font-size:12.5px;font-weight:600;cursor:pointer}
+.chk input{appearance:none;width:34px;height:19px;border-radius:99px;background:var(--line-2);position:relative;transition:background .2s;flex:none;cursor:pointer}
+.chk input::after{content:"";position:absolute;top:3px;left:3px;width:13px;height:13px;border-radius:50%;background:#fff;transition:transform .25s var(--ease)}
+.chk input:checked{background:var(--primary)}
+.chk input:checked::after{transform:translateX(15px)}
+.color-row{display:flex;align-items:center;gap:8px}
+.color-row input[type=color]{appearance:none;width:42px;height:34px;padding:0;border:1px solid var(--line-2);border-radius:9px;background:var(--bg-2);cursor:pointer;flex:none}
+.color-row input[type=color]::-webkit-color-swatch-wrapper{padding:3px}
+.color-row input[type=color]::-webkit-color-swatch{border:0;border-radius:6px}
+.color-row .hex{flex:1;min-width:0;font-family:"JetBrains Mono",monospace;font-size:12px;padding:8px 10px;border-radius:9px;border:1px solid var(--line-2);background:var(--bg-2);width:100%}
+.color-row .auto{border:1px solid var(--line-2);background:transparent;color:var(--muted);border-radius:9px;padding:6px 9px;font-size:11px;font-weight:700}
+.color-row .auto.on{background:var(--primary);border-color:transparent;color:#fff}
+.tokens{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.tokens button{border:1px dashed var(--line-2);background:transparent;color:var(--muted);border-radius:99px;padding:2px 8px;font-family:"JetBrains Mono",monospace;font-size:10.5px}
+.tokens button:hover{color:var(--text);border-color:var(--primary)}
+
+/* signatures */
+.sig{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:8px;overflow:hidden}
+.sig summary{list-style:none;display:flex;align-items:center;gap:8px;padding:9px 10px;font-size:12.5px;font-weight:600;cursor:pointer}
+.sig summary::-webkit-details-marker{display:none}
+.sig summary .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sig .grid{padding:2px 10px 10px}
+.ord{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line-2);font-size:10px;color:var(--muted);flex:none}
+
+/* ---------- canvas ---------- */
+.canvas-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+.mini-seg{display:inline-flex;padding:3px;border-radius:10px;background:var(--bg-2);border:1px solid var(--line-2)}
+.mini-seg button{border:0;background:transparent;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;color:var(--muted)}
+.mini-seg button.active{background:var(--panel);color:var(--text);box-shadow:0 2px 8px -4px rgba(0,0,0,.6)}
+.stage{background:
+    repeating-conic-gradient(from 45deg at 50% 50%, color-mix(in srgb,var(--line) 45%,transparent) 0% 25%, transparent 0% 50%) 0 0/18px 18px,
+    var(--bg-2);
+  padding:22px;overflow:auto;max-height:calc(100vh - 250px);display:flex;flex-direction:column;align-items:center;gap:22px;border-radius:0 0 var(--radius) var(--radius)}
+.page-wrap{display:flex;flex-direction:column;gap:7px;align-items:center}
+.page-wrap > .cap{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.paper{position:relative;overflow:hidden;background:#fff;color:#222;box-shadow:0 24px 50px -22px rgba(0,0,0,.65);border-radius:2px}
+.paper .guide{position:absolute;pointer-events:none;border:1px dashed color-mix(in srgb,#2563eb 55%,transparent)}
+.paper .band-guide{position:absolute;pointer-events:none;background:color-mix(in srgb,#2563eb 7%,transparent);outline:1px dashed color-mix(in srgb,#2563eb 35%,transparent)}
+.paper .mark{position:absolute;direction:ltr;font:600 8px/1 Inter,sans-serif;color:#2563eb;background:rgba(255,255,255,.82);padding:1px 3px;border-radius:3px;pointer-events:none}
+.paper table{border-collapse:collapse;border-spacing:0}
+.paper .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:9}
+.paper .wm span{transform:rotate(-32deg);font-weight:700;text-align:center;line-height:1.2;white-space:pre-wrap}
+.pdf-frame{width:100%;height:calc(100vh - 262px);min-height:460px;border:0;background:#fff;border-radius:0 0 var(--radius) var(--radius)}
+.pdf-empty{display:grid;place-items:center;gap:12px;text-align:center;padding:60px 24px;color:var(--muted)}
+.stale{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--warn)}
+
+/* ---------- checks / changes ---------- */
+.row-list{display:flex;flex-direction:column;gap:7px}
+.note{display:flex;gap:9px;padding:9px 11px;border-radius:11px;font-size:12.5px;line-height:1.45;border:1px solid var(--line);background:var(--panel-2)}
+.note svg{margin-top:2px}
+.note.err{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,transparent);background:color-mix(in srgb,var(--danger) 10%,transparent)}
+.note.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,transparent);background:color-mix(in srgb,var(--warn) 9%,transparent)}
+.note.info{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 30%,transparent);background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.diff{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow:auto}
+.diff-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:7px 10px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);font-size:12px}
+.diff-row b{font-weight:600}
+.diff-row .vals{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;direction:ltr}
+.diff-row .vals s{color:var(--faint);text-decoration-color:var(--danger)}
+
+/* ---------- usage ---------- */
+.usage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.usage{padding:14px;border-radius:14px;background:var(--panel-2);border:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.usage h4{margin:0;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.usage .res{font-size:12.5px;color:var(--muted);min-height:34px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.steps li{position:relative;display:flex;gap:13px;padding:0 0 16px}
+.steps li:last-child{padding-bottom:0}
+.steps li:not(:last-child)::before{content:"";position:absolute;left:14px;top:32px;bottom:2px;width:2px;background:var(--line-2)}
+.steps .dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font-weight:700;font-size:12px;border:2px solid var(--line-2);color:var(--muted);background:var(--panel)}
+.steps .txt b{display:block;font-size:13.5px}
+.steps .txt small{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.5}
+
+/* ---------- drawer / modal / toast ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(5,8,20,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:50;width:min(640px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:-30px 0 60px -20px rgba(0,0,0,.5);
+  transform:translateX(105%);transition:transform .4s var(--ease);display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer-head{padding:20px 22px 14px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center}
+.drawer-head h3{margin:0;font-size:17px}
+.drawer-head p{margin:4px 0 0;color:var(--muted);font-size:12.5px}
+.drawer-body{flex:1;overflow:auto;padding:16px 22px}
+.drawer-foot{padding:13px 22px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px}
+pre.json{margin:0;padding:14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line);font-family:"JetBrains Mono",monospace;font-size:11.5px;line-height:1.6;overflow:auto;white-space:pre;direction:ltr}
+.modal{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;background:rgba(5,8,20,.6);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s}
+.modal.open{opacity:1;pointer-events:auto}
+.modal-card{width:min(480px,100%);background:var(--panel);border:1px solid var(--line-2);border-radius:20px;box-shadow:0 40px 80px -20px rgba(0,0,0,.6);transform:translateY(16px) scale(.97);transition:transform .3s var(--ease)}
+.modal.open .modal-card{transform:none}
+.modal-card header{padding:20px 22px 4px}
+.modal-card header h3{margin:0;font-size:17px}
+.modal-card header p{margin:6px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}
+.modal-card .body{padding:14px 22px;display:flex;flex-direction:column;gap:13px}
+.modal-card .body label{font-size:11.5px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px}
+.modal-card footer{padding:12px 22px 20px;display:flex;justify-content:flex-end;gap:10px}
+#toasts{position:fixed;right:22px;bottom:22px;z-index:90;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:flex-start;gap:10px;min-width:280px;max-width:430px;padding:12px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--line-2);box-shadow:var(--shadow);
+  animation:toastIn .35s var(--ease);border-left:4px solid var(--c);font-size:13px;line-height:1.45}
+.toast.out{animation:toastOut .3s var(--ease) forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(30px)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(30px)}}
+.empty{text-align:center;padding:34px 12px;color:var(--faint);font-size:13px}
+.empty svg{width:34px;height:34px;margin-bottom:8px;opacity:.6}
+.skeleton{height:260px;border-radius:var(--radius);background:linear-gradient(90deg,var(--panel-2),var(--line),var(--panel-2));background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 7h8M8 12h8M8 17h5"/></svg></div>
+    <div><h1>Report Layout Studio</h1><p>Design, preview and publish the PDF layouts every export uses</p></div>
+  </div>
+  <div class="spacer"></div>
+  <span class="mode-pill" id="modePill"><i></i><span>Demo data</span></span>
+  <button class="btn ghost" data-action="payload" title="Show the request body"><svg class="i" viewBox="0 0 24 24"><path d="M8 6l-5 6 5 6M16 6l5 6-5 6"/></svg></button>
+  <button class="btn ghost" data-action="reload" title="Reload layouts"><svg class="i" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
+  <button class="btn ghost" data-action="theme" title="Toggle theme"><svg class="i" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  <button class="btn" data-action="settings"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Connection</button>
+</header>
+
+<main class="wrap">
+  <section class="stats">
+    <div class="stat" style="--c:#6d7cff"><small>Layouts</small><b id="stTotal">0</b><span id="stTotalSub">&nbsp;</span></div>
+    <div class="stat" style="--c:#a26bff"><small>Company quota</small><b id="stQuota">0 / 10</b><span id="stQuotaSub">&nbsp;</span>
+      <div class="quota"><i id="stQuotaBar" style="width:0%"></i></div></div>
+    <div class="stat" style="--c:#14b8a6"><small>Default layout</small><b class="text" id="stDefault">—</b><span id="stDefaultSub">&nbsp;</span></div>
+    <div class="stat" style="--c:#f59e0b"><small>Unsaved changes</small><b id="stDirty">0</b><span id="stDirtySub">&nbsp;</span></div>
+  </section>
+
+  <div class="toolbar">
+    <div class="seg" id="viewSeg">
+      <span class="thumb"></span>
+      <button data-view="gallery" class="active"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Gallery</button>
+      <button data-view="designer"><svg class="i" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Designer</button>
+      <button data-view="usage"><svg class="i" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/></svg>Report types</button>
+    </div>
+    <label class="switch" title="Inactive layouts are hidden by default"><input type="checkbox" id="incInactive" checked> Show inactive</label>
+    <div class="spacer"></div>
+    <span class="tip"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+      System layouts are read-only — duplicate one to get an editable company layout</span>
+  </div>
+
+  <!-- GALLERY -->
+  <section class="view active" id="view-gallery">
+    <div class="gallery" id="galleryHost"></div>
+  </section>
+
+  <!-- DESIGNER -->
+  <section class="view" id="view-designer">
+    <div class="editing-bar" id="editingBar"></div>
+    <div class="designer">
+      <!-- inspector -->
+      <div class="panel sticky">
+        <div class="panel-head">
+          <h2>Inspector</h2><span class="count" id="inspCount">0</span>
+          <button class="icon-btn" data-action="expand-all" title="Expand all sections" style="margin-left:auto"><svg class="i" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          <button class="icon-btn" data-action="collapse-all" title="Collapse all sections"><svg class="i" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg></button>
+        </div>
+        <div style="padding:0 14px 10px"><div class="field"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input class="input" id="inspSearch" placeholder="Find a setting (e.g. margin, logo, footer)"></div></div>
+        <div class="insp-body" id="inspector"></div>
+      </div>
+
+      <!-- canvas -->
+      <div class="panel">
+        <div class="canvas-bar">
+          <div class="mini-seg" id="canvasSeg">
+            <button data-canvas="mock" class="active">Live mock</button>
+            <button data-canvas="pdf">Backend PDF</button>
+          </div>
+          <select class="input plain" id="contentKind" style="width:124px;padding:7px 9px"><option value="1">Table</option><option value="2">Plain text</option></select>
+          <select class="input plain" id="zoom" style="width:112px;padding:7px 9px">
+            <option value="fit" selected>Fit page</option><option value="fitw">Fit width</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option><option value="1.5">150%</option>
+          </select>
+          <label class="switch" title="Draw margin, header and footer boundaries"><input type="checkbox" id="guides" checked> Guides</label>
+          <div class="spacer"></div>
+          <span class="stale" id="pdfStale" hidden><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>PDF is out of date</span>
+          <label class="switch" title="Re-render the PDF from the backend after every edit"><input type="checkbox" id="autoPdf"> Auto PDF</label>
+          <button class="btn sm" id="btnPdf"><svg class="i" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Render PDF</button>
+        </div>
+        <div style="padding:10px 16px;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)">
+          <input class="input plain" id="sampleTitle" placeholder="Preview title (empty → default title → layout name)" style="flex:2;min-width:200px">
+          <input class="input plain" id="sampleSubtitle" placeholder="Preview subtitle" style="flex:2;min-width:180px">
+        </div>
+        <div class="stage" id="stage"></div>
+        <iframe class="pdf-frame" id="pdfFrame" title="PDF preview" hidden></iframe>
+        <div class="pdf-empty" id="pdfEmpty" hidden></div>
+      </div>
+
+      <!-- rail -->
+      <div class="rail">
+        <div class="panel">
+          <div class="panel-head"><h2>Checks</h2><span class="count" id="checkCount">0</span></div>
+          <div class="panel-body"><div class="row-list" id="checks"></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Changes</h2><span class="count" id="diffCount">0</span>
+            <button class="btn sm ghost" data-action="revert" style="margin-left:auto">Revert</button></div>
+          <div class="panel-body"><div class="diff" id="diff"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USAGE -->
+  <section class="view" id="view-usage">
+    <div class="designer" style="grid-template-columns:minmax(0,1fr) 380px">
+      <div class="panel">
+        <div class="panel-head"><h2>Last layout used per report type</h2>
+          <span class="hint" style="margin-left:auto">GET /api/ReportLayout/last-used/{reportType}</span></div>
+        <div style="padding:0 18px 12px;display:flex;gap:10px;flex-wrap:wrap">
+          <input class="input plain" id="customType" list="reportTypeList" placeholder="Custom report type key" style="flex:1;min-width:200px">
+          <button class="btn sm" data-action="check-type">Check</button>
+          <button class="btn sm ghost" data-action="check-all">Check all known types</button>
+        </div>
+        <div class="panel-body"><div class="usage-grid" id="usageHost"></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>How a report picks its layout</h2></div>
+        <div class="panel-body">
+          <ol class="steps">
+            <li><span class="dot">1</span><div class="txt"><b>Explicit <code>layoutId</code></b><small>The export call names a layout. It must be active and belong to this company (or be a system layout), otherwise the export fails.</small></div></li>
+            <li><span class="dot">2</span><div class="txt"><b>Last used for this report type</b><small>Every successful export stores the layout against the report type, so the next export of the same report reuses it.</small></div></li>
+            <li><span class="dot">3</span><div class="txt"><b>Company default</b><small>The active company layout flagged <code>isDefault</code>, then any active company layout by name.</small></div></li>
+            <li><span class="dot">4</span><div class="txt"><b>System default</b><small>The seeded <code>SYSTEM_DEFAULT</code> layout. The export fails only when nothing at all is available.</small></div></li>
+          </ol>
+          <div class="note info" style="margin-top:14px"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
+            <span>Marking a layout as default clears the flag on every other layout of this company. Deactivating a layout also clears its default flag.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- payload drawer -->
+<div class="scrim" id="scrim" data-action="close-drawer"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div style="flex:1;min-width:0"><h3>Request body</h3><p id="payloadLine">—</p></div>
+    <button class="icon-btn" data-action="close-drawer"><svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="drawer-body"><pre class="json" id="payloadJson"></pre></div>
+  <div class="drawer-foot"><span class="hint" id="payloadHint"></span><div class="spacer"></div>
+    <button class="btn" data-action="copy-payload"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy JSON</button></div>
+</aside>
+
+<!-- save as new -->
+<div class="modal" id="saveModal">
+  <form class="modal-card" id="saveForm">
+    <header><h3 id="saveTitle">Save as a new layout</h3><p>The code must be unique inside this company. Everything currently in the inspector is saved with it.</p></header>
+    <div class="body">
+      <div><label for="saveCode">Code *</label><input class="input plain" id="saveCode" maxlength="100" required placeholder="TENANT_CUSTOM_1"></div>
+      <div><label for="saveName">Name *</label><input class="input plain" id="saveName" maxlength="250" required placeholder="My custom layout"></div>
+      <label class="switch"><input type="checkbox" id="saveDefault"> Make it the company default</label>
+    </div>
+    <footer><button type="button" class="btn ghost" data-action="close-modal">Cancel</button><button type="submit" class="btn primary" id="saveSubmit">Create layout</button></footer>
+  </form>
+</div>
+
+<!-- confirm -->
+<div class="modal" id="confirmModal">
+  <div class="modal-card">
+    <header><h3 id="confirmTitle"></h3><p id="confirmText"></p></header>
+    <footer><button class="btn ghost" id="confirmNo">Cancel</button><button class="btn danger" id="confirmYes">Confirm</button></footer>
+  </div>
+</div>
+
+<!-- settings -->
+<div class="modal" id="settingsModal">
+  <form class="modal-card" id="settingsForm">
+    <header><h3>Connection</h3><p>Shares the token and API base with the other tester pages.</p></header>
+    <div class="body">
+      <label class="switch"><input type="checkbox" id="setDemo"> Use demo data (no API calls)</label>
+      <div><label for="setApi">API base URL</label><input class="input plain" id="setApi" list="apiOptions" placeholder="https://localhost:44302">
+        <datalist id="apiOptions"><option value="https://localhost:44302"><option value="https://ccg-backend-dockerized.wonderfulstone-1ca188ce.uaenorth.azurecontainerapps.io"></datalist></div>
+      <div><label for="setToken">Bearer token</label><textarea class="input plain" id="setToken" placeholder="Paste JWT access token"></textarea></div>
+    </div>
+    <footer><button type="button" class="btn ghost" data-action="close-modal">Cancel</button><button type="submit" class="btn primary">Save &amp; reload</button></footer>
+  </form>
+</div>
+
+<datalist id="fontList">
+  <option value="Segoe UI"></option><option value="Tahoma"></option><option value="Arial"></option><option value="Calibri"></option>
+  <option value="Times New Roman"></option><option value="Georgia"></option><option value="Courier New"></option>
+  <option value="Traditional Arabic"></option><option value="Simplified Arabic"></option><option value="Arial Unicode MS"></option>
+  <option value="Noto Naskh Arabic"></option><option value="Cairo"></option><option value="Amiri"></option>
+</datalist>
+<datalist id="reportTypeList">
+  <option value="Projects"></option><option value="Clients"></option><option value="ProjectLocations"></option>
+  <option value="ProjectResponsibleEngineers"></option><option value="Boqs"></option><option value="BoqItems"></option>
+</datalist>
+
+<div id="toasts"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ============================================================ helpers */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const hue = s => { let h = 0; for (const ch of String(s)) h = (h * 31 + ch.charCodeAt(0)) % 360; return h; };
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const nullIfEmpty = v => { const s = (v ?? "").toString().trim(); return s ? s : null; };
+const MM_PER_PT = 25.4 / 72;
+const PX_PER_MM = 96 / 25.4;
+
+const ICON = {
+  check: '<svg class="i" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>',
+  alert: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>',
+  info: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>',
+  empty: '<svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>',
+  chev: '<svg class="i chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>',
+  plus: '<svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  trash: '<svg class="i" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>',
+  copy: '<svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+  pen: '<svg class="i" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  star: '<svg class="i" viewBox="0 0 24 24"><path d="M12 3l2.9 5.9 6.6.9-4.8 4.6 1.2 6.5L12 17.8 6.1 20.9l1.2-6.5L2.5 9.8l6.6-.9z"/></svg>',
+  up: '<svg class="i" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
+  down: '<svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>',
+  eye: '<svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>'
+};
+const emptyBox = msg => `<div class="empty">${ICON.empty}<div>${esc(msg)}</div></div>`;
+
+function formatStamp(date, pattern) {
+  const p = (pattern || "yyyy-MM-dd HH:mm");
+  const pad = n => String(n).padStart(2, "0");
+  const map = {
+    yyyy: date.getFullYear(), MM: pad(date.getMonth() + 1), dd: pad(date.getDate()),
+    HH: pad(date.getHours()), mm: pad(date.getMinutes()), ss: pad(date.getSeconds())
+  };
+  return p.replace(/yyyy|MM|dd|HH|mm|ss/g, m => map[m]);
+}
+/** Quotes a font family the way ReportCss.FontFamily does, so multi-word names stay valid CSS. */
+function cssFont(value) {
+  const name = String(value || "").replace(/['"{};<>]/g, "").trim();
+  return `'${name || "Segoe UI"}'`;
+}
+function hexToRgba(hex, alpha) {
+  const a = clamp(Number(alpha) > 0 ? Number(alpha) : 0.15, 0, 1);
+  let s = String(hex || "").trim().replace("#", "");
+  if (s.length === 3) s = s.split("").map(c => c + c).join("");
+  const n = /^[0-9a-f]{6}$/i.test(s) ? s : "e0e0e0";
+  return `rgba(${parseInt(n.slice(0, 2), 16)},${parseInt(n.slice(2, 4), 16)},${parseInt(n.slice(4, 6), 16)},${a})`;
+}
+
+/* ============================================================ settings */
+const KEYS = { token: "reportLayoutDesigner.token", api: "reportLayoutDesigner.apiBase", demo: "layoutStudio.demo", theme: "layoutStudio.theme" };
+const settings = {
+  get token() { return (localStorage.getItem(KEYS.token) || "").replace(/^bearer\s+/i, "").trim(); },
+  get apiBase() {
+    const fallback = location.origin && location.origin !== "null" ? location.origin : "https://localhost:44302";
+    return (localStorage.getItem(KEYS.api) || fallback).replace(/\/+$/, "");
+  },
+  get demo() { const v = localStorage.getItem(KEYS.demo); return v === null ? !this.token : v === "1"; }
+};
+
+/* ============================================================ field schema */
+const SECTIONS = [
+  { id: "identity", label: "Identity", icon: '<svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h5M7 13h10"/></svg>' },
+  { id: "page", label: "Page & margins", icon: '<svg class="i" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 17h8" stroke-dasharray="2 2"/></svg>' },
+  { id: "title", label: "Title band", icon: '<svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M7 11h10M9 16h6"/></svg>' },
+  { id: "palette", label: "Brand colors", icon: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1.3"/><circle cx="15" cy="10" r="1.3"/><circle cx="12" cy="15" r="1.3"/></svg>' },
+  { id: "header", label: "Header", icon: '<svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1"/><path d="M3 14h18M3 18h12"/></svg>' },
+  { id: "table", label: "Table style", icon: '<svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></svg>' },
+  { id: "footer", label: "Footer", icon: '<svg class="i" viewBox="0 0 24 24"><path d="M3 6h12M3 10h18"/><rect x="3" y="14" width="18" height="6" rx="1"/></svg>' },
+  { id: "watermark", label: "Watermark", icon: '<svg class="i" viewBox="0 0 24 24"><path d="M12 3s6 6 6 10a6 6 0 0 1-12 0c0-4 6-10 6-10z"/></svg>' },
+  { id: "signatures", label: "Signatures", icon: '<svg class="i" viewBox="0 0 24 24"><path d="M3 18c3 0 4-10 7-10s2 7 4 7 2-3 4-3 2 2 3 2"/><path d="M3 21h18"/></svg>' }
+];
+
+const TOKENS = ["{{Title}}", "{{Subtitle}}", "{{Date}}", "{{Company}}"];
+const SELECTS = {
+  paper: [[1, "A4 — 210 × 297"], [2, "A3 — 297 × 420"], [3, "Letter — 216 × 279"], [4, "Legal — 216 × 356"]],
+  orientation: [[1, "Portrait"], [2, "Landscape"]],
+  direction: [[2, "RTL — right to left"], [1, "LTR — left to right"]],
+  align: [[1, "Left"], [2, "Center"], [3, "Right"]],
+  logo: [[1, "Left cell"], [2, "Center cell"], [3, "Right cell"]],
+  content: [["Table", "Table"], ["Text", "Text"]]
+};
+
+// t: text | area | num | color | bool | select | font
+const FIELDS = [
+  // identity
+  { k: "code", sec: "identity", label: "Code", t: "text", def: "TENANT_CUSTOM_1", max: 100, req: true, mono: true, help: "Unique per company. Changing it on an existing layout is allowed." },
+  { k: "name", sec: "identity", label: "Name", t: "text", def: "My custom layout", max: 250, req: true },
+  { k: "description", sec: "identity", label: "Description", t: "area", def: null, max: 1000, emptyNull: true, fw: true },
+  { k: "defaultContentTemplateKey", sec: "identity", label: "Content template", t: "select", opts: SELECTS.content, def: "Table", help: "Used by real exports when the caller doesn't pass one. The preview always uses the kind picked above the canvas." },
+  { k: "defaultTitle", sec: "identity", label: "Default title", t: "text", def: null, max: 500, emptyNull: true, help: "Used when the export doesn't pass a title." },
+  { k: "defaultSubtitle", sec: "identity", label: "Default subtitle", t: "text", def: null, max: 500, emptyNull: true },
+  { k: "isDefault", sec: "identity", label: "Company default layout", t: "bool", def: false, fw: true },
+  { k: "isActive", sec: "identity", label: "Active", t: "bool", def: true, fw: true },
+
+  // page
+  { k: "paperSize", sec: "page", label: "Paper", t: "select", opts: SELECTS.paper, def: 1 },
+  { k: "orientation", sec: "page", label: "Orientation", t: "select", opts: SELECTS.orientation, def: 1 },
+  { k: "direction", sec: "page", label: "Direction", t: "select", opts: SELECTS.direction, def: 2, fw: true, help: "RTL also flips the header and footer cells, so “left text” prints on the right." },
+  { k: "pageBackgroundColor", sec: "page", label: "Page background", t: "color", def: "#FFFFFF" },
+  { k: "fontFamily", sec: "page", label: "Page font", t: "font", def: "Segoe UI", max: 100, help: "Body, table and signature font. Must be installed on the PDF server." },
+  { k: "baseFontSizePt", sec: "page", label: "Base font (pt)", t: "num", def: 11, min: 4, max: 72, step: 0.5 },
+  { k: "marginTopMm", sec: "page", label: "Margin top (mm)", t: "num", def: 15, min: 0, max: 80, step: 1, help: "The header height is added on top of this margin." },
+  { k: "marginBottomMm", sec: "page", label: "Margin bottom (mm)", t: "num", def: 15, min: 0, max: 80, step: 1 },
+  { k: "marginLeftMm", sec: "page", label: "Margin left (mm)", t: "num", def: 15, min: 0, max: 80, step: 1 },
+  { k: "marginRightMm", sec: "page", label: "Margin right (mm)", t: "num", def: 15, min: 0, max: 80, step: 1 },
+
+  // title band
+  { k: "showTitleBand", sec: "title", label: "Show title band", t: "bool", def: true, fw: true },
+  { k: "titleAlign", sec: "title", label: "Title align", t: "select", opts: SELECTS.align, def: 2, dep: d => d.showTitleBand },
+  { k: "titleFontSizePt", sec: "title", label: "Title font (pt)", t: "num", def: 16, min: 6, max: 90, step: 0.5, dep: d => d.showTitleBand },
+  { k: "titleFontFamily", sec: "title", label: "Title font", t: "font", def: null, max: 100, emptyNull: true, dep: d => d.showTitleBand, help: "Empty → page font." },
+  { k: "titleFontColor", sec: "title", label: "Title color", t: "color", def: null, nullable: true, fallback: d => d.primaryColor, dep: d => d.showTitleBand, help: "Auto → primary color." },
+
+  // palette
+  { k: "primaryColor", sec: "palette", label: "Primary", t: "color", def: "#1F4E79", help: "Fallback for title, header and footer borders and text." },
+  { k: "secondaryColor", sec: "palette", label: "Secondary", t: "color", def: "#5B9BD5", help: "Stored only — the current PDF templates never read it." },
+  { k: "accentColor", sec: "palette", label: "Accent", t: "color", def: "#F2F2F2", help: "Stored only — the current PDF templates never read it." },
+
+  // header
+  { k: "showHeader", sec: "header", label: "Show header", t: "bool", def: true, fw: true },
+  { k: "repeatHeaderOnEveryPage", sec: "header", label: "Repeat on every page", t: "bool", def: true, fw: true, dep: d => d.showHeader, help: "Off → the header is printed once, inside the body of page 1." },
+  { k: "showHeaderBorder", sec: "header", label: "Bottom border", t: "bool", def: true, fw: true, dep: d => d.showHeader },
+  { k: "headerHeightMm", sec: "header", label: "Height (mm)", t: "num", def: 25, min: 0, max: 120, step: 1, dep: d => d.showHeader },
+  { k: "headerFontSizePt", sec: "header", label: "Font size (pt)", t: "num", def: 10, min: 4, max: 48, step: 0.5, dep: d => d.showHeader },
+  { k: "headerFontFamily", sec: "header", label: "Header font", t: "font", def: null, max: 100, emptyNull: true, dep: d => d.showHeader, help: "Empty → page font." },
+  { k: "headerBackgroundColor", sec: "header", label: "Background", t: "color", def: null, nullable: true, fallbackLabel: "transparent", dep: d => d.showHeader },
+  { k: "headerBorderColor", sec: "header", label: "Border color", t: "color", def: null, nullable: true, fallback: d => d.primaryColor, dep: d => d.showHeader && d.showHeaderBorder },
+  { k: "headerFontColor", sec: "header", label: "Text color", t: "color", def: null, nullable: true, fallback: d => d.primaryColor, dep: d => d.showHeader },
+  { k: "headerLeftText", sec: "header", label: "Left text", t: "area", def: null, max: 2000, emptyNull: true, tokens: true, fw: true, dep: d => d.showHeader },
+  { k: "headerCenterText", sec: "header", label: "Center text", t: "area", def: null, max: 2000, emptyNull: true, tokens: true, fw: true, dep: d => d.showHeader, help: "Empty → the report title is printed here." },
+  { k: "headerRightText", sec: "header", label: "Right text", t: "area", def: null, max: 2000, emptyNull: true, tokens: true, fw: true, dep: d => d.showHeader },
+  { k: "showLogo", sec: "header", label: "Show logo", t: "bool", def: true, fw: true, dep: d => d.showHeader },
+  { k: "logoUrl", sec: "header", label: "Logo URL", t: "text", def: null, max: 1000, emptyNull: true, fw: true, mono: true, dep: d => d.showHeader && d.showLogo, help: "Must be reachable from the server — it is downloaded and inlined before printing." },
+  { k: "logoPosition", sec: "header", label: "Logo cell", t: "select", opts: SELECTS.logo, def: 3, dep: d => d.showHeader && d.showLogo },
+  { k: "logoWidthMm", sec: "header", label: "Logo width (mm)", t: "num", def: 30, min: 2, max: 150, step: 1, dep: d => d.showHeader && d.showLogo },
+  { k: "logoHeightMm", sec: "header", label: "Logo height (mm)", t: "num", def: 18, min: 2, max: 120, step: 1, dep: d => d.showHeader && d.showLogo, help: "Clamped to the header height when printing." },
+
+  // table
+  { k: "tableHeaderBackgroundColor", sec: "table", label: "Header background", t: "color", def: "#1F4E79" },
+  { k: "tableHeaderFontColor", sec: "table", label: "Header text", t: "color", def: "#FFFFFF" },
+  { k: "tableHeaderFontSizePt", sec: "table", label: "Header font (pt)", t: "num", def: 10, min: 4, max: 36, step: 0.5 },
+  { k: "tableHeaderBold", sec: "table", label: "Bold header", t: "bool", def: true, fw: true },
+  { k: "tableRowBackgroundColor", sec: "table", label: "Row background", t: "color", def: "#FFFFFF" },
+  { k: "tableAltRowBackgroundColor", sec: "table", label: "Alternate row", t: "color", def: "#F2F2F2" },
+  { k: "tableBorderColor", sec: "table", label: "Border color", t: "color", def: "#D0D0D0", dep: d => d.showTableGridLines },
+  { k: "showTableGridLines", sec: "table", label: "Grid lines", t: "bool", def: true, fw: true },
+  { k: "tableCellPaddingMm", sec: "table", label: "Cell padding (mm)", t: "num", def: 2, min: 0, max: 20, step: 0.5 },
+
+  // footer
+  { k: "showFooter", sec: "footer", label: "Show footer", t: "bool", def: true, fw: true, help: "Off → only repeating signatures remain in the footer area." },
+  { k: "repeatFooterOnEveryPage", sec: "footer", label: "Repeat on every page", t: "bool", def: true, fw: true, dep: d => d.showFooter, help: "Off → the footer texts print once at the end of the content, and page numbers become “1 / N”." },
+  { k: "showFooterBorder", sec: "footer", label: "Top border", t: "bool", def: true, fw: true, dep: d => d.showFooter },
+  { k: "footerHeightMm", sec: "footer", label: "Height (mm)", t: "num", def: 20, min: 0, max: 120, step: 1 },
+  { k: "footerFontSizePt", sec: "footer", label: "Font size (pt)", t: "num", def: 9, min: 4, max: 36, step: 0.5, help: "Also used by repeating signatures." },
+  { k: "footerFontFamily", sec: "footer", label: "Footer font", t: "font", def: null, max: 100, emptyNull: true, dep: d => d.showFooter, help: "Empty → page font." },
+  { k: "footerBackgroundColor", sec: "footer", label: "Background", t: "color", def: null, nullable: true, fallbackLabel: "transparent", dep: d => d.showFooter },
+  { k: "footerBorderColor", sec: "footer", label: "Border color", t: "color", def: null, nullable: true, fallback: d => d.primaryColor, dep: d => d.showFooter && d.showFooterBorder },
+  { k: "footerFontColor", sec: "footer", label: "Text color", t: "color", def: null, nullable: true, fallbackLabel: "#475569", dep: d => d.showFooter },
+  { k: "footerLeftText", sec: "footer", label: "Left text", t: "area", def: null, max: 2000, emptyNull: true, tokens: true, fw: true, dep: d => d.showFooter },
+  { k: "footerCenterText", sec: "footer", label: "Center text", t: "area", def: null, max: 2000, emptyNull: true, tokens: true, fw: true, dep: d => d.showFooter },
+  { k: "footerRightText", sec: "footer", label: "Right text", t: "area", def: null, max: 2000, emptyNull: true, tokens: true, fw: true, dep: d => d.showFooter && !d.showGeneratedAt, why: "Ignored while “generated at” is on — that stamp takes the right cell." },
+  { k: "showPageNumbers", sec: "footer", label: "Page numbers", t: "bool", def: true, fw: true, dep: d => d.showFooter },
+  { k: "pageNumberFormat", sec: "footer", label: "Page number format", t: "text", def: "{current} / {total}", max: 50, mono: true, dep: d => d.showFooter && d.showPageNumbers, help: "{current} and {total} are replaced by the print engine." },
+  { k: "pageNumberAlign", sec: "footer", label: "Page number cell", t: "select", opts: SELECTS.align, def: 2, dep: d => d.showFooter && d.showPageNumbers },
+  { k: "showGeneratedAt", sec: "footer", label: "Show “generated at”", t: "bool", def: true, fw: true, dep: d => d.showFooter },
+  { k: "generatedAtLabel", sec: "footer", label: "Label", t: "text", def: "Generated at", max: 100, dep: d => d.showFooter && d.showGeneratedAt },
+  { k: "generatedAtFormat", sec: "footer", label: "Date format", t: "text", def: "yyyy-MM-dd HH:mm", max: 50, mono: true, dep: d => d.showFooter && d.showGeneratedAt, help: ".NET format string, rendered in the company time zone." },
+
+  // watermark
+  { k: "showWatermark", sec: "watermark", label: "Show watermark", t: "bool", def: false, fw: true },
+  { k: "watermarkText", sec: "watermark", label: "Text", t: "area", def: null, max: 1000, emptyNull: true, fw: true, dep: d => d.showWatermark },
+  { k: "watermarkColor", sec: "watermark", label: "Color", t: "color", def: "#E0E0E0", dep: d => d.showWatermark },
+  { k: "watermarkOpacity", sec: "watermark", label: "Opacity (0–1)", t: "num", def: 0.15, min: 0, max: 1, step: 0.05, dep: d => d.showWatermark },
+  { k: "watermarkFontSizePt", sec: "watermark", label: "Font size (pt)", t: "num", def: 48, min: 6, max: 200, step: 1, dep: d => d.showWatermark },
+
+  // signatures (page-level switch; the list is rendered separately)
+  { k: "showSignatureBorder", sec: "signatures", label: "Draw a box around each signature", t: "bool", def: false, fw: true }
+];
+const FIELD = Object.fromEntries(FIELDS.map(f => [f.k, f]));
+
+const SIG_FIELDS = [
+  { k: "label", label: "Label", t: "area", def: "", max: 1000, req: true, fw: true },
+  { k: "title", label: "Title", t: "area", def: null, max: 1000, emptyNull: true, fw: true },
+  { k: "name", label: "Name", t: "area", def: null, max: 1000, emptyNull: true, fw: true, help: "Empty → an underscore line is printed." },
+  { k: "align", label: "Align", t: "select", opts: SELECTS.align, def: 2 },
+  { k: "displayOrder", label: "Order", t: "num", def: 1, min: 0, max: 99, step: 1 },
+  { k: "widthMm", label: "Width (mm)", t: "num", def: 40, min: 5, max: 200, step: 1 },
+  { k: "heightMm", label: "Height (mm)", t: "num", def: 20, min: 2, max: 120, step: 1 },
+  { k: "dateLabel", label: "Date label", t: "text", def: "Date", max: 200, dep: s => s.showDateLine },
+  { k: "imageUrl", label: "Image URL", t: "text", def: null, max: 1000, emptyNull: true, mono: true, fw: true, help: "When set it replaces the signature line." },
+  { k: "instructions", label: "Instructions", t: "area", def: null, max: 2000, emptyNull: true, fw: true },
+  { k: "isSignature", label: "Draw a signature line", t: "bool", def: true, fw: true },
+  { k: "showNameLine", label: "Show name line", t: "bool", def: true, fw: true },
+  { k: "showDateLine", label: "Show date line", t: "bool", def: true, fw: true },
+  { k: "repeatOnEveryPage", label: "Repeat on every page (footer)", t: "bool", def: false, fw: true }
+];
+
+const PRESETS = {
+  blue: { label: "Corporate blue", patch: { primaryColor: "#1F4E79", tableHeaderBackgroundColor: "#1F4E79", tableHeaderFontColor: "#FFFFFF", headerBackgroundColor: null, headerFontColor: null, direction: 2, showLogo: true, headerLeftText: "Al-Harmeen", headerCenterText: "{{Title}}", headerRightText: "{{Date}}", footerCenterText: "Confidential" } },
+  teal: { label: "Modern teal", patch: { primaryColor: "#0F766E", secondaryColor: "#14B8A6", accentColor: "#ECFDF5", tableHeaderBackgroundColor: "#0F766E", tableHeaderFontColor: "#FFFFFF", headerBackgroundColor: "#0F766E", headerFontColor: "#FFFFFF", showHeaderBorder: false, showLogo: false, headerLeftText: "{{Company}}", footerLeftText: "Modern ERP" } },
+  dense: { label: "Dense landscape", patch: { primaryColor: "#334155", tableHeaderBackgroundColor: "#334155", orientation: 2, baseFontSizePt: 9, tableHeaderFontSizePt: 9, tableCellPaddingMm: 1, marginTopMm: 10, marginBottomMm: 10, marginLeftMm: 10, marginRightMm: 10, headerHeightMm: 18, footerHeightMm: 14, showLogo: false } }
+};
+
+/* ============================================================ sample content */
+const SAMPLE_COLS = ["Code", "Project", "Client", "Status", "Budget"];
+const SAMPLE_ROWS = (() => {
+  const names = ["North Tower", "Harbor Mall", "City Clinic", "West Road", "East Bridge", "Green Park", "Skyline Plaza", "Desert Oasis", "Coastal Hub", "Metro Station", "River Walk", "Sunset Mall", "Crystal Tower", "Palm Residences", "Central Hub", "Lake View", "Grand Arena", "Tech Park", "Royal Gate", "Horizon Center", "Silver Bay", "Cedar Heights"];
+  const clients = ["Acme Co", "Blue Star", "MedGroup", "BuildPro", "Urban Dev", "GreenLeaf", "SkyLine Inc", "Desert Co", "Oceanic Ltd", "Metro Corp"];
+  const statuses = ["Active", "Pending", "Closed", "On Hold"];
+  return names.map((n, i) => [`PRJ-${1001 + i}`, n, clients[i % clients.length], statuses[i % statuses.length], (250000 + i * 37500).toLocaleString("en-US")]);
+})();
+const SAMPLE_TEXT = "This is a sample plain-text report preview.\n\nCompany: Al-Harmeen\nPrepared for: Company managers\nNotes: Layout parameters are applied by the real reporting exporters.";
+
+/* ============================================================ backends */
+async function http(method, path, body) {
+  const res = await fetch(settings.apiBase + path, {
+    method,
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${settings.token}` },
+    body: body === undefined ? undefined : JSON.stringify(body)
+  });
+  let json = null;
+  try { json = await res.json(); } catch { /* empty body */ }
+  if (res.status === 401) throw new Error("Unauthorized: check your token in Connection settings.");
+  if (res.status === 403) throw new Error(json?.message || "You don't have permission for this action, or no company is selected on the token.");
+  if (!res.ok || (json && json.isSuccess === false)) throw new Error(json?.message || json?.title || `${res.status} ${res.statusText}`);
+  return json?.data;
+}
+
+const liveBackend = {
+  list: includeInactive => http("GET", `/api/ReportLayout?includeInactive=${includeInactive ? "true" : "false"}`).then(d => Array.isArray(d) ? d : (d?.data ?? [])),
+  get: id => http("GET", `/api/ReportLayout/${encodeURIComponent(id)}`),
+  create: payload => http("POST", "/api/ReportLayout", payload),
+  update: (id, payload) => http("PUT", `/api/ReportLayout/${encodeURIComponent(id)}`, payload),
+  deactivate: id => http("DELETE", `/api/ReportLayout/${encodeURIComponent(id)}`),
+  lastUsed: type => http("GET", `/api/ReportLayout/last-used/${encodeURIComponent(type)}`),
+  async preview(payload) {
+    const res = await fetch(settings.apiBase + "/api/ReportLayout/preview-sample", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${settings.token}` },
+      body: JSON.stringify(payload)
+    });
+    const type = res.headers.get("content-type") || "";
+    if (!res.ok || !type.includes("pdf")) {
+      let msg = res.status === 401 ? "Unauthorized: check your token." : `${res.status} ${res.statusText}`;
+      try { const j = await res.json(); if (j?.message) msg = j.message; } catch { /* not json */ }
+      throw new Error(msg);
+    }
+    return res.blob();
+  }
+};
+
+const DEMO_ONLY = "Demo data can't render a real PDF. Switch off demo mode in Connection to use the backend preview.";
+const newId = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : `demo-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+const demoBackend = (() => {
+  const base = () => Object.fromEntries(FIELDS.map(f => [f.k, f.def]));
+  const stamp = new Date(Date.now() - 864e5 * 9).toISOString();
+  let seq = 1;
+  const make = (over, sigs = []) => ({
+    ...base(), id: `demo-layout-${seq++}`, companyId: 1, isSystem: false, isActive: true, isDefault: false,
+    razorLayoutKey: "Document", createdAtUtc: stamp, updatedAtUtc: null,
+    signatures: sigs.map((s, i) => ({ id: `sig-${seq}-${i}`, ...sigDefaults(), ...s, displayOrder: s.displayOrder ?? i + 1 })),
+    ...over
+  });
+  const db = {
+    layouts: [
+      make({
+        id: "11111111-1111-1111-1111-111111111111", companyId: null, isSystem: true, isDefault: true,
+        code: "SYSTEM_DEFAULT", name: "Default ERP", description: "Seeded system layout with a repeating header and footer.",
+        primaryColor: "#1F4E79", secondaryColor: "#5B9BD5", headerLeftText: "Al-Harmeen", headerCenterText: "{{Title}}",
+        headerRightText: "{{Date}}", footerCenterText: "Confidential", headerHeightMm: 25, footerHeightMm: 18, marginTopMm: 8, marginBottomMm: 8
+      }),
+      make({
+        code: "TENANT_BLUE", name: "Harmeen Blue", description: "Branded layout used for project and BOQ exports.",
+        isDefault: true, headerLeftText: "Al-Harmeen\nContracting", headerCenterText: "{{Title}}", headerRightText: "{{Date}}",
+        footerLeftText: "harmeen.example", footerCenterText: "Confidential", logoUrl: "", showLogo: false
+      }, [
+        { label: "Prepared by", title: "Site engineer", displayOrder: 1 },
+        { label: "Approved by", title: "Project manager", displayOrder: 2 }
+      ]),
+      make({
+        code: "TENANT_DENSE", name: "Dense landscape", description: "Wide tables, small font, no logo.",
+        orientation: 2, baseFontSizePt: 9, tableHeaderFontSizePt: 9, tableCellPaddingMm: 1, primaryColor: "#334155",
+        tableHeaderBackgroundColor: "#334155", marginTopMm: 10, marginBottomMm: 10, marginLeftMm: 10, marginRightMm: 10,
+        headerLeftText: "{{Company}}", headerRightText: "{{Date}}", showWatermark: true, watermarkText: "DRAFT"
+      }),
+      make({ code: "TENANT_OLD", name: "Old quotation layout", description: "Kept for reference, deactivated.", isActive: false, direction: 1 })
+    ],
+    lastUsed: { Projects: "TENANT_BLUE", Boqs: "TENANT_DENSE" }
+  };
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const find = id => db.layouts.find(l => l.id === id);
+  return {
+    async list(includeInactive) {
+      await sleep(380);
+      return clone(db.layouts.filter(l => includeInactive || l.isActive))
+        .sort((a, b) => (b.isSystem - a.isSystem) || (b.isDefault - a.isDefault) || a.name.localeCompare(b.name));
+    },
+    async get(id) { await sleep(220); const l = find(id); if (!l) throw new Error("Layout was not found."); return clone(l); },
+    async create(payload) {
+      await sleep(420);
+      if (db.layouts.some(l => !l.isSystem && l.code === payload.code)) throw new Error(`Layout code '${payload.code}' already exists for this company.`);
+      if (db.layouts.filter(l => !l.isSystem && l.isActive).length >= 10) throw new Error("Company layout limit reached (10). Deactivate an existing layout before creating a new one.");
+      if (payload.isDefault) db.layouts.forEach(l => { if (!l.isSystem) l.isDefault = false; });
+      const created = { ...clone(payload), id: newId(), companyId: 1, isSystem: false, createdAtUtc: new Date().toISOString(), updatedAtUtc: null };
+      created.signatures = (payload.signatures || []).map((s, i) => ({ ...s, id: newId(), displayOrder: s.displayOrder ?? i + 1 }));
+      db.layouts.push(created);
+      return clone(created);
+    },
+    async update(id, payload) {
+      await sleep(380);
+      const l = find(id);
+      if (!l) throw new Error(`Layout '${id}' was not found.`);
+      if (l.isSystem) throw new Error("System layouts cannot be modified as company layouts.");
+      if (db.layouts.some(x => x.id !== id && !x.isSystem && x.code === payload.code)) throw new Error(`Layout code '${payload.code}' already exists for this company.`);
+      if (payload.isDefault) db.layouts.forEach(x => { if (!x.isSystem) x.isDefault = false; });
+      Object.assign(l, clone(payload), { id, companyId: 1, isSystem: false, updatedAtUtc: new Date().toISOString() });
+      l.signatures = (payload.signatures || []).map((s, i) => ({ ...s, id: newId(), displayOrder: s.displayOrder ?? i + 1 }));
+      return clone(l);
+    },
+    async deactivate(id) {
+      await sleep(260);
+      const l = find(id);
+      if (!l) throw new Error(`Layout '${id}' was not found.`);
+      if (l.isSystem) throw new Error("System layouts cannot be deactivated.");
+      l.isActive = false; l.isDefault = false;
+    },
+    async lastUsed(type) {
+      await sleep(260);
+      const code = db.lastUsed[type];
+      const l = code && db.layouts.find(x => x.code === code && x.isActive);
+      if (!l) throw new Error("No layout has been used for this report type yet.");
+      return clone(l);
+    },
+    async preview() { await sleep(150); throw new Error(DEMO_ONLY); }
+  };
+})();
+const backend = () => settings.demo ? demoBackend : liveBackend;
+
+/* ============================================================ draft model */
+function sigDefaults() { return Object.fromEntries(SIG_FIELDS.map(f => [f.k, f.def])); }
+
+let uid = 0;
+function toDraft(dto) {
+  const d = {};
+  for (const f of FIELDS) {
+    const raw = dto ? dto[f.k] : undefined;
+    if (raw === undefined) { d[f.k] = f.def; continue; }
+    if (f.t === "bool") d[f.k] = !!raw;
+    else if (f.t === "num") d[f.k] = Number(raw ?? f.def);
+    else if (f.t === "select") d[f.k] = typeof f.def === "number" ? Number(raw ?? f.def) : (raw ?? f.def);
+    else d[f.k] = raw === "" ? (f.emptyNull || f.nullable ? null : f.def) : raw;
+  }
+  d.signatures = ((dto && dto.signatures) || []).slice()
+    .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+    .map((s, i) => {
+      const sig = { _uid: ++uid };
+      for (const f of SIG_FIELDS) {
+        const raw = s[f.k];
+        if (raw === undefined || raw === null) sig[f.k] = f.k === "displayOrder" ? i + 1 : f.def;
+        else if (f.t === "bool") sig[f.k] = !!raw;
+        else if (f.t === "num" || f.t === "select") sig[f.k] = Number(raw);
+        else sig[f.k] = raw;
+      }
+      return sig;
+    });
+  return d;
+}
+
+function toPayload(draft) {
+  const p = { razorLayoutKey: "Document" };
+  for (const f of FIELDS) {
+    const v = draft[f.k];
+    if (f.t === "bool") p[f.k] = !!v;
+    else if (f.t === "num") p[f.k] = Number.isFinite(Number(v)) ? Number(v) : f.def;
+    else if (f.t === "select") p[f.k] = typeof f.def === "number" ? Number(v) : v;
+    else if (f.emptyNull || f.nullable) p[f.k] = nullIfEmpty(v);
+    else p[f.k] = (v ?? f.def ?? "").toString().trim() || f.def;
+  }
+  p.code = (draft.code || "").trim();
+  p.name = (draft.name || "").trim();
+  p.pageNumberFormat = (draft.pageNumberFormat || "").trim() || "{current} / {total}";
+  p.signatures = draft.signatures.map((s, i) => {
+    const out = {};
+    for (const f of SIG_FIELDS) {
+      const v = s[f.k];
+      if (f.t === "bool") out[f.k] = !!v;
+      else if (f.t === "num" || f.t === "select") out[f.k] = Number.isFinite(Number(v)) ? Number(v) : f.def;
+      else if (f.emptyNull) out[f.k] = nullIfEmpty(v);
+      else out[f.k] = (v ?? f.def ?? "").toString();
+    }
+    out.label = (s.label || "").trim() || `Signature ${i + 1}`;
+    out.displayOrder = Number(s.displayOrder) || i + 1;
+    return out;
+  });
+  return p;
+}
+
+/* resolved view used by the mock: applies every server-side fallback */
+function resolved(d, sample) {
+  const s = sample || state.sample;
+  const title = (s.title || "").trim() || d.defaultTitle || d.name || "Report";
+  const subtitle = (s.subtitle || "").trim() || d.defaultSubtitle || "";
+  const now = new Date();
+  const stampText = formatStamp(now, d.generatedAtFormat);
+  const expand = t => (t ?? "").replace(/\{\{\s*([^}]+?)\s*\}\}/g, (_, key) => {
+    switch (key.toLowerCase()) {
+      case "title": return title;
+      case "subtitle": return subtitle;
+      case "date": case "generatedat": case "generated_at": return stampText;
+      case "company": {
+        const left = d.headerLeftText || "";
+        return left && !left.includes("{{") ? left : "";
+      }
+      default: return "";
+    }
+  });
+  return {
+    title, subtitle, stampText, expand,
+    primary: d.primaryColor || "#1F4E79",
+    titleColor: d.titleFontColor || d.primaryColor || "#1F4E79",
+    headerBg: d.headerBackgroundColor || "transparent",
+    headerFg: d.headerFontColor || d.primaryColor || "#1F4E79",
+    headerBorder: d.headerBorderColor || d.primaryColor || "#1F4E79",
+    footerBg: d.footerBackgroundColor || "transparent",
+    footerFg: d.footerFontColor || "#475569",
+    footerBorder: d.footerBorderColor || d.primaryColor || "#1F4E79",
+    bodyFont: d.fontFamily || "Segoe UI",
+    titleFont: d.titleFontFamily || d.fontFamily || "Segoe UI",
+    headerFont: d.headerFontFamily || d.fontFamily || "Segoe UI",
+    footerFont: d.footerFontFamily || d.fontFamily || "Segoe UI"
+  };
+}
+
+/* ============================================================ state */
+const state = {
+  layouts: [], includeInactive: true, loaded: false,
+  draft: toDraft(null), baseline: null, editing: null,       // editing: { id, isSystem, name, code }
+  view: "gallery", canvas: "mock", zoom: "fit", guides: true,
+  sample: { title: "", subtitle: "", contentKind: 1 },
+  inspQuery: "", openSections: new Set(["identity", "page", "header"]),
+  pdfUrl: null, pdfStale: false, autoPdf: false,
+  usage: {}
+};
+const companyLayouts = () => state.layouts.filter(l => !l.isSystem);
+const activeCompanyCount = () => companyLayouts().filter(l => l.isActive).length;
+const currentDefault = () => companyLayouts().find(l => l.isDefault) || state.layouts.find(l => l.isSystem && l.isDefault);
+
+/* ============================================================ busy / toast / confirm */
+let busyCount = 0;
+async function busy(fn) {
+  busyCount++; $("#progress").classList.add("on");
+  try { return await fn(); }
+  finally { if (--busyCount === 0) $("#progress").classList.remove("on"); }
+}
+function toast(msg, type = "ok") {
+  const c = { ok: "var(--ok)", err: "var(--danger)", info: "var(--primary)", warn: "var(--warn)" }[type];
+  const el = document.createElement("div");
+  el.className = "toast"; el.style.setProperty("--c", c);
+  el.innerHTML = `<span style="color:${c}">${type === "ok" ? ICON.check : ICON.alert}</span><span dir="auto">${esc(msg)}</span>`;
+  $("#toasts").appendChild(el);
+  setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 300); }, type === "err" ? 6000 : 3200);
+}
+async function run(fn, okMsg) {
+  try { const r = await busy(fn); if (okMsg) toast(okMsg); return r === undefined ? true : r; }
+  catch (err) { toast(err.message || String(err), "err"); return null; }
+}
+let confirmResolve = null;
+function confirmAsk(title, text, yes = "Confirm") {
+  $("#confirmTitle").textContent = title;
+  $("#confirmText").textContent = text;
+  $("#confirmYes").textContent = yes;
+  $("#confirmModal").classList.add("open");
+  return new Promise(res => { confirmResolve = res; });
+}
+function closeConfirm(v) { $("#confirmModal").classList.remove("open"); if (confirmResolve) { confirmResolve(v); confirmResolve = null; } }
+function openModal(sel) { $(sel).classList.add("open"); }
+function closeModals() { $$(".modal.open").forEach(m => { if (m.id === "confirmModal") closeConfirm(false); else m.classList.remove("open"); }); }
+
+/* ============================================================ load */
+async function load() {
+  updateModePill();
+  if (!state.loaded) $("#galleryHost").innerHTML = '<div class="skeleton"></div>'.repeat(4);
+  const list = await run(() => backend().list(state.includeInactive));
+  if (!list) {
+    if (!state.loaded) $("#galleryHost").innerHTML = emptyBox("Couldn't load layouts. Open Connection to check the API base and token, or switch to demo data.");
+    return;
+  }
+  state.layouts = list;
+  state.loaded = true;
+  if (state.editing) {
+    const still = list.find(l => l.id === state.editing.id);
+    if (still) state.editing = { id: still.id, isSystem: !!still.isSystem, name: still.name, code: still.code };
+  }
+  renderAll();
+}
+function updateModePill() {
+  const pill = $("#modePill");
+  pill.classList.toggle("live", !settings.demo);
+  pill.querySelector("span").textContent = settings.demo ? "Demo data" : `Live · ${settings.apiBase.replace(/^https?:\/\//, "")}`;
+}
+
+/* ============================================================ diff & checks */
+function sigText(list) {
+  return list.map(s => SIG_FIELDS.map(f => `${f.k}=${s[f.k] ?? ""}`).join("|")).join(" ~ ");
+}
+function diffRows() {
+  if (!state.baseline) return [];
+  const rows = [];
+  for (const f of FIELDS) {
+    const a = state.baseline[f.k], b = state.draft[f.k];
+    const same = f.t === "num" ? Number(a) === Number(b) : (a ?? "") === (b ?? "");
+    if (!same) rows.push({ label: f.label, section: f.sec, from: showVal(f, a), to: showVal(f, b) });
+  }
+  if (sigText(state.baseline.signatures) !== sigText(state.draft.signatures)) {
+    rows.push({ label: "Signatures", section: "signatures", from: `${state.baseline.signatures.length} block(s)`, to: `${state.draft.signatures.length} block(s)` });
+  }
+  return rows;
+}
+function showVal(f, v) {
+  if (v === null || v === undefined || v === "") return "auto";
+  if (f.t === "bool") return v ? "on" : "off";
+  if (f.t === "select") { const hit = (f.opts || []).find(o => String(o[0]) === String(v)); return hit ? String(hit[1]).split(" —")[0] : String(v); }
+  return String(v).replace(/\s+/g, " ").slice(0, 28);
+}
+
+function checks() {
+  const d = state.draft, out = [];
+  const err = text => out.push({ level: "err", text });
+  const warn = text => out.push({ level: "warn", text });
+  const info = text => out.push({ level: "info", text });
+
+  if (!(d.code || "").trim()) err("Code is required.");
+  else if (d.code.trim().length > 100) err("Code is longer than 100 characters.");
+  else {
+    const clash = companyLayouts().find(l => l.code === d.code.trim() && l.id !== state.editing?.id);
+    if (clash) err(`Code “${d.code.trim()}” is already used by “${clash.name}”. Saving will fail with 400.`);
+  }
+  if (!(d.name || "").trim()) err("Name is required.");
+  else if (d.name.trim().length > 250) err("Name is longer than 250 characters.");
+
+  const lenCheck = [["description", 1000], ["defaultTitle", 500], ["defaultSubtitle", 500], ["logoUrl", 1000],
+    ["headerLeftText", 2000], ["headerCenterText", 2000], ["headerRightText", 2000],
+    ["footerLeftText", 2000], ["footerCenterText", 2000], ["footerRightText", 2000],
+    ["watermarkText", 1000], ["pageNumberFormat", 50], ["generatedAtFormat", 50], ["generatedAtLabel", 100]];
+  for (const [k, max] of lenCheck) {
+    if ((d[k] || "").length > max) err(`${FIELD[k].label} is longer than ${max} characters.`);
+  }
+  if (Number(d.watermarkOpacity) < 0 || Number(d.watermarkOpacity) > 1) err("Watermark opacity must be between 0 and 1.");
+  d.signatures.forEach((s, i) => { if (!(s.label || "").trim()) err(`Signature #${i + 1} has no label — the server requires one.`); });
+
+  if (state.editing?.isSystem) err("This is a system layout. Update and Deactivate are rejected by the API — use “Save as new” to get an editable copy.");
+  if (!state.editing && activeCompanyCount() >= 10) err(`This company already has ${activeCompanyCount()} active layouts (limit 10). Deactivate one before creating another.`);
+
+  if (d.isDefault) {
+    const cur = currentDefault();
+    if (cur && cur.id !== state.editing?.id) warn(`Saving will take the default flag away from “${cur.name}”.`);
+  }
+  if (!d.isActive) warn("Inactive layouts are hidden from exports and can't be picked as default.");
+  if (d.showLogo && !nullIfEmpty(d.logoUrl)) warn("Logo is on but no URL is set, so nothing is printed.");
+  if (d.showWatermark && !nullIfEmpty(d.watermarkText)) warn("Watermark is on but the text is empty, so nothing is printed.");
+  if (d.showFooter && d.showGeneratedAt && nullIfEmpty(d.footerRightText)) info("The “generated at” stamp replaces the footer right text.");
+  if (d.showHeader && !nullIfEmpty(d.headerCenterText)) info("Header center is empty, so the report title is printed there.");
+  if (d.showHeader && !d.repeatHeaderOnEveryPage) info("The header prints once inside the body of page 1 instead of on every page.");
+  if (d.showFooter && !d.repeatFooterOnEveryPage) info("Footer texts print once at the end of the content and page counters fall back to “1 / N”.");
+  if (!d.showFooter && d.signatures.some(s => s.repeatOnEveryPage)) info("The footer is off, but repeating signatures still reserve space on every page.");
+  if (d.secondaryColor !== FIELD.secondaryColor.def || d.accentColor !== FIELD.accentColor.def) info("Secondary and accent colors are stored but no current PDF template reads them.");
+  if (state.sample.contentKind === 2 && d.defaultContentTemplateKey === "Table") info("The preview renders plain text; real exports still default to the Table template.");
+
+  const [, hmm] = paperMm(d);
+  const usable = hmm - (Number(d.marginTopMm) + (d.showHeader ? Number(d.headerHeightMm) : 0)) - (Number(d.marginBottomMm) + footerBandMm(d));
+  if (usable < 40) warn(`Only ${Math.max(0, usable).toFixed(0)} mm is left for content — header, footer and margins are eating the page.`);
+  return out;
+}
+
+/* ============================================================ paper geometry */
+const PAPER = { 1: [210, 297], 2: [297, 420], 3: [215.9, 279.4], 4: [215.9, 355.6] };
+function paperMm(d) {
+  const [w, h] = PAPER[Number(d.paperSize)] || PAPER[1];
+  return Number(d.orientation) === 2 ? [h, w] : [w, h];
+}
+/**
+ * Height reserved in the bottom margin box, mirroring PdfReportExporter:
+ * nothing is reserved unless repeating chrome or repeating signatures exist.
+ */
+function footerBandMm(d) {
+  const repeating = d.signatures.filter(s => s.repeatOnEveryPage);
+  const chromeInBand = d.showFooter && d.repeatFooterOnEveryPage;
+  if (!chromeInBand && !repeating.length) return 0;
+  let h = Number(d.footerHeightMm) > 0 ? Number(d.footerHeightMm) : 20;
+  if (!d.showFooter && repeating.length) {
+    h = Math.max(h, Math.max(...repeating.map(s => Number(s.heightMm) || 20)) + 12);
+  }
+  return h;
+}
+
+/* ============================================================ mock renderer */
+function signatureTableHtml(d, r, list, px, ptPx, fontSizePt) {
+  if (!list.length) return "";
+  const w = (100 / list.length).toFixed(2);
+  const box = d.showSignatureBorder ? `border:1px solid #CBD5E1;padding:${px(2)}` : `padding:${px(2)}`;
+  const cells = list.map(s => {
+    const align = { 1: "left", 2: "center", 3: "right" }[Number(s.align)] || "center";
+    let inner = "";
+    if (nullIfEmpty(s.label)) inner += `<div style="font-weight:700;margin-bottom:${px(1)};white-space:pre-wrap">${esc(s.label)}</div>`;
+    if (nullIfEmpty(s.title)) inner += `<div style="margin-bottom:${px(1)};color:#475569;white-space:pre-wrap">${esc(s.title)}</div>`;
+    if (nullIfEmpty(s.imageUrl)) inner += `<img src="${esc(s.imageUrl)}" alt="" style="max-width:${px(s.widthMm)};max-height:${px(s.heightMm)}">`;
+    else if (s.isSignature) inner += `<div style="height:${px(s.heightMm)};min-width:${px(Math.min(Number(s.widthMm) || 40, 50))};border-bottom:1px solid #334155;margin:${px(2)} auto ${px(1)}"></div>`;
+    if (s.showNameLine) inner += `<div style="margin-top:${px(1)};white-space:pre-wrap">${esc(nullIfEmpty(s.name) || "________________")}</div>`;
+    if (s.showDateLine) inner += `<div style="margin-top:${px(1)};color:#64748B">${esc(nullIfEmpty(s.dateLabel) || "Date")}: ______________</div>`;
+    if (nullIfEmpty(s.instructions)) inner += `<div style="margin-top:${px(1)};font-size:${ptPx(8)};color:#94A3B8;white-space:pre-wrap">${esc(s.instructions)}</div>`;
+    return `<td style="width:${w}%;vertical-align:top;text-align:${align};${box}">${inner}</td>`;
+  }).join("");
+  return `<table style="width:100%;margin-top:${px(3)};font-family:${cssFont(r.bodyFont)},sans-serif;font-size:${ptPx(fontSizePt)}"><tr>${cells}</tr></table>`;
+}
+
+function headerHtml(d, r, px, ptPx) {
+  const left = esc(r.expand(d.headerLeftText));
+  const centerRaw = r.expand(d.headerCenterText);
+  const center = esc(nullIfEmpty(centerRaw) || r.title);
+  const right = esc(r.expand(d.headerRightText));
+  const showLogo = d.showLogo && nullIfEmpty(d.logoUrl);
+  const logoBox = `<div style="display:inline-block;line-height:0"><img src="${esc(d.logoUrl)}" alt="logo" style="display:block;margin:0 ${px(1.5)};max-height:${px(Math.min(Number(d.logoHeightMm) || 18, Number(d.headerHeightMm) || 25))};max-width:${px(d.logoWidthMm)}"></div>`;
+  const cell = (text, align, withLogo) => {
+    if (withLogo && text) return `<div style="text-align:${align}">${logoBox}<div style="padding-top:${px(1)};white-space:pre-wrap">${text}</div></div>`;
+    if (withLogo) return logoBox;
+    return text;
+  };
+  const pos = Number(d.logoPosition);
+  return `<table style="width:100%;height:100%;table-layout:fixed">
+    <tr>
+      <td style="width:33%;vertical-align:middle;text-align:left;padding:0 ${px(1.5)};white-space:pre-wrap">${cell(left, "left", showLogo && pos === 1)}</td>
+      <td style="width:34%;vertical-align:middle;text-align:center;font-weight:bold;white-space:pre-wrap">${cell(center, "center", showLogo && pos === 2)}</td>
+      <td style="width:33%;vertical-align:middle;text-align:right;padding:0 ${px(1.5)};white-space:pre-wrap">${cell(right, "right", showLogo && pos === 3)}</td>
+    </tr></table>`;
+}
+
+function footerChromeHtml(d, r, px, ptPx, pageNo, pages) {
+  let left = esc(r.expand(d.footerLeftText));
+  let center = esc(r.expand(d.footerCenterText));
+  let right = d.showGeneratedAt ? esc(`${d.generatedAtLabel || ""} ${r.stampText}`.trim()) : esc(r.expand(d.footerRightText));
+  if (d.showPageNumbers) {
+    const fmt = (d.pageNumberFormat || "{current} / {total}");
+    const counters = d.repeatFooterOnEveryPage
+      ? esc(fmt).replace(/\{current\}/gi, String(pageNo)).replace(/\{total\}/gi, String(pages))
+      : esc(fmt).replace(/\{current\}/gi, "1").replace(/\{total\}/gi, "N");
+    const join = (t) => t ? `${t}&nbsp;&nbsp;${counters}` : counters;
+    if (Number(d.pageNumberAlign) === 1) left = join(left);
+    else if (Number(d.pageNumberAlign) === 3) right = join(right);
+    else center = join(center);
+  }
+  return `<table style="width:100%;table-layout:fixed">
+    <tr>
+      <td style="width:33%;vertical-align:top;text-align:left;white-space:pre-wrap;padding:${px(1)}">${left}</td>
+      <td style="width:34%;vertical-align:top;text-align:center;white-space:pre-wrap;padding:${px(1)}">${center}</td>
+      <td style="width:33%;vertical-align:top;text-align:right;white-space:pre-wrap;padding:${px(1)}">${right}</td>
+    </tr></table>`;
+}
+
+function tableHtml(d, r, px, ptPx, rows) {
+  const border = d.showTableGridLines ? `1px solid ${esc(d.tableBorderColor || "#D0D0D0")}` : "none";
+  const pad = px(d.tableCellPaddingMm);
+  const th = SAMPLE_COLS.map(c => `<th style="background:${esc(d.tableHeaderBackgroundColor)};color:${esc(d.tableHeaderFontColor)};font-size:${ptPx(d.tableHeaderFontSizePt)};font-weight:${d.tableHeaderBold ? "bold" : "400"};border:${border};padding:${pad};text-align:inherit">${esc(c)}</th>`).join("");
+  const tr = rows.map((row, i) => {
+    const bg = i % 2 === 0 ? d.tableRowBackgroundColor : d.tableAltRowBackgroundColor;
+    return `<tr>${row.map(cellValue => `<td style="background:${esc(bg)};border:${border};padding:${pad};vertical-align:top">${esc(cellValue)}</td>`).join("")}</tr>`;
+  }).join("");
+  return `<div style="padding:${px(2)}"><table style="width:100%;table-layout:fixed;font-size:${ptPx(d.baseFontSizePt)};font-family:${cssFont(r.bodyFont)},sans-serif"><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table></div>`;
+}
+
+function rowCapacity(d, r, contentMm, firstPage) {
+  const rowMm = Number(d.baseFontSizePt) * MM_PER_PT * 1.5 + 2 * Number(d.tableCellPaddingMm) + 0.7;
+  const headMm = Number(d.tableHeaderFontSizePt) * MM_PER_PT * 1.5 + 2 * Number(d.tableCellPaddingMm) + 0.7;
+  let free = contentMm - headMm - 4;
+  if (firstPage) {
+    if (d.showHeader && !d.repeatHeaderOnEveryPage) free -= Number(d.headerHeightMm) || 0;
+    if (d.showTitleBand) free -= Number(d.titleFontSizePt) * MM_PER_PT * 1.6 + (r.subtitle ? Number(d.baseFontSizePt) * MM_PER_PT * 1.5 + 4 : 2);
+  }
+  return Math.max(1, Math.floor(free / Math.max(2, rowMm)));
+}
+
+/**
+ * Builds the visual mock of one printed page.
+ * Mirrors Document/Header/Footer.cshtml: repeating chrome lives in the margin box,
+ * one-shot chrome is baked into the content flow.
+ */
+function pageHtml(d, r, k, pageNo, pages, opts) {
+  const px = v => `${((Number(v) || 0) * k).toFixed(2)}px`;
+  const ptPx = v => `${((Number(v) || 0) * MM_PER_PT * k).toFixed(2)}px`;
+  const [wmm, hmm] = paperMm(d);
+  const mTop = Number(d.marginTopMm), mBot = Number(d.marginBottomMm), mLeft = Number(d.marginLeftMm), mRight = Number(d.marginRightMm);
+  const headerOn = d.showHeader;
+  const bandHeader = headerOn && d.repeatHeaderOnEveryPage;
+  const footerBand = footerBandMm(d);
+  const repeatingSigs = d.signatures.filter(s => s.repeatOnEveryPage);
+  const bodySigs = d.signatures.filter(s => !s.repeatOnEveryPage);
+  const contentTop = mTop + (bandHeader ? Number(d.headerHeightMm) : 0);
+  const contentBottom = mBot + footerBand;
+  const contentMm = hmm - contentTop - contentBottom;
+  const isLast = pageNo === pages;
+
+  let html = `<div class="paper" style="width:${px(wmm)};height:${px(hmm)};background:${esc(d.pageBackgroundColor || "#FFFFFF")};direction:${Number(d.direction) === 2 ? "rtl" : "ltr"};font-family:${cssFont(r.bodyFont)},sans-serif;font-size:${ptPx(d.baseFontSizePt)}">`;
+
+  if (opts.guides) {
+    html += `<div class="guide" style="top:${px(mTop)};bottom:${px(mBot)};left:${px(mLeft)};right:${px(mRight)}"></div>`;
+    if (bandHeader) html += `<div class="band-guide" style="top:${px(mTop)};height:${px(d.headerHeightMm)};left:${px(mLeft)};right:${px(mRight)}"></div>`;
+    if (footerBand) html += `<div class="band-guide" style="bottom:${px(mBot)};height:${px(footerBand)};left:${px(mLeft)};right:${px(mRight)}"></div>`;
+    if (k > 1.4) {
+      html += `<div class="mark" style="top:2px;left:50%;transform:translateX(-50%)">${mTop} mm margin</div>`;
+      if (bandHeader) html += `<div class="mark" style="top:${px(mTop)};left:${px(mLeft + 1)}">header ${d.headerHeightMm} mm</div>`;
+      if (footerBand) html += `<div class="mark" style="bottom:${px(mBot)};left:${px(mLeft + 1)}">footer ${footerBand.toFixed(0)} mm</div>`;
+    }
+  }
+
+  if (bandHeader) {
+    html += `<div style="position:absolute;top:${px(mTop)};left:${px(mLeft)};right:${px(mRight)};height:${px(d.headerHeightMm)};overflow:hidden;
+      background:${esc(r.headerBg)};color:${esc(r.headerFg)};font-family:${cssFont(r.headerFont)},sans-serif;font-size:${ptPx(d.headerFontSizePt)};
+      ${d.showHeaderBorder ? `border-bottom:1px solid ${esc(r.headerBorder)}` : ""}">${headerHtml(d, r, px, ptPx)}</div>`;
+  }
+
+  // content flow
+  let body = "";
+  if (headerOn && !d.repeatHeaderOnEveryPage && pageNo === 1) {
+    body += `<div style="height:${px(d.headerHeightMm)};overflow:hidden;background:${esc(r.headerBg)};color:${esc(r.headerFg)};
+      font-family:${cssFont(r.headerFont)},sans-serif;font-size:${ptPx(d.headerFontSizePt)};
+      ${d.showHeaderBorder ? `border-bottom:1px solid ${esc(r.headerBorder)}` : ""}">${headerHtml(d, r, px, ptPx)}</div>`;
+  }
+  if (d.showTitleBand && pageNo === 1) {
+    const align = { 1: "left", 2: "center", 3: "right" }[Number(d.titleAlign)] || "center";
+    body += `<div style="text-align:${align};color:${esc(r.titleColor)};font-family:${cssFont(r.titleFont)},sans-serif;font-size:${ptPx(d.titleFontSizePt)};font-weight:700;margin:0 0 ${px(1)}">${esc(r.title)}</div>`;
+    if (r.subtitle) body += `<div style="text-align:${align};color:#666;font-family:${cssFont(r.titleFont)},sans-serif;margin-bottom:${px(4)};white-space:pre-wrap">${esc(r.subtitle)}</div>`;
+  }
+  if (opts.kind === 2) {
+    if (pageNo === 1) body += `<div style="white-space:pre-wrap;padding:${px(2)}">${esc(SAMPLE_TEXT)}</div>`;
+  } else {
+    body += tableHtml(d, r, px, ptPx, opts.rows || []);
+  }
+  if (isLast && bodySigs.length) body += `<div style="margin-top:${px(8)}">${signatureTableHtml(d, r, bodySigs, px, ptPx, d.baseFontSizePt)}</div>`;
+  if (isLast && d.showFooter && !d.repeatFooterOnEveryPage) {
+    body += `<div style="margin-top:${px(4)};color:${esc(r.footerFg)};background:${esc(r.footerBg)};font-family:${cssFont(r.footerFont)},sans-serif;font-size:${ptPx(d.footerFontSizePt)};
+      ${d.showFooterBorder ? `border-top:1px solid ${esc(r.footerBorder)}` : ""}">${footerChromeHtml(d, r, px, ptPx, pageNo, pages)}</div>`;
+  }
+
+  html += `<div style="position:absolute;top:${px(contentTop)};left:${px(mLeft)};right:${px(mRight)};height:${px(Math.max(0, contentMm))};overflow:hidden">${body}</div>`;
+
+  const bandFooterChrome = d.showFooter && d.repeatFooterOnEveryPage;
+  if (footerBand > 0 && (bandFooterChrome || repeatingSigs.length)) {
+    html += `<div style="position:absolute;bottom:${px(mBot)};left:${px(mLeft)};right:${px(mRight)};height:${px(footerBand)};overflow:hidden;
+      background:${esc(r.footerBg)};color:${esc(r.footerFg)};font-family:${cssFont(r.footerFont)},sans-serif;font-size:${ptPx(d.footerFontSizePt)};
+      ${d.showFooterBorder && d.showFooter ? `border-top:1px solid ${esc(r.footerBorder)}` : ""}">
+      ${bandFooterChrome ? footerChromeHtml(d, r, px, ptPx, pageNo, pages) : ""}
+      ${repeatingSigs.length ? signatureTableHtml(d, r, repeatingSigs, px, ptPx, d.footerFontSizePt) : ""}
+    </div>`;
+  }
+
+  if (d.showWatermark && nullIfEmpty(d.watermarkText)) {
+    html += `<div class="wm"><span style="font-size:${ptPx(d.watermarkFontSizePt)};color:${hexToRgba(d.watermarkColor, d.watermarkOpacity)};font-family:${cssFont(r.bodyFont)},sans-serif">${esc(d.watermarkText)}</span></div>`;
+  }
+  return html + "</div>";
+}
+
+function mockHtml(d, opts) {
+  const sample = opts.sample || state.sample;
+  const kind = Number(sample.contentKind) || 1;
+  const r = resolved(d, sample);
+  const k = opts.k;
+  const [, hmm] = paperMm(d);
+  const footerBand = footerBandMm(d);
+  const contentMm = hmm - (Number(d.marginTopMm) + (d.showHeader && d.repeatHeaderOnEveryPage ? Number(d.headerHeightMm) : 0)) - Number(d.marginBottomMm) - footerBand;
+  let pages = 1, slices = [[]];
+  if (kind === 1) {
+    const cap1 = rowCapacity(d, r, contentMm, true);
+    const capN = rowCapacity(d, r, contentMm, false);
+    slices = [SAMPLE_ROWS.slice(0, cap1)];
+    let used = cap1;
+    while (used < SAMPLE_ROWS.length && slices.length < 12) {
+      slices.push(SAMPLE_ROWS.slice(used, used + capN));
+      used += capN;
+    }
+    pages = slices.length;
+  }
+  const shown = Math.min(pages, opts.maxPages ?? 2);
+  let out = "";
+  for (let p = 1; p <= shown; p++) {
+    out += `<div class="page-wrap">${opts.caps ? `<span class="cap">Page ${p}${pages > 1 ? ` of ${pages}` : ""}</span>` : ""}
+      ${pageHtml(d, r, k, p, pages, { guides: opts.guides, kind, rows: slices[p - 1] || [] })}</div>`;
+  }
+  if (pages > shown && opts.caps) out += `<span class="hint">${pages - shown} more page(s) in the real document — the sample table has ${SAMPLE_ROWS.length} rows.</span>`;
+  return out;
+}
+
+/* ============================================================ render: stats + gallery */
+function renderStats() {
+  const sys = state.layouts.filter(l => l.isSystem).length;
+  const comp = companyLayouts().length;
+  const active = activeCompanyCount();
+  $("#stTotal").textContent = state.layouts.length;
+  $("#stTotalSub").textContent = `${comp} company · ${sys} system`;
+  $("#stQuota").textContent = `${active} / 10`;
+  $("#stQuotaSub").textContent = active >= 10 ? "limit reached — deactivate one first" : `${10 - active} slot(s) left`;
+  $("#stQuotaBar").style.width = `${Math.min(100, active * 10)}%`;
+  const def = currentDefault();
+  $("#stDefault").textContent = def ? def.name : "none";
+  $("#stDefaultSub").textContent = def ? (def.isSystem ? "system fallback — no company default yet" : `code ${def.code}`) : "exports fall back to the system layout";
+  const rows = diffRows();
+  $("#stDirty").textContent = rows.length;
+  $("#stDirtySub").textContent = rows.length
+    ? `vs “${state.editing ? state.editing.name : "the starting point"}”`
+    : state.editing ? "the draft matches the saved layout" : "nothing edited yet";
+}
+
+function layoutBadges(l) {
+  const b = [];
+  if (l.isSystem) b.push('<span class="badge violet" title="Seeded by the platform — read-only">System</span>');
+  if (l.isDefault) b.push('<span class="badge ok">Default</span>');
+  if (!l.isActive) b.push('<span class="badge warn">Inactive</span>');
+  if ((l.signatures || []).length) b.push(`<span class="badge teal">${l.signatures.length} signature${l.signatures.length > 1 ? "s" : ""}</span>`);
+  return b.join("");
+}
+
+function renderGallery() {
+  const host = $("#galleryHost");
+  const cards = state.layouts.map((l, i) => {
+    const d = toDraft(l);
+    const paper = (SELECTS.paper.find(p => p[0] === Number(d.paperSize)) || ["", "A4"])[1].split(" —")[0];
+    const facts = `${paper} · ${Number(d.orientation) === 2 ? "Landscape" : "Portrait"} · ${Number(d.direction) === 2 ? "RTL" : "LTR"}`;
+    const editable = !l.isSystem;
+    return `<article class="lay-card ${state.editing?.id === l.id ? "current" : ""} ${l.isActive ? "" : "off"}" style="animation-delay:${i * 40}ms" data-layout-id="${esc(l.id)}">
+      <div class="thumb-wrap">${mockHtml(d, { k: 0.52, guides: false, caps: false, maxPages: 1, sample: { title: "", subtitle: "", contentKind: 1 } })}</div>
+      <div class="lay-top">
+        <h3 title="${esc(l.name)}">${esc(l.name)}</h3>
+      </div>
+      <div class="lay-meta"><code>${esc(l.code)}</code>${layoutBadges(l)}</div>
+      <p class="lay-desc" dir="auto">${esc(l.description || "No description.")}</p>
+      <div class="hint">${esc(facts)}</div>
+      <div class="lay-actions">
+        <button class="btn sm primary" data-action="open" data-id="${esc(l.id)}">${ICON.pen}Open</button>
+        <button class="btn sm" data-action="duplicate" data-id="${esc(l.id)}">${ICON.copy}Duplicate</button>
+        <div class="spacer"></div>
+        ${editable && l.isActive && !l.isDefault ? `<button class="icon-btn" data-action="make-default" data-id="${esc(l.id)}" title="Make this the company default">${ICON.star}</button>` : ""}
+        ${editable && !l.isActive ? `<button class="icon-btn" data-action="reactivate" data-id="${esc(l.id)}" title="Reactivate (PUT with isActive true)">${ICON.up}</button>` : ""}
+        ${editable && l.isActive ? `<button class="icon-btn danger" data-action="deactivate" data-id="${esc(l.id)}" title="Deactivate (DELETE)">${ICON.trash}</button>` : ""}
+      </div>
+    </article>`;
+  }).join("");
+
+  const starters = Object.entries(PRESETS).map(([key, p]) => `<button class="btn sm ghost" data-action="preset-new" data-preset="${key}">${esc(p.label)}</button>`).join("");
+  host.innerHTML = (state.layouts.length ? cards : emptyBox("No layouts yet for this company.")) + `
+    <div class="new-card" role="button" tabindex="0" data-action="new">
+      <span class="plus">${ICON.plus}</span>
+      <span>Start a new layout</span>
+      <span class="hint">Blank, or from a starter below</span>
+      <span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">${starters}</span>
+    </div>`;
+}
+
+/* ============================================================ render: inspector */
+function fieldHtml(f, d, prefix = "") {
+  const id = `${prefix}${f.k}`;
+  const v = d[f.k];
+  const dim = f.dep && !f.dep(d);
+  const label = `<label for="${id}">${esc(f.label)}${f.req ? ' <span class="req">*</span>' : ""}</label>`;
+  const help = f.help ? `<div class="help">${esc(f.help)}</div>` : "";
+  const why = dim && f.why ? `<div class="help why">${esc(f.why)}</div>` : "";
+  const attrs = `data-field="${esc(f.k)}" id="${id}"`;
+  let body = "";
+
+  if (f.t === "bool") {
+    return `<div class="f ${f.fw ? "fw" : ""} ${dim ? "ignored" : ""}" data-fk="${esc(f.k)}">
+      <label class="chk" for="${id}"><input type="checkbox" ${attrs} ${v ? "checked" : ""}><span>${esc(f.label)}</span></label>${help}${why}</div>`;
+  }
+  if (f.t === "select") {
+    body = `<select class="input plain" ${attrs}>${f.opts.map(o => `<option value="${esc(o[0])}" ${String(o[0]) === String(v) ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select>`;
+  } else if (f.t === "num") {
+    body = `<input class="input plain" type="number" ${attrs} value="${esc(v)}" min="${f.min ?? ""}" max="${f.max ?? ""}" step="${f.step ?? 1}">`;
+  } else if (f.t === "color") {
+    const fb = f.fallback ? f.fallback(d) : (f.fallbackLabel || "#FFFFFF");
+    const isAuto = f.nullable && (v === null || v === undefined || v === "");
+    const swatch = isAuto ? (/^#/.test(fb) ? fb : "#ffffff") : v;
+    body = `<div class="color-row">
+      <input type="color" ${attrs} value="${esc(swatch)}">
+      <input class="hex" data-hex="${esc(f.k)}" value="${esc(isAuto ? `auto · ${fb}` : v)}" ${isAuto ? "disabled" : ""} spellcheck="false">
+      ${f.nullable ? `<button type="button" class="auto ${isAuto ? "on" : ""}" data-auto="${esc(f.k)}" title="Send null and let the server fall back">auto</button>` : ""}
+    </div>`;
+  } else if (f.t === "area") {
+    body = `<textarea class="input plain" ${attrs} rows="2" maxlength="${f.max ?? 2000}" dir="auto" ${f.mono ? 'style="font-family:JetBrains Mono,monospace;font-size:12px"' : ""}>${esc(v ?? "")}</textarea>`;
+  } else if (f.t === "font") {
+    body = `<input class="input plain" ${attrs} list="fontList" value="${esc(v ?? "")}" maxlength="${f.max ?? 100}" placeholder="Page font">`;
+  } else {
+    body = `<input class="input plain" ${attrs} value="${esc(v ?? "")}" maxlength="${f.max ?? 250}" dir="auto" ${f.mono ? 'style="font-family:JetBrains Mono,monospace;font-size:12px"' : ""}>`;
+  }
+  const tokens = f.tokens ? `<div class="tokens">${TOKENS.map(t => `<button type="button" data-token="${esc(t)}" data-target="${id}">${esc(t)}</button>`).join("")}</div>` : "";
+  return `<div class="f ${f.fw ? "fw" : ""} ${dim ? "ignored" : ""}" data-fk="${esc(f.k)}">${label}${body}${tokens}${help}${why}</div>`;
+}
+
+function signatureHtml(s, i, total) {
+  const badges = [
+    s.repeatOnEveryPage ? '<span class="badge teal">Every page</span>' : "",
+    s.isSignature ? "" : '<span class="badge">No line</span>'
+  ].join("");
+  return `<details class="sig" data-sig="${s._uid}">
+    <summary>
+      <span class="ord">${i + 1}</span>
+      <span class="nm" dir="auto">${esc((s.label || "").split("\n")[0] || "Untitled signature")}</span>
+      ${badges}
+      <span class="spacer"></span>
+      <button type="button" class="icon-btn" data-action="sig-up" data-sig="${s._uid}" ${i === 0 ? "disabled" : ""} title="Move up">${ICON.up}</button>
+      <button type="button" class="icon-btn" data-action="sig-down" data-sig="${s._uid}" ${i === total - 1 ? "disabled" : ""} title="Move down">${ICON.down}</button>
+      <button type="button" class="icon-btn danger" data-action="sig-del" data-sig="${s._uid}" title="Remove">${ICON.trash}</button>
+    </summary>
+    <div class="grid">${SIG_FIELDS.map(f => fieldHtml({ ...f, dep: f.dep ? () => f.dep(s) : null }, s, `sig${s._uid}_`)).join("")}</div>
+  </details>`;
+}
+
+function renderInspector() {
+  const d = state.draft;
+  const q = state.inspQuery.trim().toLowerCase();
+  const match = f => !q || `${f.label} ${f.k} ${f.help || ""}`.toLowerCase().includes(q);
+  let shown = 0;
+  const html = SECTIONS.map(sec => {
+    const fields = FIELDS.filter(f => f.sec === sec.id && match(f));
+    const sigVisible = sec.id === "signatures" && (!q || "signature signatures label stamp".includes(q));
+    if (!fields.length && !sigVisible) return "";
+    shown += fields.length;
+    const open = q ? true : state.openSections.has(sec.id);
+    const sigBlock = sec.id === "signatures" ? `
+      <div class="grid"><div class="fw">
+        ${d.signatures.length ? d.signatures.map((s, i) => signatureHtml(s, i, d.signatures.length)).join("") : '<div class="hint" style="padding:4px 0 10px">No signature blocks. Non-repeating blocks print after the content; repeating ones print in the footer of every page.</div>'}
+        <button type="button" class="btn sm" data-action="sig-add" style="margin-top:4px">${ICON.plus}Add signature block</button>
+      </div></div>` : "";
+    return `<details class="group" data-section="${sec.id}" ${open ? "open" : ""} style="--h:${hue(sec.id)}">
+      <summary><span class="group-ico">${sec.icon}</span>${esc(sec.label)}<span class="count">${fields.length + (sec.id === "signatures" ? d.signatures.length : 0)}</span>${ICON.chev}</summary>
+      <div class="grid">${fields.map(f => fieldHtml(f, d)).join("")}</div>
+      ${sigBlock}
+    </details>`;
+  }).join("");
+  $("#inspector").innerHTML = html || emptyBox("No setting matches that search.");
+  $("#inspCount").textContent = q ? shown : FIELDS.length;
+}
+
+function syncDependencies() {
+  const d = state.draft;
+  for (const f of FIELDS) {
+    const wrap = $(`#inspector .f[data-fk="${f.k}"]`);
+    if (!wrap) continue;
+    const dim = f.dep && !f.dep(d);
+    wrap.classList.toggle("ignored", !!dim);
+    let why = wrap.querySelector(".help.why");
+    if (dim && f.why && !why) {
+      why = document.createElement("div");
+      why.className = "help why";
+      why.textContent = f.why;
+      wrap.appendChild(why);
+    } else if ((!dim || !f.why) && why) why.remove();
+  }
+}
+
+/* ============================================================ render: canvas, checks, diff */
+let stageRaf = 0;
+function renderCanvas() {
+  const isPdf = state.canvas === "pdf";
+  $("#stage").hidden = isPdf;
+  $("#pdfFrame").hidden = !isPdf || !state.pdfUrl;
+  $("#pdfEmpty").hidden = !isPdf || !!state.pdfUrl;
+  $("#pdfStale").hidden = !isPdf || !state.pdfStale || !state.pdfUrl;
+  if (isPdf) {
+    if (!state.pdfUrl) {
+      $("#pdfEmpty").innerHTML = `${ICON.eye}<div>Nothing rendered yet.<br><span class="hint">“Render PDF” posts the current draft to <code>POST /api/ReportLayout/preview-sample</code> and shows the real document.</span></div>`;
+    }
+    return;
+  }
+  cancelAnimationFrame(stageRaf);
+  stageRaf = requestAnimationFrame(() => {
+    const stage = $("#stage");
+    const [wmm, hmm] = paperMm(state.draft);
+    const availW = Math.max(240, stage.clientWidth - 48);
+    const availH = Math.max(300, window.innerHeight - 340);
+    const k = state.zoom === "fit" ? Math.min(availW / wmm, availH / hmm)
+      : state.zoom === "fitw" ? availW / wmm
+      : PX_PER_MM * Number(state.zoom);
+    stage.innerHTML = mockHtml(state.draft, { k, guides: state.guides, caps: true, maxPages: 2 });
+  });
+}
+
+function renderChecks() {
+  const list = checks();
+  const errs = list.filter(c => c.level === "err").length;
+  $("#checkCount").textContent = list.length;
+  $("#checks").innerHTML = list.length
+    ? list.map(c => `<div class="note ${c.level}">${c.level === "info" ? ICON.info : ICON.alert}<span>${esc(c.text)}</span></div>`).join("")
+    : `<div class="note"><span style="color:var(--ok)">${ICON.check}</span><span>Everything looks saveable.</span></div>`;
+  return errs;
+}
+
+function renderDiff() {
+  const rows = diffRows();
+  $("#diffCount").textContent = rows.length;
+  $("#diff").innerHTML = rows.length
+    ? rows.map(r => `<div class="diff-row"><b>${esc(r.label)}</b><span class="vals"><s>${esc(r.from)}</s> → ${esc(r.to)}</span></div>`).join("")
+    : `<div class="hint">${state.baseline ? "No changes yet." : "Open a layout or start a new one."}</div>`;
+}
+
+function renderEditingBar() {
+  const e = state.editing;
+  const errs = checks().filter(c => c.level === "err").length;
+  const dirty = diffRows().length;
+  const who = e
+    ? `<b>${esc(e.name)}</b><span><code>${esc(e.code)}</code> · ${e.isSystem ? "system layout — read-only" : "company layout"}</span>`
+    : `<b>New layout</b><span>Nothing saved yet — use “Save as new”</span>`;
+  $("#editingBar").innerHTML = `
+    <div class="logo" style="width:32px;height:32px;border-radius:10px;box-shadow:none">${ICON.pen}</div>
+    <div class="who">${who}</div>
+    ${dirty ? `<span class="badge warn">${dirty} unsaved change${dirty > 1 ? "s" : ""}</span>` : `<span class="badge ok">In sync</span>`}
+    ${errs ? `<span class="badge danger">${errs} blocking issue${errs > 1 ? "s" : ""}</span>` : ""}
+    <div class="spacer"></div>
+    <button class="btn sm ghost" data-action="payload">${ICON.copy}Request body</button>
+    <button class="btn sm" data-action="duplicate-draft">${ICON.copy}Duplicate draft</button>
+    <button class="btn sm" data-action="save-as-new">Save as new</button>
+    <button class="btn sm success" data-action="update" ${!e || e.isSystem ? "disabled" : ""} title="${e && e.isSystem ? "System layouts can't be updated" : "PUT /api/ReportLayout/{id}"}">Update layout</button>`;
+}
+
+function renderUsage() {
+  const types = ["Projects", "Clients", "ProjectLocations", "ProjectResponsibleEngineers", "Boqs", "BoqItems"];
+  const extra = Object.keys(state.usage).filter(t => !types.includes(t));
+  $("#usageHost").innerHTML = [...types, ...extra].map(t => {
+    const u = state.usage[t];
+    let body = `<div class="res hint">Not checked yet.</div>`;
+    if (u?.loading) body = `<div class="res hint">Checking…</div>`;
+    else if (u?.error) body = `<div class="res"><span class="badge warn">No preference</span><div class="hint" style="margin-top:6px" dir="auto">${esc(u.error)}</div></div>`;
+    else if (u?.layout) body = `<div class="res"><b>${esc(u.layout.name)}</b><div class="hint" style="margin-top:4px"><code>${esc(u.layout.code)}</code>${u.layout.isSystem ? " · system" : ""}${u.layout.isDefault ? " · default" : ""}</div></div>`;
+    return `<div class="usage">
+      <h4>${esc(t)}</h4>
+      ${body}
+      <div style="display:flex;gap:6px">
+        <button class="btn sm ghost" data-action="check-one" data-type="${esc(t)}">Check</button>
+        ${u?.layout ? `<button class="btn sm ghost" data-action="open" data-id="${esc(u.layout.id)}">Open</button>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderAll() {
+  renderStats(); renderGallery(); renderEditingBar(); renderChecks(); renderDiff(); renderUsage();
+  renderInspector(); renderCanvas();
+}
+
+/* called on every inspector edit — never rebuilds the inputs */
+let pdfTimer = null;
+function onDraftChange() {
+  syncDependencies();
+  renderCanvas();
+  renderChecks();
+  renderDiff();
+  renderStats();
+  renderEditingBar();
+  state.pdfStale = true;
+  if (state.canvas === "pdf") $("#pdfStale").hidden = !state.pdfUrl;
+  if (state.autoPdf) {
+    clearTimeout(pdfTimer);
+    pdfTimer = setTimeout(() => renderPdf(true), 700);
+  }
+}
+
+/* ============================================================ designer actions */
+function cloneDraft(d) {
+  return { ...d, signatures: d.signatures.map(s => ({ ...s, _uid: ++uid })) };
+}
+function setDraft(dto, editing) {
+  state.draft = toDraft(dto);
+  state.baseline = cloneDraft(state.draft);
+  state.editing = editing;
+  state.pdfStale = true;
+  goView("designer");
+  renderAll();
+}
+function adoptSaved(dto) {
+  state.draft = toDraft(dto);
+  state.baseline = cloneDraft(state.draft);
+  state.editing = { id: dto.id, isSystem: !!dto.isSystem, name: dto.name, code: dto.code };
+  renderAll();
+}
+
+async function openLayout(id) {
+  const dto = await run(() => backend().get(id));
+  if (!dto) return;
+  setDraft(dto, { id: dto.id, isSystem: !!dto.isSystem, name: dto.name, code: dto.code });
+  toast(dto.isSystem ? `Loaded system layout “${dto.name}” — save it as new to edit.` : `Editing “${dto.name}”.`, dto.isSystem ? "warn" : "ok");
+}
+
+async function duplicateLayout(id) {
+  const dto = await run(() => backend().get(id));
+  if (!dto) return;
+  const copy = { ...dto, code: `${dto.code}_COPY`, name: `${dto.name} (copy)`, isDefault: false, isActive: true };
+  setDraft(copy, null);
+  toast("Loaded as a new draft. Code and name were suffixed — review them before saving.", "info");
+}
+
+function newLayout(presetKey) {
+  const fresh = Object.fromEntries(FIELDS.map(f => [f.k, f.def]));
+  fresh.signatures = [];
+  if (presetKey && PRESETS[presetKey]) Object.assign(fresh, PRESETS[presetKey].patch);
+  fresh.code = `TENANT_${(presetKey || "custom").toUpperCase()}_${companyLayouts().length + 1}`;
+  fresh.name = presetKey ? PRESETS[presetKey].label : "My custom layout";
+  setDraft(fresh, null);
+  toast(presetKey ? `Started from the “${PRESETS[presetKey].label}” starter.` : "Started a blank layout.", "info");
+}
+
+async function updateLayout() {
+  const e = state.editing;
+  if (!e) { toast("Nothing is open. Use “Save as new”.", "warn"); return; }
+  if (e.isSystem) { toast("System layouts cannot be updated. Use “Save as new”.", "err"); return; }
+  if (renderChecks() > 0) { toast("Fix the blocking issues first.", "warn"); return; }
+  const payload = toPayload(state.draft);
+  const saved = await run(() => backend().update(e.id, payload), `Updated “${payload.name}”.`);
+  if (!saved) return;
+  await load();
+  adoptSaved(state.layouts.find(l => l.id === e.id) || saved);
+}
+
+function openSaveAsNew() {
+  const d = state.draft;
+  const taken = new Set(companyLayouts().map(l => l.code));
+  let code = (d.code || "TENANT_CUSTOM").trim() || "TENANT_CUSTOM";
+  if (taken.has(code)) {
+    let n = 2;
+    const stem = code.replace(/_\d+$/, "");
+    while (taken.has(`${stem}_${n}`)) n++;
+    code = `${stem}_${n}`;
+  }
+  $("#saveCode").value = code.slice(0, 100);
+  $("#saveName").value = (d.name || "My custom layout").slice(0, 250);
+  $("#saveDefault").checked = !!d.isDefault;
+  openModal("#saveModal");
+  setTimeout(() => $("#saveCode").focus(), 120);
+}
+
+async function createLayout(code, name, isDefault) {
+  state.draft.code = code; state.draft.name = name; state.draft.isDefault = isDefault;
+  state.editing = null;
+  renderInspector();
+  if (renderChecks() > 0) { renderDiff(); toast("Fix the blocking issues first.", "warn"); return; }
+  const payload = toPayload(state.draft);
+  const created = await run(() => backend().create(payload), `Created “${payload.name}”.`);
+  if (!created) return;
+  closeModals();
+  await load();
+  adoptSaved(state.layouts.find(l => l.id === created.id) || created);
+}
+
+async function deactivateLayout(id) {
+  const l = state.layouts.find(x => x.id === id);
+  if (!l) return;
+  const ok = await confirmAsk(
+    `Deactivate “${l.name}”?`,
+    `DELETE on a layout is a soft deactivate: it stays in the database, loses its default flag and disappears from exports. You can bring it back with an update.`,
+    "Deactivate");
+  if (!ok) return;
+  const done = await run(() => backend().deactivate(id), `“${l.name}” is now inactive.`);
+  if (done === null) return;
+  await load();
+}
+
+async function setFlag(id, patch, msg) {
+  const dto = await run(() => backend().get(id));
+  if (!dto) return;
+  const payload = { ...toPayload(toDraft(dto)), ...patch };
+  const saved = await run(() => backend().update(id, payload), msg);
+  if (!saved) return;
+  await load();
+}
+
+/* ============================================================ pdf preview */
+async function renderPdf(silent) {
+  if (!silent) state.canvas = "pdf", syncCanvasSeg();
+  const payload = {
+    title: nullIfEmpty(state.sample.title),
+    subtitle: nullIfEmpty(state.sample.subtitle),
+    contentKind: Number(state.sample.contentKind),
+    layout: toPayload(state.draft)
+  };
+  $("#btnPdf").disabled = true;
+  try {
+    const blob = await busy(() => backend().preview(payload));
+    if (state.pdfUrl) URL.revokeObjectURL(state.pdfUrl);
+    state.pdfUrl = URL.createObjectURL(blob);
+    state.pdfStale = false;
+    $("#pdfFrame").src = state.pdfUrl;
+    if (!silent) toast("PDF rendered by the backend.");
+    renderCanvas();
+  } catch (err) {
+    const msg = err.message || String(err);
+    state.autoPdf = false; $("#autoPdf").checked = false;
+    if (!silent || msg !== DEMO_ONLY) toast(msg, "err");
+    if (!state.pdfUrl) {
+      $("#pdfEmpty").innerHTML = `${ICON.alert}<div>The preview failed.<br><span class="hint" dir="auto">${esc(msg)}</span></div>`;
+      renderCanvas();
+    }
+  } finally {
+    $("#btnPdf").disabled = false;
+  }
+}
+
+/* ============================================================ payload drawer */
+function openPayload() {
+  const e = state.editing;
+  const payload = toPayload(state.draft);
+  $("#payloadLine").innerHTML = e && !e.isSystem
+    ? `<code>PUT ${esc(settings.apiBase)}/api/ReportLayout/${esc(e.id)}</code>`
+    : `<code>POST ${esc(settings.apiBase)}/api/ReportLayout</code>`;
+  $("#payloadHint").textContent = `${Object.keys(payload).length} fields · ${payload.signatures.length} signature block(s). companyId, isSystem and razorLayoutKey are forced by the server.`;
+  $("#payloadJson").textContent = JSON.stringify(payload, null, 2);
+  $("#drawer").classList.add("open");
+  $("#scrim").classList.add("open");
+}
+function closeDrawer() { $("#drawer").classList.remove("open"); $("#scrim").classList.remove("open"); }
+
+/* ============================================================ views */
+function goView(view) {
+  state.view = view;
+  $$("#viewSeg button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+  $$(".view").forEach(v => v.classList.toggle("active", v.id === `view-${view}`));
+  moveThumb();
+  if (view === "designer") renderCanvas();
+}
+function moveThumb() {
+  const b = $("#viewSeg button.active"), t = $("#viewSeg .thumb");
+  if (!b) return;
+  t.style.left = `${b.offsetLeft}px`; t.style.width = `${b.offsetWidth}px`;
+}
+function syncCanvasSeg() {
+  $$("#canvasSeg button").forEach(b => b.classList.toggle("active", b.dataset.canvas === state.canvas));
+  renderCanvas();
+}
+
+/* ============================================================ events */
+$("#inspector").addEventListener("input", e => {
+  const el = e.target;
+  const sigWrap = el.closest("[data-sig]");
+  const key = el.dataset.field;
+
+  if (el.dataset.hex !== undefined) {
+    const f = FIELD[el.dataset.hex];
+    const val = el.value.trim();
+    if (/^#?[0-9a-f]{6}$/i.test(val)) {
+      const hex = val.startsWith("#") ? val : `#${val}`;
+      state.draft[f.k] = hex;
+      const picker = $(`#inspector [data-field="${f.k}"]`);
+      if (picker) picker.value = hex;
+      onDraftChange();
+    }
+    return;
+  }
+  if (!key) return;
+
+  if (sigWrap) {
+    const sig = state.draft.signatures.find(s => String(s._uid) === sigWrap.dataset.sig);
+    if (!sig) return;
+    const f = SIG_FIELDS.find(x => x.k === key);
+    sig[key] = f.t === "bool" ? el.checked : (f.t === "num" || f.t === "select") ? Number(el.value) : el.value;
+    if (key === "label") {
+      const nm = sigWrap.querySelector(".nm");
+      if (nm) nm.textContent = (el.value || "").split("\n")[0] || "Untitled signature";
+    }
+    if (f.dep || SIG_FIELDS.some(x => x.dep)) {
+      SIG_FIELDS.forEach(x => {
+        const w = sigWrap.querySelector(`.f[data-fk="${x.k}"]`);
+        if (w && x.dep) w.classList.toggle("ignored", !x.dep(sig));
+      });
+    }
+    onDraftChange();
+    return;
+  }
+
+  const f = FIELD[key];
+  if (!f) return;
+  if (f.t === "bool") state.draft[key] = el.checked;
+  else if (f.t === "num") state.draft[key] = el.value === "" ? f.def : Number(el.value);
+  else if (f.t === "select") state.draft[key] = typeof f.def === "number" ? Number(el.value) : el.value;
+  else if (f.t === "color") {
+    state.draft[key] = el.value;
+    const hex = $(`#inspector [data-hex="${key}"]`);
+    const auto = $(`#inspector [data-auto="${key}"]`);
+    if (hex) { hex.disabled = false; hex.value = el.value; }
+    if (auto) auto.classList.remove("on");
+  }
+  else state.draft[key] = el.value;
+  onDraftChange();
+});
+$("#inspector").addEventListener("toggle", e => {
+  const sec = e.target.dataset?.section;
+  if (!sec || state.inspQuery) return;
+  e.target.open ? state.openSections.add(sec) : state.openSections.delete(sec);
+}, true);
+$("#inspSearch").addEventListener("input", e => { state.inspQuery = e.target.value; renderInspector(); });
+
+document.addEventListener("click", async e => {
+  const btn = e.target.closest("[data-token]");
+  if (btn) {
+    const target = $(`#${btn.dataset.target}`);
+    if (target) {
+      const pos = target.selectionStart ?? target.value.length;
+      target.value = target.value.slice(0, pos) + btn.dataset.token + target.value.slice(target.selectionEnd ?? pos);
+      target.focus();
+      target.setSelectionRange(pos + btn.dataset.token.length, pos + btn.dataset.token.length);
+      target.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    return;
+  }
+  const auto = e.target.closest("[data-auto]");
+  if (auto) {
+    const f = FIELD[auto.dataset.auto];
+    const turningOn = !auto.classList.contains("on");
+    state.draft[f.k] = turningOn ? null : (f.fallback ? f.fallback(state.draft) : "#ffffff");
+    renderInspector();
+    onDraftChange();
+    return;
+  }
+
+  const a = e.target.closest("[data-action]");
+  if (!a) return;
+  const { action, id, preset, type } = a.dataset;
+  switch (action) {
+    case "reload": load(); break;
+    case "theme": {
+      const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = t; localStorage.setItem(KEYS.theme, t);
+      break;
+    }
+    case "settings":
+      $("#setDemo").checked = settings.demo; $("#setApi").value = settings.apiBase; $("#setToken").value = settings.token;
+      openModal("#settingsModal"); break;
+    case "close-modal": closeModals(); break;
+    case "close-drawer": closeDrawer(); break;
+    case "payload": openPayload(); break;
+    case "copy-payload":
+      try { await navigator.clipboard.writeText($("#payloadJson").textContent); toast("Request body copied."); }
+      catch { toast("Clipboard is blocked by the browser.", "warn"); }
+      break;
+    case "open": openLayout(id); break;
+    case "duplicate": duplicateLayout(id); break;
+    case "duplicate-draft": {
+      state.editing = null;
+      state.draft.code = `${state.draft.code}_COPY`.slice(0, 100);
+      state.draft.name = `${state.draft.name} (copy)`.slice(0, 250);
+      state.draft.isDefault = false;
+      renderAll();
+      toast("The draft is detached from the saved layout. Use “Save as new”.", "info");
+      break;
+    }
+    case "new": newLayout(null); break;
+    case "preset-new": e.stopPropagation(); newLayout(preset); break;
+    case "update": updateLayout(); break;
+    case "save-as-new": openSaveAsNew(); break;
+    case "deactivate": deactivateLayout(id); break;
+    case "reactivate": setFlag(id, { isActive: true }, "Layout reactivated."); break;
+    case "make-default": setFlag(id, { isDefault: true, isActive: true }, "Default layout updated."); break;
+    case "revert": {
+      if (!state.baseline) { toast("Nothing to revert to.", "warn"); break; }
+      state.draft = cloneDraft(state.baseline);
+      renderAll();
+      toast("Draft reverted.", "info");
+      break;
+    }
+    case "expand-all": SECTIONS.forEach(s => state.openSections.add(s.id)); renderInspector(); break;
+    case "collapse-all": state.openSections.clear(); renderInspector(); break;
+    case "sig-add": {
+      const order = state.draft.signatures.length + 1;
+      state.draft.signatures.push({ ...sigDefaults(), _uid: ++uid, label: `Signature ${order}`, title: null, displayOrder: order });
+      renderInspector();
+      $$(`#inspector .sig`).slice(-1)[0]?.setAttribute("open", "");
+      onDraftChange();
+      break;
+    }
+    case "sig-del": {
+      state.draft.signatures = state.draft.signatures.filter(s => String(s._uid) !== a.dataset.sig);
+      state.draft.signatures.forEach((s, i) => s.displayOrder = i + 1);
+      renderInspector(); onDraftChange();
+      break;
+    }
+    case "sig-up": case "sig-down": {
+      const list = state.draft.signatures;
+      const i = list.findIndex(s => String(s._uid) === a.dataset.sig);
+      const j = action === "sig-up" ? i - 1 : i + 1;
+      if (i < 0 || j < 0 || j >= list.length) break;
+      [list[i], list[j]] = [list[j], list[i]];
+      list.forEach((s, k) => s.displayOrder = k + 1);
+      renderInspector(); onDraftChange();
+      break;
+    }
+    case "check-one": checkType(type); break;
+    case "check-type": {
+      const t = $("#customType").value.trim();
+      if (!t) { toast("Type a report type key first.", "warn"); break; }
+      checkType(t);
+      break;
+    }
+    case "check-all": ["Projects", "Clients", "ProjectLocations", "ProjectResponsibleEngineers", "Boqs", "BoqItems"].forEach(checkType); break;
+  }
+});
+
+async function checkType(t) {
+  state.usage[t] = { loading: true };
+  renderUsage();
+  try {
+    const layout = await busy(() => backend().lastUsed(t));
+    state.usage[t] = { layout };
+  } catch (err) {
+    state.usage[t] = { error: err.message || String(err) };
+  }
+  renderUsage();
+}
+
+$("#viewSeg").addEventListener("click", e => {
+  const b = e.target.closest("button[data-view]");
+  if (b) goView(b.dataset.view);
+});
+$("#canvasSeg").addEventListener("click", e => {
+  const b = e.target.closest("button[data-canvas]");
+  if (!b) return;
+  state.canvas = b.dataset.canvas;
+  syncCanvasSeg();
+  if (state.canvas === "pdf" && !state.pdfUrl && !settings.demo) renderPdf(true);
+});
+$("#btnPdf").addEventListener("click", () => renderPdf(false));
+$("#autoPdf").addEventListener("change", e => {
+  state.autoPdf = e.target.checked;
+  if (state.autoPdf) renderPdf(false);
+});
+$("#guides").addEventListener("change", e => { state.guides = e.target.checked; renderCanvas(); });
+$("#zoom").addEventListener("change", e => { state.zoom = e.target.value; renderCanvas(); });
+$("#contentKind").addEventListener("change", e => { state.sample.contentKind = Number(e.target.value); onDraftChange(); });
+$("#sampleTitle").addEventListener("input", e => { state.sample.title = e.target.value; onDraftChange(); });
+$("#sampleSubtitle").addEventListener("input", e => { state.sample.subtitle = e.target.value; onDraftChange(); });
+$("#incInactive").addEventListener("change", e => { state.includeInactive = e.target.checked; load(); });
+
+$("#saveForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const code = $("#saveCode").value.trim(), name = $("#saveName").value.trim();
+  if (!code || !name) { toast("Code and name are required.", "warn"); return; }
+  createLayout(code, name, $("#saveDefault").checked);
+});
+$("#settingsForm").addEventListener("submit", e => {
+  e.preventDefault();
+  localStorage.setItem(KEYS.demo, $("#setDemo").checked ? "1" : "0");
+  localStorage.setItem(KEYS.api, $("#setApi").value.trim().replace(/\/+$/, "") || settings.apiBase);
+  localStorage.setItem(KEYS.token, $("#setToken").value.replace(/^bearer\s+/i, "").trim());
+  closeModals();
+  state.loaded = false;
+  state.usage = {};
+  load();
+});
+$("#confirmYes").addEventListener("click", () => closeConfirm(true));
+$("#confirmNo").addEventListener("click", () => closeConfirm(false));
+$$(".modal").forEach(m => m.addEventListener("mousedown", e => { if (e.target === m) m.id === "confirmModal" ? closeConfirm(false) : closeModals(); }));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if ($(".modal.open")) closeModals();
+    else closeDrawer();
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    if (state.view !== "designer") return;
+    state.editing && !state.editing.isSystem ? updateLayout() : openSaveAsNew();
+  }
+});
+let rt;
+addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { moveThumb(); renderCanvas(); }, 150); });
+
+/* ============================================================ boot */
+document.documentElement.dataset.theme = localStorage.getItem(KEYS.theme) || "dark";
+state.draft = toDraft(null);
+state.baseline = cloneDraft(state.draft);
+requestAnimationFrame(moveThumb);
+renderAll();
+load();
+})();
+</script>
+</body>
+</html>

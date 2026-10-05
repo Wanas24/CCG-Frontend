@@ -11,17 +11,6 @@ const userControl = {
     projects: "المشاريع",
     assignments: "تعيينات الأدوار",
   },
-  stats: {
-    employees: "الموظفون",
-    active: "{{count}} نشط",
-    roles: "الأدوار",
-    rolesSub: "{{company}} للشركة · {{shared}} مشترك",
-    permissions: "الصلاحيات",
-    groups: "{{count}} مجموعات",
-    assignments: "تعيينات الأدوار",
-    everyoneHasRole: "لكل شخص دور",
-    withoutRole: "{{count}} بدون دور",
-  },
   invite: {
     title: "دعوة موظف",
     subtitle: "يُضاف بالبريد، ثم تُعيَّن الأدوار والمشاريع في خطوات منفصلة",

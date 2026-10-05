@@ -11,17 +11,6 @@ const userControl = {
     projects: "projects",
     assignments: "role assignments",
   },
-  stats: {
-    employees: "Employees",
-    active: "{{count}} active",
-    roles: "Roles",
-    rolesSub: "{{company}} company · {{shared}} shared",
-    permissions: "Permissions",
-    groups: "{{count}} groups",
-    assignments: "Role assignments",
-    everyoneHasRole: "Everyone has a role",
-    withoutRole: "{{count}} without a role",
-  },
   invite: {
     title: "Invite an employee",
     subtitle:
