@@ -24,12 +24,6 @@ export const companyEndpoints = {
     path: `/Company`,
     auth: "required",
   }),
-  getLogo: createEndpoint({
-    method: "GET",
-    path: `/Company/logo`,
-    auth: "required",
-    permissions: [PermissionsList.Company.GetLogo],
-  }),
   uploadLogo: createEndpoint({
     method: "POST",
     path: `/Company/logo`,

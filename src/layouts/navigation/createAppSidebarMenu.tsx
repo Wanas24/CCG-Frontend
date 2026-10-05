@@ -1,7 +1,11 @@
 import type { TFunction } from "i18next";
-import { Home, ShieldCheck } from "lucide-react";
+import { GitBranch, Home, Settings, ShieldCheck, Users } from "lucide-react";
 import { AI_ROUTES } from "@/modules/ai/routes/paths";
+import { APPROVAL_ROUTES } from "@/modules/approval/routes/paths";
+import { approvalAccessPermissions } from "@/modules/approval/utils/approvalAccess";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
+import { USER_CONTROL_ROUTES } from "@/modules/userControl/routes/paths";
+import { userControlAccessPermissions } from "@/modules/userControl/utils/userControlAccess";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import type { MenuItemConfig } from "@/shared/ANTD_UIComponents";
 
@@ -13,10 +17,31 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
     icon: <Home size={18} />,
   },
   {
-    key: "ai-subscriptions",
-    label: t("ai.subscriptions.navLabel"),
-    path: AI_ROUTES.subscriptions,
-    icon: <ShieldCheck size={18} />,
-    permissions: [PermissionsList.Ai.AiSubscriptionGet],
+    key: "settings",
+    label: t("settings.navLabel"),
+    icon: <Settings size={18} />,
+    children: [
+      {
+        key: "ai-subscriptions",
+        label: t("ai.subscriptions.navLabel"),
+        path: AI_ROUTES.subscriptions,
+        icon: <ShieldCheck size={18} />,
+        permissions: [PermissionsList.Ai.AiSubscriptionGet],
+      },
+      {
+        key: "user-control",
+        label: t("userControl.navLabel"),
+        path: USER_CONTROL_ROUTES.userControl,
+        icon: <Users size={18} />,
+        permissions: [...userControlAccessPermissions],
+      },
+      {
+        key: "approval",
+        label: t("approval.navLabel"),
+        path: APPROVAL_ROUTES.approval,
+        icon: <GitBranch size={18} />,
+        permissions: [...approvalAccessPermissions],
+      },
+    ],
   },
 ];

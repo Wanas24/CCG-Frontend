@@ -32,6 +32,9 @@ export const DesignTokens = {
     iconMd: 22,
     iconSm: 16,
   },
+  Card: {
+    bodyPadding: 12,
+  },
 } as const;
 
 export type DesignTokensType = typeof DesignTokens;

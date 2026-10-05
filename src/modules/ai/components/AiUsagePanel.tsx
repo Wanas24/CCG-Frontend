@@ -52,38 +52,39 @@ const QuotaMetric = ({
 
   if (layout === "footer") {
     return (
-      <div className="flex min-w-0 flex-col gap-1 rounded-lg border border-(--Grey300) bg-(--app-surface) p-2">
-        <p className="m-0 truncate text-[0.7rem] font-medium text-(--Grey600)">
-          {title}
-        </p>
-        <p
-          className="m-0 truncate text-sm font-semibold text-(--app-text)"
-          dir="ltr"
-        >
-          {formatAiUsageNumber(used, locale)}
-          {!unlimited && (
-            <span className="font-normal text-(--Grey600)">
-              {" "}
-              / {formatAiUsageNumber(limit, locale)}
-            </span>
-          )}
-        </p>
-        {unlimited ? (
-          <p className="m-0 truncate text-[0.7rem] text-(--Grey600)">
-            {unlimitedLabel}
+      <div className="flex min-w-0 flex-col gap-2 rounded-md border border-(--Grey300) bg-(--app-surface) px-2 py-2">
+        <div className="flex min-w-0 items-baseline justify-between gap-2">
+          <p className="m-0 truncate text-[0.65rem] font-medium leading-tight text-(--Grey600)">
+            {title}
           </p>
-        ) : (
-          progress !== null && (
-            <Progress
-              percent={progress}
-              showInfo={false}
-              size="small"
-              status="normal"
-              strokeColor={exhausted ? undefined : primaryColor}
-              aria-label={title}
-              className="m-0! leading-none [&_.ant-progress-outer]:pe-0!"
-            />
-          )
+          <p
+            className="m-0 shrink-0 text-xs font-semibold leading-tight text-(--app-text)"
+            dir="ltr"
+          >
+            {unlimited ? (
+              <span className="font-normal text-(--Grey600)">
+                {unlimitedLabel}
+              </span>
+            ) : (
+              <>
+                {formatAiUsageNumber(used, locale)}
+                <span className="font-normal text-(--Grey600)">
+                  /{formatAiUsageNumber(limit, locale)}
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+        {!unlimited && progress !== null && (
+          <Progress
+            percent={progress}
+            showInfo={false}
+            size="small"
+            status="normal"
+            strokeColor={exhausted ? undefined : primaryColor}
+            aria-label={title}
+            className="m-0! leading-none [&_.ant-progress-outer]:pe-0! [&_.ant-progress-inner]:h-1!"
+          />
         )}
       </div>
     );
@@ -142,6 +143,24 @@ const QuotaMetric = ({
 const isExhausted = (remaining?: number | null) =>
   remaining !== undefined && remaining !== null && remaining <= 0;
 
+const resolveIsUsageActive = (
+  isSubscribed: boolean,
+  period: TAiQuotaSnapshot | null | undefined,
+) => {
+  if (!isSubscribed || !period) {
+    return false;
+  }
+
+  if (period.hasUnlimitedUsage) {
+    return true;
+  }
+
+  return (
+    (period.remainingTokens ?? 0) > 0 &&
+    (period.remainingMessages ?? 0) > 0
+  );
+};
+
 const AiUsagePanel = ({ className, layout = "panel" }: Props) => {
   const { t } = useTranslation();
   const { locale } = useLocale();
@@ -151,30 +170,57 @@ const AiUsagePanel = ({ className, layout = "panel" }: Props) => {
   const usage = data?.isSuccess ? data.data : undefined;
   const period: TAiQuotaSnapshot | null | undefined = usage?.currentPeriod;
   const isFooter = layout === "footer";
+  const isUsageActive = resolveIsUsageActive(
+    usage?.isSubscribed ?? false,
+    period,
+  );
 
   return (
     <aside
       className={clsx(
         "flex flex-col bg-(--Grey100)",
         isFooter
-          ? "shrink-0 gap-1.5 px-3 pb-3 pt-1"
+          ? "shrink-0 gap-1 px-3 pb-2 pt-0.5"
           : "min-h-0 w-full flex-1 gap-3 overflow-y-auto p-3",
         className,
       )}
     >
-      <h3
-        className={clsx(
-          "m-0 font-semibold text-(--app-text)",
-          isFooter ? "text-xs" : "text-base",
+      <div className="flex min-w-0 items-center justify-between gap-2">
+        <h3
+          className={clsx(
+            "m-0 min-w-0 truncate font-semibold text-(--app-text)",
+            isFooter ? "text-[0.7rem] leading-tight" : "text-base",
+          )}
+        >
+          {t("ai.usage.title")}
+        </h3>
+
+        {usage && (
+          <span
+            className={clsx(
+              "inline-flex shrink-0 items-center gap-1 rounded-full px-1.5 py-0.5 font-medium leading-none",
+              isFooter ? "text-[0.6rem]" : "text-[0.7rem]",
+              isUsageActive
+                ? "bg-(--statusG100) text-(--statusG200)"
+                : "bg-(--statusR100) text-(--statusR200)",
+            )}
+          >
+            <span
+              aria-hidden="true"
+              className={clsx(
+                "size-1.5 rounded-full",
+                isUsageActive ? "bg-(--statusG200)" : "bg-(--statusR200)",
+              )}
+            />
+            {isUsageActive ? t("ai.usage.active") : t("ai.usage.notActive")}
+          </span>
         )}
-      >
-        {t("ai.usage.title")}
-      </h3>
+      </div>
 
       {isPending && (
         <div
           className={clsx(
-            isFooter ? "grid grid-cols-2 gap-2" : "flex flex-col gap-3",
+            isFooter ? "flex flex-col gap-1" : "flex flex-col gap-3",
           )}
           aria-busy="true"
           aria-live="polite"
@@ -185,13 +231,13 @@ const AiUsagePanel = ({ className, layout = "panel" }: Props) => {
                 active
                 paragraph={{ rows: 1 }}
                 title={{ width: "60%" }}
-                className="rounded-lg border border-(--Grey300) bg-(--app-surface) p-2"
+                className="rounded-md border border-(--Grey300) bg-(--app-surface) px-2 py-1"
               />
               <AppSkeleton
                 active
                 paragraph={{ rows: 1 }}
                 title={{ width: "60%" }}
-                className="rounded-lg border border-(--Grey300) bg-(--app-surface) p-2"
+                className="rounded-md border border-(--Grey300) bg-(--app-surface) px-2 py-1"
               />
             </>
           ) : (
@@ -255,7 +301,7 @@ const AiUsagePanel = ({ className, layout = "panel" }: Props) => {
           {period ? (
             <div
               className={clsx(
-                isFooter ? "grid grid-cols-2 gap-2" : "flex flex-col gap-3",
+                isFooter ? "flex flex-col gap-1" : "flex flex-col gap-3",
               )}
             >
               <QuotaMetric

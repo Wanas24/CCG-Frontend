@@ -1,15 +1,17 @@
 import { Dropdown, type MenuProps } from "antd";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import type { AppThemeMode } from "@/AntdTheme";
 import { useThemePreference } from "@/modules/user/hooks/useThemePreference";
 
 type Props = {
   showLabel?: boolean;
+  className?: string;
 };
 
-const AppThemeToggle = ({ showLabel = false }: Props) => {
+const AppThemeToggle = ({ showLabel = false, className }: Props) => {
   const { t } = useTranslation();
   const { mode, changeTheme } = useThemePreference();
   const label = t("common.theme");
@@ -50,11 +52,12 @@ const AppThemeToggle = ({ showLabel = false }: Props) => {
       aria-label={label}
       aria-haspopup="menu"
       iconPlacement={"start"}
-      className={
+      className={clsx(
         showLabel
           ? "w-full !justify-start hover:bg-(--Grey100)!"
-          : undefined
-      }
+          : undefined,
+        className,
+      )}
       icon={triggerIcon}
     >
       {showLabel ? label : null}

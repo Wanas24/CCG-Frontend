@@ -20,12 +20,6 @@ export const aiEndpoints = {
     auth: "required",
     permissions: [],
   }),
-  archiveChat: createEndpoint({
-    method: "DELETE",
-    path: `/ai/chats/:chatId`,
-    auth: "required",
-    permissions: [],
-  }),
   usage: createEndpoint({
     method: "GET",
     path: `/ai/usage`,

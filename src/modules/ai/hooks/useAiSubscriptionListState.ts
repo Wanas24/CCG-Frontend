@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useAppTablePagination } from "@/shared/ANTD_UIComponents/AppTable/useAppTablePagination";
 import type { TGetAiSubscriptionsParams } from "../types";
 
 type TriState = "all" | "true" | "false";
@@ -16,16 +17,15 @@ const SEARCH_DEBOUNCE_MS = 300;
 export const useAiSubscriptionListState = () => {
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
   const [isManager, setIsManager] = useState<TriState>("all");
+  const { page, pageSize, onChange, resetPage } = useAppTablePagination(20);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const nextSearch = searchInput.trim();
       setDebouncedSearch((previous) => {
         if (previous !== nextSearch) {
-          setPage(1);
+          resetPage();
         }
         return nextSearch;
       });
@@ -34,7 +34,7 @@ export const useAiSubscriptionListState = () => {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [searchInput]);
+  }, [searchInput, resetPage]);
 
   const params: TGetAiSubscriptionsParams = useMemo(
     () => ({
@@ -51,14 +51,15 @@ export const useAiSubscriptionListState = () => {
   return {
     searchInput,
     setSearchInput,
-    page,
-    setPage,
-    pageSize,
-    setPageSize,
+    pagination: {
+      page,
+      pageSize,
+      onChange,
+    },
     isManager,
     setIsManager: (value: TriState) => {
       setIsManager(value);
-      setPage(1);
+      resetPage();
     },
     params,
   };

@@ -80,7 +80,9 @@ const ai = {
     "errorDescription": "Usage information could not be loaded. Please try again.",
     "retry": "Retry",
     "period": "Current period",
-    "periodUnavailable": "Usage information is currently unavailable."
+    "periodUnavailable": "Usage information is currently unavailable.",
+    "active": "Active",
+    "notActive": "Not Active"
   },
   "subscriptions": {
     "title": "AI Subscription Management",

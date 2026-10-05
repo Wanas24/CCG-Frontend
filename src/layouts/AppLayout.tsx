@@ -70,7 +70,9 @@ const AppLayout = () => {
         />
         <main className="min-w-0 flex-1 overflow-y-auto">
           <Suspense fallback={<NavigationProgressFallback />}>
-            <Outlet />
+            <section className="p-4 sm:p-6">
+              <Outlet />
+            </section>
           </Suspense>
         </main>
         <AiAssistant />

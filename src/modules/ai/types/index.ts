@@ -47,8 +47,6 @@ export type TGetAiMessagesResponse = TSimpleResult<
   TAiPagedResult<TAiMessageResponse>
 >;
 
-export type TArchiveAiChatResponse = TSimpleResult;
-
 export type TGetAiUsageResponse = TSimpleResult<TAiUsageStatusResponse>;
 
 export type TGetAiSubscriptionsResponse = TSimpleResult<

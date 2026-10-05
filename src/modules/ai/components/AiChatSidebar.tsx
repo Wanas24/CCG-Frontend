@@ -42,7 +42,7 @@ const AiChatSidebar = ({
   return (
     <aside
       className={clsx(
-        "flex h-full min-h-0 w-56 shrink-0 flex-col border-e border-(--Grey300) bg-(--Grey100)",
+        "flex h-full min-h-0 w-70 shrink-0 flex-col border-e border-(--Grey300) bg-(--Grey100)",
         className,
       )}
     >

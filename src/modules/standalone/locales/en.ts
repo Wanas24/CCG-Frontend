@@ -8,6 +8,20 @@ const notFound = {
 
 export const home = {
   navLabel: "Home",
+  permissions: {
+    title: "Your permissions",
+    admin: "Admin",
+    manager: "Manager",
+    yes: "Yes",
+    no: "No",
+    granted: "Granted",
+    denied: "Denied",
+    error: "Couldn't load permissions.",
+  },
+} as const;
+
+export const settings = {
+  navLabel: "Settings",
 } as const;
 
 export default notFound;

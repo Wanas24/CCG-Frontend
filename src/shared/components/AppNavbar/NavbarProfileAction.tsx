@@ -1,15 +1,21 @@
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { UserIcon } from "lucide-react";
+import clsx from "clsx";
 import { USER_ROUTES } from "@/modules/user/routes/paths";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 
 type Props = {
   showLabel?: boolean;
   onNavigate?: () => void;
+  className?: string;
 };
 
-const NavbarProfileAction = ({ showLabel = false, onNavigate }: Props) => {
+const NavbarProfileAction = ({
+  showLabel = false,
+  onNavigate,
+  className,
+}: Props) => {
   const { t } = useTranslation();
   const label = t("user.profile.navLabel");
 
@@ -19,7 +25,7 @@ const NavbarProfileAction = ({ showLabel = false, onNavigate }: Props) => {
         variant="default"
         icon={<UserIcon size={18} />}
         aria-label={label}
-        className={showLabel ? "w-full justify-start" : undefined}
+        className={clsx(showLabel ? "w-full justify-start" : undefined, className)}
       >
         {showLabel ? label : null}
       </AppButton>

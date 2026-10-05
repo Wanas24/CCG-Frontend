@@ -3,6 +3,7 @@ import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/a
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { clearAiQueries } from "@/modules/ai/api/queryKeys/aiQueryKeys";
 import { userMeQueryKey } from "@/modules/user/api/hooks/useGetMe";
+import { userNotificationsQueryRootKey } from "@/modules/user/api/hooks/notificationsQueryKey";
 import { refreshPermissions } from "@/modules/user/api/hooks/permissionsQueryKey";
 import { connectHub, disconnectHub } from "@/services/hub";
 import {
@@ -24,6 +25,7 @@ export const refreshAfterCompanySwitch = async () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: userMeQueryKey }),
       queryClient.invalidateQueries({ queryKey: availableCompaniesQueryKey }),
+      queryClient.invalidateQueries({ queryKey: userNotificationsQueryRootKey }),
       refreshPermissions(),
       clearAiQueries(),
     ]);
@@ -33,6 +35,7 @@ export const refreshAfterCompanySwitch = async () => {
       queryClient.invalidateQueries({ queryKey: availableCompaniesQueryKey }),
       queryClient.invalidateQueries({ queryKey: currentCompanyQueryKey }),
       queryClient.invalidateQueries({ queryKey: companyLogoQueryKey }),
+      queryClient.invalidateQueries({ queryKey: userNotificationsQueryRootKey }),
       refreshPermissions(),
       clearAiQueries(),
     ]);

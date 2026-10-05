@@ -1,6 +1,7 @@
 import { Dropdown, type MenuProps } from "antd";
 import { Languages } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import { type AppLocale } from "../../i18n/useLocale";
 import { useLanguagePreference } from "@/modules/user/hooks/useLanguagePreference";
@@ -8,9 +9,14 @@ import { useLanguagePreference } from "@/modules/user/hooks/useLanguagePreferenc
 type Props = {
   whiteIcon?: boolean;
   showLabel?: boolean;
+  className?: string;
 };
 
-const AppLocaleSwitcher = ({ whiteIcon = false, showLabel = false }: Props) => {
+const AppLocaleSwitcher = ({
+  whiteIcon = false,
+  showLabel = false,
+  className,
+}: Props) => {
   const { t } = useTranslation();
   const { locale, changeLanguage } = useLanguagePreference();
   const label = t("common.language");
@@ -34,11 +40,12 @@ const AppLocaleSwitcher = ({ whiteIcon = false, showLabel = false }: Props) => {
       aria-label={label}
       aria-haspopup="menu"
       iconPlacement={"start"}
-      className={
+      className={clsx(
         showLabel
           ? "w-full !justify-start hover:bg-(--Grey100)!"
-          : undefined
-      }
+          : undefined,
+        className,
+      )}
       icon={
         <Languages
           color={whiteIcon ? "white" : "currentColor"}
@@ -52,7 +59,9 @@ const AppLocaleSwitcher = ({ whiteIcon = false, showLabel = false }: Props) => {
 
   return (
     <Dropdown menu={{ items, selectedKeys: [locale] }} trigger={["click"]}>
-      {showLabel ? <span className="block w-full">{trigger}</span> : trigger}
+      <span className={showLabel ? "block w-full" : "inline-flex"}>
+        {trigger}
+      </span>
     </Dropdown>
   );
 };

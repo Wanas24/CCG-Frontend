@@ -1,15 +1,10 @@
-import { lazy } from "react";
 import ProtectedRoute from "@/router/guards/ProtectedRoute";
 import type { AppRouteObject } from "@/router/types";
 import { APP_ROUTES } from "./paths";
 import AppLayout from "@/layouts/AppLayout";
 
-const HomePage = lazy(() => import("../pages/HomePage"));
-const TestPage = lazy(() => import("../pages/TestPage"));
-
 const appRouteConfig: AppRouteObject[] = [
   {
-    // Guard first so AppLayout never paints for unauthenticated users.
     Component: ProtectedRoute,
     children: [
       {
@@ -17,11 +12,17 @@ const appRouteConfig: AppRouteObject[] = [
         children: [
           {
             path: APP_ROUTES.home,
-            Component: HomePage,
+            lazy: async () => {
+              const { default: Component } = await import("../pages/HomePage");
+              return { Component };
+            },
           },
           {
             path: APP_ROUTES.test,
-            Component: TestPage,
+            lazy: async () => {
+              const { default: Component } = await import("../pages/TestPage");
+              return { Component };
+            },
           },
         ],
       },

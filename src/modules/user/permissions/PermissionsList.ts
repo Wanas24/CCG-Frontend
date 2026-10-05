@@ -1,5 +1,5 @@
 export const PermissionsList = {
-  Ai:{
+  Ai: {
     AiAssistantChat: "AiAssistant.Chat",
     AiAssistantAll: "AiAssistant.All",
     AiSubscriptionGet: "AiSubscription.Get",
@@ -7,10 +7,39 @@ export const PermissionsList = {
   },
   Company: {
     GetCompanyInfo: "Company.GetCompanyInfo",
-    GetLogo: "Company.GetLogo",
     Edit: "Company.Edit",
     UploadLogo: "Company.UploadLogo",
     DeleteLogo: "Company.DeleteLogo",
+  },
+  ApprovalWorkflow: {
+    Create: "ApprovalWorkflow.Create",
+    Deactivate: "ApprovalWorkflow.Deactivate",
+    ForceDecide: "ApprovalWorkflow.ForceDecide",
+    Get: "ApprovalWorkflow.Get",
+    GetActiveEntityRequest: "ApprovalWorkflow.GetActiveEntityRequest",
+    GetEntityRequests: "ApprovalWorkflow.GetEntityRequests",
+    GetPendingRequests: "ApprovalWorkflow.GetPendingRequests",
+    Update: "ApprovalWorkflow.Update",
+  },
+  ApplicationRole: {
+    Get: "ApplicationRole.Get",
+    GetAllPermissions: "ApplicationRole.GetAllPermissions",
+    GetUserRoles: "ApplicationRole.GetUserRoles",
+    Create: "ApplicationRole.Create",
+    Edit: "ApplicationRole.Edit",
+    Delete: "ApplicationRole.Delete",
+    AssignPermissions: "ApplicationRole.AssignPermissions",
+    AssignRoleToUser: "ApplicationRole.AssignRoleToUser",
+    UnassignRoleFromUser: "ApplicationRole.UnassignRoleFromUser",
+    EditUserRoles: "ApplicationRole.EditUserRoles",
+  },
+  Employee: {
+    Get: "Employee.Get",
+    RecruitEmployee: "Employee.RecruitEmployee",
+  },
+  ProjectEmployee: {
+    GetActiveProjects: "ProjectEmployee.GetActiveProjects",
+    SetProjects: "ProjectEmployee.SetProjects",
   },
 } as const;
 

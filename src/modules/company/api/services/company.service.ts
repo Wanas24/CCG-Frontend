@@ -25,7 +25,6 @@ export const companyService = {
       { body },
     ),
   delete: () => callEndpoint<TDeleteCompanyResponse>(companyEndpoints.delete),
-  getLogo: () => callEndpoint<TCompanyLogoResponse>(companyEndpoints.getLogo),
   uploadLogo: (file: File) => {
     const body = new FormData();
     body.append("File", file);

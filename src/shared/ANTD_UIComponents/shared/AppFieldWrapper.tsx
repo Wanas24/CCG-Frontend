@@ -47,7 +47,7 @@ export const AppFieldWrapper = ({
       {label && (
         <label
           className={clsx(
-            "text-(--app-text)",
+            "text-(--app-text) font-semibold!",
             DesignTokens.inputs.labelFontSize,
           )}
         >

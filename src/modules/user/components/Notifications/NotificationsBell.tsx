@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge, Dropdown } from "antd";
 import { Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import { useGetNotifications } from "../../api/hooks/useGetNotifications";
 import { useMarkAllNotificationsRead } from "../../api/hooks/useMarkAllNotificationsRead";
@@ -16,9 +17,10 @@ import NotificationsPanel from "./NotificationsPanel";
 
 type Props = {
   showLabel?: boolean;
+  className?: string;
 };
 
-const NotificationsBell = ({ showLabel = false }: Props) => {
+const NotificationsBell = ({ showLabel = false, className }: Props) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<NotificationFilter>("all");
@@ -75,11 +77,12 @@ const NotificationsBell = ({ showLabel = false }: Props) => {
       aria-haspopup="dialog"
       aria-expanded={open}
       iconPlacement="start"
-      className={
+      className={clsx(
         showLabel
           ? "w-full !justify-start hover:bg-(--Grey100)!"
-          : undefined
-      }
+          : undefined,
+        className,
+      )}
       icon={<Bell size={18} />}
     >
       {showLabel ? label : null}
@@ -119,8 +122,13 @@ const NotificationsBell = ({ showLabel = false }: Props) => {
         />
       )}
     >
-      <span className={showLabel ? "block w-full" : "inline-flex"}>
-        <Badge count={unreadCount} overflowCount={99} size="small">
+      <span className={showLabel ? "relative z-10 block w-full" : "relative z-10 inline-flex"}>
+        <Badge
+          count={unreadCount}
+          overflowCount={99}
+          size="small"
+          styles={{ indicator: { zIndex: 20 } }}
+        >
           {trigger}
         </Badge>
       </span>

@@ -16,10 +16,22 @@ export type AppTableColumnType<T> = ColumnType<T> & {
   searchable?: boolean;
 };
 
+export type AppTableServerPagination = {
+  page: number;
+  pageSize: number;
+  total: number;
+  onChange: (page: number, pageSize: number) => void;
+};
+
 export type AppTableProps<T = IDataType> = TableProps<T> & {
   filterContent?: ReactNode;
   filterPanelWidth?: string;
   footerContent?: ReactNode;
+  /**
+   * Controlled server pagination. `dataSource` is the current page only.
+   * Changing the page size requests page 1.
+   */
+  serverPagination?: AppTableServerPagination;
   /** Enable drag-to-resize column headers. Defaults to true. */
   resizableColumns?: boolean;
   /**

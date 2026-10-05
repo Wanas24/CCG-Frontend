@@ -13,6 +13,9 @@ type Props = {
   onOpenSidebar?: () => void;
 };
 
+const navbarIconActionClassName =
+  "size-9! shrink-0 justify-center! rounded-lg! border! border-(--Grey300)! px-0! hover:bg-(--Grey100)!";
+
 const AppNavbar = ({
   showSidebarTrigger = false,
   onOpenSidebar,
@@ -48,6 +51,7 @@ const AppNavbar = ({
             icon={<PanelLeft size={18} />}
             aria-label={t("common.menu")}
             onClick={onOpenSidebar}
+            className={navbarIconActionClassName}
           />
         )}
         <h1 className="m-0 min-w-0 truncate text-lg font-semibold text-(--app-text)">
@@ -59,7 +63,11 @@ const AppNavbar = ({
         className="hidden items-center gap-1 md:flex"
         aria-label={t("common.menu")}
       >
-        <DesktopNavbarActions logout={logout} isPending={isPending} />
+        <DesktopNavbarActions
+          logout={logout}
+          isPending={isPending}
+          iconActionClassName={navbarIconActionClassName}
+        />
       </nav>
 
       <div className="shrink-0 md:hidden">
@@ -69,6 +77,7 @@ const AppNavbar = ({
           aria-label={t("common.menu")}
           aria-expanded={mobileOpen}
           onClick={openMobileMenu}
+          className={navbarIconActionClassName}
         />
         <AppDrawer
           open={mobileOpen}
