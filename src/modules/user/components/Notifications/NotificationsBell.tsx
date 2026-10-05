@@ -122,8 +122,13 @@ const NotificationsBell = ({ showLabel = false, className }: Props) => {
         />
       )}
     >
-      <span className={showLabel ? "block w-full" : "inline-flex"}>
-        <Badge count={unreadCount} overflowCount={99} size="small">
+      <span className={showLabel ? "relative z-10 block w-full" : "relative z-10 inline-flex"}>
+        <Badge
+          count={unreadCount}
+          overflowCount={99}
+          size="small"
+          styles={{ indicator: { zIndex: 20 } }}
+        >
           {trigger}
         </Badge>
       </span>
