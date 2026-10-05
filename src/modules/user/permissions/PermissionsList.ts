@@ -1,5 +1,5 @@
 export const PermissionsList = {
-  Ai:{
+  Ai: {
     AiAssistantChat: "AiAssistant.Chat",
     AiAssistantAll: "AiAssistant.All",
     AiSubscriptionGet: "AiSubscription.Get",
@@ -10,6 +10,16 @@ export const PermissionsList = {
     Edit: "Company.Edit",
     UploadLogo: "Company.UploadLogo",
     DeleteLogo: "Company.DeleteLogo",
+  },
+  ApprovalWorkflow: {
+    Create: "ApprovalWorkflow.Create",
+    Deactivate: "ApprovalWorkflow.Deactivate",
+    ForceDecide: "ApprovalWorkflow.ForceDecide",
+    Get: "ApprovalWorkflow.Get",
+    GetActiveEntityRequest: "ApprovalWorkflow.GetActiveEntityRequest",
+    GetEntityRequests: "ApprovalWorkflow.GetEntityRequests",
+    GetPendingRequests: "ApprovalWorkflow.GetPendingRequests",
+    Update: "ApprovalWorkflow.Update",
   },
   ApplicationRole: {
     Get: "ApplicationRole.Get",

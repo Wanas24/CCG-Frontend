@@ -1,0 +1,15 @@
+import { useMemo } from "react";
+import { usePermissions } from "@/modules/user/hooks/usePermissions";
+import { canAccessApproval } from "../utils/approvalAccess";
+
+export const useApprovalAccess = () => {
+  const { permissions, isAdmin, isManager, isLoading } = usePermissions();
+
+  const canOpen = useMemo(() => {
+    if (isLoading) return false;
+    const granted = new Set(permissions.map((permission) => permission.name));
+    return canAccessApproval({ isAdmin, isManager, granted });
+  }, [isAdmin, isLoading, isManager, permissions]);
+
+  return { isLoading, canOpen };
+};
