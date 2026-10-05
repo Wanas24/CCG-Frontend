@@ -7,14 +7,12 @@ import { useLogoutManager } from "@/modules/authentication/hooks/useLogoutManage
 import { AppButton, AppDrawer } from "@/shared/ANTD_UIComponents";
 import DesktopNavbarActions from "./DesktopNavbarActions";
 import MobileNavbarMenu from "./MobileNavbarMenu";
+import { navbarIconActionClassName } from "./navbarIconActionClassName";
 
 type Props = {
   showSidebarTrigger?: boolean;
   onOpenSidebar?: () => void;
 };
-
-const navbarIconActionClassName =
-  "size-9! shrink-0 justify-center! rounded-lg! border! border-(--Grey300)! px-0! hover:bg-(--Grey100)!";
 
 const AppNavbar = ({
   showSidebarTrigger = false,
@@ -63,11 +61,7 @@ const AppNavbar = ({
         className="hidden items-center gap-1 md:flex"
         aria-label={t("common.menu")}
       >
-        <DesktopNavbarActions
-          logout={logout}
-          isPending={isPending}
-          iconActionClassName={navbarIconActionClassName}
-        />
+        <DesktopNavbarActions logout={logout} isPending={isPending} />
       </nav>
 
       <div className="shrink-0 md:hidden">

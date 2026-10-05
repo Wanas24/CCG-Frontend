@@ -4,6 +4,7 @@ import { Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
+import { navbarIconActionClassName } from "@/shared/components/AppNavbar/navbarIconActionClassName";
 import { useGetNotifications } from "../../api/hooks/useGetNotifications";
 import { useMarkAllNotificationsRead } from "../../api/hooks/useMarkAllNotificationsRead";
 import { useMarkNotificationRead } from "../../api/hooks/useMarkNotificationRead";
@@ -17,10 +18,9 @@ import NotificationsPanel from "./NotificationsPanel";
 
 type Props = {
   showLabel?: boolean;
-  className?: string;
 };
 
-const NotificationsBell = ({ showLabel = false, className }: Props) => {
+const NotificationsBell = ({ showLabel = false }: Props) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<NotificationFilter>("all");
@@ -80,8 +80,7 @@ const NotificationsBell = ({ showLabel = false, className }: Props) => {
       className={clsx(
         showLabel
           ? "w-full !justify-start hover:bg-(--Grey100)!"
-          : undefined,
-        className,
+          : navbarIconActionClassName,
       )}
       icon={<Bell size={18} />}
     >
