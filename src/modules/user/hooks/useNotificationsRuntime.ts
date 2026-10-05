@@ -2,7 +2,6 @@ import { createElement, useEffect } from "react";
 import { toast } from "react-toastify";
 import { queryClient } from "@/lib/queryClient";
 import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/availableCompaniesQueryKey";
-import { approvalQueryRootKey } from "@/modules/approval/api/queryKeys/approvalWorkflowQueryKeys";
 import {
   subscribeToNotifications,
   type TReceiveNotificationPayload,
@@ -14,7 +13,6 @@ import { parseNotificationJson } from "../utils/parseNotificationJson";
 import { resolveNotificationText } from "../utils/resolveNotificationText";
 
 const COMPANY_MEMBERSHIP_TYPE = "CompanyMembershipPayload";
-const PROJECT_TYPE = "Project";
 
 const handleLiveNotification = (notification: TReceiveNotificationPayload) => {
   parseNotificationJson(notification.data);
@@ -40,12 +38,6 @@ const handleLiveNotification = (notification: TReceiveNotificationPayload) => {
     void refreshPermissions();
     void queryClient.invalidateQueries({
       queryKey: availableCompaniesQueryKey,
-    });
-  }
-
-  if (notification.type === PROJECT_TYPE) {
-    void queryClient.invalidateQueries({
-      queryKey: approvalQueryRootKey,
     });
   }
 };
