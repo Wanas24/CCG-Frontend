@@ -7,11 +7,11 @@ import { useSetUserProjects } from "../api/hooks/useSetUserProjects";
 import { useSetUserRoles } from "../api/hooks/useSetUserRoles";
 import { inviteEmployeeSchema, type InviteEmployeeValues } from "../schemas";
 import type {
+  InviteRunState,
   TApplicationRole,
   TApplicationRolePermissionGroup,
   TProjectWithUsers,
 } from "../types";
-import type { InviteRunState } from "../types";
 import { isForbiddenError, readApiMessage } from "../utils/readApiMessage";
 
 type InviteSnapshot = {
@@ -32,7 +32,6 @@ type StepResult =
 type Params = {
   data: InviteSnapshot;
   rolePerms: Map<string, Set<number>>;
-  canRecruit: boolean;
   canSetUserRoles: boolean;
   canSetProjects: boolean;
   reload: () => Promise<void>;

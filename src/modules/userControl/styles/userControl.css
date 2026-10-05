@@ -55,7 +55,7 @@
 }
 
 .ta-0 { --ta-accent: var(--Primary400); --ta-accent-soft: var(--Primary100); }
-.ta-1 { --ta-accent: var(--Secondary300); --ta-accent-soft: var(--Secondary100); }
+.ta-1 { --ta-accent: var(--Secondary300); --ta-accent-soft: var(--Primary100); }
 .ta-2 { --ta-accent: var(--statusB200); --ta-accent-soft: var(--statusB100); }
 .ta-3 { --ta-accent: var(--statusY200); --ta-accent-soft: var(--statusY100); }
 .ta-4 { --ta-accent: var(--statusG200); --ta-accent-soft: var(--statusG100); }

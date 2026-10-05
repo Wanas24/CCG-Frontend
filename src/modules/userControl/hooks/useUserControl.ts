@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { useDebounce } from "use-debounce";
 import { queryClient } from "@/lib/queryClient";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
@@ -16,7 +17,6 @@ import { ApplicationRoleVisibility } from "../types";
 import type { ConfirmState, UserControlDrawerState } from "../types";
 import { isForbiddenError, readApiMessage } from "../utils/readApiMessage";
 import { personName, setsEqual, withUserRole } from "../utils/userControlDisplay";
-import { useDebounce } from "use-debounce";
 import { useUserControlInvite } from "./useUserControlInvite";
 import { useUserControlRoleForm } from "./useUserControlRoleForm";
 
@@ -50,6 +50,7 @@ export const useUserControl = () => {
     projectSearch: debouncedProjectSearch,
     drawerPermissionSearch: debouncedDrawerPermissionSearch,
   });
+  const { queryErrors, ...listData } = data;
 
   const { hasPermission, isAdmin, isManager, isLoading: permissionsLoading } =
     usePermissions();
@@ -90,13 +91,13 @@ export const useUserControl = () => {
   }, [data.rolePermsKey]);
 
   useEffect(() => {
-    data.queryErrors.forEach(({ key, error, updatedAt }) => {
+    queryErrors.forEach(({ key, error, updatedAt }) => {
       if (!error || isForbiddenError(error) || updatedAt === 0) return;
       if (reportedErrors.current[key] === updatedAt) return;
       reportedErrors.current[key] = updatedAt;
       toast.error(readApiMessage(error, t("common.unexpectedError")));
     });
-  }, [data.queryErrors, t]);
+  }, [queryErrors, t]);
 
   const reload = async () => {
     await Promise.all([
@@ -117,6 +118,16 @@ export const useUserControl = () => {
     });
   };
 
+  const openCreatedRoleDrawer = (roleId: string) => {
+    setDrawer({
+      roleId,
+      tab: "perms",
+      query: "",
+      draft: new Set(),
+      touched: false,
+    });
+  };
+
   const { cleanupRole, ...inviteModel } = useUserControlInvite({
     data: {
       isInitialLoading: data.isInitialLoading,
@@ -129,7 +140,6 @@ export const useUserControl = () => {
       projectCatalog: data.projectCatalog,
     },
     rolePerms,
-    canRecruit,
     canSetUserRoles,
     canSetProjects,
     reload,
@@ -140,7 +150,7 @@ export const useUserControl = () => {
     canCreateRole,
     canEditRole,
     reload,
-    onCreated: openDrawer,
+    onCreated: openCreatedRoleDrawer,
   });
 
   const drawerDraft = useMemo(() => {
@@ -401,7 +411,7 @@ export const useUserControl = () => {
     unassignMutation.isPending;
 
   return {
-    ...data,
+    ...listData,
     userRoles,
     rolePerms,
     reload,
