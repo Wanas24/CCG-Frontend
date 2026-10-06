@@ -2,7 +2,7 @@ import type { TFunction } from "i18next";
 import { GitBranch, Home, Settings, ShieldCheck, Users } from "lucide-react";
 import { AI_ROUTES } from "@/modules/ai/routes/paths";
 import { APPROVAL_ROUTES } from "@/modules/approval/routes/paths";
-import { approvalAccessPermissions } from "@/modules/approval/utils/approvalAccess";
+import { approvalMenuPermissions } from "@/modules/approval/utils/approvalAccess";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { USER_CONTROL_ROUTES } from "@/modules/userControl/routes/paths";
 import { userControlAccessPermissions } from "@/modules/userControl/utils/userControlAccess";
@@ -40,7 +40,7 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
         label: t("approval.navLabel"),
         path: APPROVAL_ROUTES.approval,
         icon: <GitBranch size={18} />,
-        permissions: [...approvalAccessPermissions],
+        permissions: [...approvalMenuPermissions],
       },
     ],
   },

@@ -46,6 +46,7 @@ const approval = {
     inactive: "غير نشط",
     edit: "تعديل",
     copy: "نسخ",
+    copyName: "{{name}} (نسخة)",
     deactivate: "إلغاء التفعيل",
     reactivate: "إعادة التفعيل",
     lockedEdit: "مقفل: أنهِ الطلبات المعلّقة أولاً",

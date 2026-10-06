@@ -127,7 +127,7 @@ const NotificationsPanel = ({
         ) : null}
 
         {!isLoading && !isError && notifications.length > 0 ? (
-          <ul className="m-0 flex list-none flex-col gap-1 p-0">
+          <ul className="m-0 flex list-none flex-col divide-y divide-(--Grey300) p-0">
             {notifications.map((notification) => (
               <li key={notification.id}>
                 <NotificationListItem

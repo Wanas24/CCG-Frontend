@@ -14,21 +14,17 @@ export const approvalReservedPermissions = [
   PermissionsList.ApprovalWorkflow.GetEntityRequests,
 ] as const;
 
+export const approvalMenuPermissions = [
+  PermissionsList.ApprovalWorkflow.Get,
+] as const;
+
 export const approvalAccessPermissions = [
-  ...approvalStudioPermissions,
+  ...approvalMenuPermissions,
 ] as const;
 
 type ApprovalAccessInput = {
-  isAdmin: boolean;
-  isManager: boolean;
   granted: ReadonlySet<string>;
 };
 
-export const canAccessApproval = ({
-  isAdmin,
-  isManager,
-  granted,
-}: ApprovalAccessInput) =>
-  isAdmin ||
-  isManager ||
+export const canAccessApproval = ({ granted }: ApprovalAccessInput) =>
   granted.has(PermissionsList.ApprovalWorkflow.Get);

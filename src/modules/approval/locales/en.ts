@@ -45,6 +45,7 @@ const approval = {
     inactive: "Inactive",
     edit: "Edit",
     copy: "Duplicate",
+    copyName: "{{name}} (copy)",
     deactivate: "Deactivate",
     reactivate: "Reactivate",
     lockedEdit: "Locked: resolve pending requests first",
