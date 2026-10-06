@@ -37,9 +37,9 @@ const approval = {
     delete: "حذف",
     all: "كل الإجراءات",
     anyChange: "أي تغيير",
-    createsIt: "ينشئه",
-    updatesIt: "يحدّثه",
-    deletesIt: "يحذفه",
+    createsIt: "إنشاء",
+    updatesIt: "تحديث",
+    deletesIt: "حذف",
   },
   workflow: {
     active: "نشط",
