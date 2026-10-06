@@ -63,7 +63,9 @@ const user = {
     },
     "markAsRead": "تعليم كمقروء",
     "markAsUnread": "تعليم كغير مقروء",
-    "markAllAsRead": "تعليم الكل كمقروء"
+    "markAllAsRead": "تعليم الكل كمقروء",
+    "expandDetails": "عرض التفاصيل",
+    "collapseDetails": "إخفاء التفاصيل"
   }
 } as const;
 

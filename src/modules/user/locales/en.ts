@@ -63,7 +63,9 @@ const user = {
     },
     "markAsRead": "Mark as read",
     "markAsUnread": "Mark as unread",
-    "markAllAsRead": "Mark all as read"
+    "markAllAsRead": "Mark all as read",
+    "expandDetails": "Show details",
+    "collapseDetails": "Hide details"
   }
 } as const;
 
