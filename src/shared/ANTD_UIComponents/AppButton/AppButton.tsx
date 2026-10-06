@@ -26,7 +26,7 @@ const variantConfig: Record<
   primary: {
     color: "primary",
     variant: "solid",
-    className: "cursor-pointer! h-11 w-full sm:w-fit",
+    className: "cursor-pointer! h-11 w-full text-white! sm:w-fit",
   },
   secondary: {
     color: "default",
