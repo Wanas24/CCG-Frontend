@@ -32,6 +32,7 @@ const shared = {
     "maxLength50": "Must be at most 50 characters",
     "maxLength200": "Must be at most 200 characters",
     "maxLength500": "Must be at most 500 characters",
+    "maxLength1000": "Must be at most 1000 characters",
     "phoneInvalid": "Enter a valid Egyptian mobile number (e.g. +20 10XXXXXXXX)",
     "nationalIdLength": "National ID must be exactly 14 characters",
     "dateOfBirthPast": "Date of birth must be a past date",
