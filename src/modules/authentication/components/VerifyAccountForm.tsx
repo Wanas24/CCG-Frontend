@@ -1,6 +1,12 @@
 import { Check, CircleDashed, Mail, Phone } from "lucide-react";
+import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AppButton, AppTag } from "@/shared/ANTD_UIComponents";
+import {
+  AppButton,
+  AppPhoneInput,
+  AppTag,
+} from "@/shared/ANTD_UIComponents";
+import { useTranslatedFormError } from "@/shared/validation";
 import { useVerifyAccountManager } from "../hooks/useVerifyAccountManager";
 
 const StepIcon = ({
@@ -23,10 +29,20 @@ const StepIcon = ({
 
 const VerifyAccountForm = () => {
   const { t } = useTranslation();
+  const translateError = useTranslatedFormError();
   const {
     email,
+    phoneNumber,
+    isPhoneLoading,
     emailConfirmed,
     phoneConfirmed,
+    isEditingPhone,
+    phoneControl,
+    canSubmitPhoneChange,
+    startEditPhone,
+    cancelEditPhone,
+    handlePhoneSubmit,
+    onSubmitPhoneChange,
     onResendEmail,
     onSendPhoneVerification,
     goHome,
@@ -34,8 +50,10 @@ const VerifyAccountForm = () => {
     isLoggingOut,
     isSendingEmail,
     isSendingPhone,
+    isChangingPhone,
     emailMessage,
     phoneMessage,
+    hasSentPhoneCode,
   } = useVerifyAccountManager();
 
   const completedCount = Number(emailConfirmed) + Number(phoneConfirmed);
@@ -126,18 +144,100 @@ const VerifyAccountForm = () => {
             </div>
 
             {!phoneConfirmed && (
-              <AppButton
-                variant="primary"
-                loading={isSendingPhone}
-                onClick={onSendPhoneVerification}
-              >
-                {t("auth.verifyAccount.sendWhatsApp")}
-              </AppButton>
+              <>
+                {isEditingPhone ? (
+                  <form
+                    className="flex flex-col gap-3"
+                    onSubmit={handlePhoneSubmit(onSubmitPhoneChange)}
+                    noValidate
+                  >
+                    <Controller
+                      name="phoneNumber"
+                      control={phoneControl}
+                      render={({ field, fieldState }) => (
+                        <AppPhoneInput
+                          value={field.value}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          inputProps={{ autoComplete: "tel" }}
+                          label={t("auth.verifyAccount.phoneNumberLabel")}
+                          placeholder={t(
+                            "auth.verifyAccount.phoneNumberPlaceholder",
+                          )}
+                          required
+                          errorMsg={translateError(fieldState.error?.message)}
+                        />
+                      )}
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      <AppButton
+                        htmlType="submit"
+                        variant="primary"
+                        loading={isChangingPhone || isSendingPhone}
+                        disabled={!canSubmitPhoneChange}
+                      >
+                        {t("auth.verifyAccount.saveNumber")}
+                      </AppButton>
+                      <AppButton
+                        variant="secondary"
+                        htmlType="button"
+                        disabled={isChangingPhone}
+                        onClick={cancelEditPhone}
+                      >
+                        {t("auth.verifyAccount.cancelChangeNumber")}
+                      </AppButton>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="flex flex-col gap-2 rounded-xl border border-(--Grey300) bg-(--Grey100) px-3 py-3">
+                    <p className="m-0 text-sm text-(--Grey600)">
+                      {hasSentPhoneCode
+                        ? t("auth.verifyAccount.phoneSentTo")
+                        : t("auth.verifyAccount.phoneWillSendTo")}
+                    </p>
+                    {isPhoneLoading ? (
+                      <p className="m-0 text-sm text-(--Grey500)">
+                        {t("common.loading")}
+                      </p>
+                    ) : phoneNumber ? (
+                      <p className="m-0 text-base font-semibold tracking-wide text-(--app-text)">
+                        {phoneNumber}
+                      </p>
+                    ) : (
+                      <p className="m-0 text-sm text-(--Grey500)">
+                        {t("auth.verifyAccount.phoneMissing")}
+                      </p>
+                    )}
+                    <AppButton
+                      variant="tertiary"
+                      className="h-auto! w-fit! px-0!"
+                      onClick={startEditPhone}
+                    >
+                      {t("auth.verifyAccount.changeNumber")}
+                    </AppButton>
+                  </div>
+                )}
+
+                {!isEditingPhone && (
+                  <AppButton
+                    variant="primary"
+                    loading={isSendingPhone}
+                    onClick={onSendPhoneVerification}
+                  >
+                    {t("auth.verifyAccount.sendWhatsApp")}
+                  </AppButton>
+                )}
+              </>
             )}
 
-            {phoneMessage && (
+            {phoneConfirmed && phoneNumber ? (
+              <p className="m-0 text-sm text-(--Grey600)">{phoneNumber}</p>
+            ) : null}
+
+            {phoneMessage && !isEditingPhone ? (
               <p className="text-sm text-(--statusG200)">{phoneMessage}</p>
-            )}
+            ) : null}
           </div>
         </li>
       </ol>
