@@ -11,9 +11,12 @@ export type AppButtonVariant =
 
 export type AppButtonIconPlacement = "start" | "end";
 
+export type AppButtonPadding = "default" | "none";
+
 export interface AppButtonProps extends Omit<ButtonProps, "variant" | "color"> {
   variant?: AppButtonVariant;
   iconPlacement?: AppButtonIconPlacement;
+  padding?: AppButtonPadding;
 }
 
 const variantConfig: Record<
@@ -39,19 +42,25 @@ const variantConfig: Record<
   default: {
     color: "default",
     variant: "text",
-    className: "cursor-pointer! hover:bg-transparent! px-2!",
+    className: "cursor-pointer! hover:bg-transparent!",
   },
   delete: {
     color: "default",
     variant: "text",
     className:
-      "cursor-pointer! w-fit shrink-0 hover:bg-(--statusR100)! text-(--statusR200)! px-2!",
+      "cursor-pointer! w-fit shrink-0 hover:bg-(--statusR100)! text-(--statusR200)!",
   },
+};
+
+const variantPaddingClass: Partial<Record<AppButtonVariant, string>> = {
+  default: "px-2!",
+  delete: "px-2!",
 };
 
 export const AppButton = ({
   variant = "primary",
   iconPlacement = "start",
+  padding = "default",
   className,
   children,
   icon,
@@ -61,6 +70,8 @@ export const AppButton = ({
   const config = variantConfig[variant];
   const deleteIcon = <Trash2 size={20} />;
   const resolvedIcon = variant === "delete" ? (icon ?? deleteIcon) : icon;
+  const paddingClass =
+    padding === "none" ? undefined : variantPaddingClass[variant];
 
   return (
     <Button
@@ -70,7 +81,12 @@ export const AppButton = ({
       color={config.color}
       variant={config.variant}
       iconPlacement={iconPlacement}
-      className={clsx(config.className, block && "w-full!", className)}
+      className={clsx(
+        config.className,
+        paddingClass,
+        block && "w-full!",
+        className,
+      )}
     >
       {children}
     </Button>

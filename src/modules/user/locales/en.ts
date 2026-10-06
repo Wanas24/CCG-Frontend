@@ -1,6 +1,7 @@
 const user = {
   "profile": {
     "navLabel": "Profile",
+    "menuAriaLabel": "Account menu",
     "title": "Profile",
     "loadError": "Unable to load your profile. Please try again.",
     "imageSection": "Profile image",
