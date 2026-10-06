@@ -95,6 +95,28 @@ const approval = {
     mustApprove: "must approve personally",
     canSkip: "Can skip earlier levels",
     plainWords: "In plain words",
+    plainWordsEmpty: "No approval levels configured yet.",
+    plainWordsEntityFallback: "the selected entity",
+    plainWordsIntroCreate:
+      "When {{entity}} is created, the change waits for:",
+    plainWordsIntroUpdate:
+      "When {{entity}} is updated, the change waits for:",
+    plainWordsIntroDelete:
+      "When {{entity}} is deleted, the change waits for:",
+    plainWordsIntroAll:
+      "When {{entity}} is created, updated or deleted, the change waits for:",
+    plainWordsLevel: "{{index}}. {{level}}:",
+    plainWordsLevelNamed: "{{index}}. {{level}} ({{name}}):",
+    plainWordsNoApprovers: "no approvers yet",
+    plainWordsRoleAnyOne: "any member of {{role}}",
+    plainWordsRoleAny: "any {{count}} from {{role}}",
+    plainWordsRoleAll: "everyone in {{role}}",
+    plainWordsPerson: "{{name}} must approve personally",
+    plainWordsUnselectedRole: "a role (not chosen yet)",
+    plainWordsUnselectedPerson: "a person (not chosen yet)",
+    plainWordsCanSkip: "(can skip earlier levels)",
+    plainWordsAnd: " and ",
+    plainWordsDecline: "If anyone declines, the change is rejected.",
     save: "Save workflow",
     cancel: "Cancel",
     paletteTitle: "Approvers",
