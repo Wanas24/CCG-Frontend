@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
@@ -70,29 +70,32 @@ export const createEmptyApprovalLevel = (): ApprovalBuilderLevelDraft => ({
 
 const workflowToDraft = (
   workflow: TApprovalWorkflow,
-  asCopy = false,
-): ApprovalBuilderDraft => ({
-  id: asCopy ? null : workflow.id,
-  name: asCopy ? `${workflow.name} (copy)` : workflow.name,
-  entityType: workflow.entityType,
-  actionScope: workflow.actionScope,
-  isActive: asCopy ? true : workflow.isActive,
-  showErrors: false,
-  levels: [...workflow.levels]
-    .sort((a, b) => a.levelOrder - b.levelOrder)
-    .map((level) => ({
-      key: newKey(),
-      name: level.name,
-      groups: level.groups.map((group) => ({
+  options?: { copyName?: string },
+): ApprovalBuilderDraft => {
+  const asCopy = Boolean(options?.copyName);
+  return {
+    id: asCopy ? null : workflow.id,
+    name: options?.copyName ?? workflow.name,
+    entityType: workflow.entityType,
+    actionScope: workflow.actionScope,
+    isActive: asCopy ? true : workflow.isActive,
+    showErrors: false,
+    levels: [...workflow.levels]
+      .sort((a, b) => a.levelOrder - b.levelOrder)
+      .map((level) => ({
         key: newKey(),
-        approverType: group.approverType,
-        approverKey: group.approverKey,
-        requirementMode: group.requirementMode,
-        minApprovals: group.minApprovals,
-        canSkipLowerLevels: group.canSkipLowerLevels,
+        name: level.name,
+        groups: level.groups.map((group) => ({
+          key: newKey(),
+          approverType: group.approverType,
+          approverKey: group.approverKey,
+          requirementMode: group.requirementMode,
+          minApprovals: group.minApprovals,
+          canSkipLowerLevels: group.canSkipLowerLevels,
+        })),
       })),
-    })),
-});
+  };
+};
 
 const blankDraft = (entityType = ""): ApprovalBuilderDraft => ({
   id: null,
@@ -104,15 +107,23 @@ const blankDraft = (entityType = ""): ApprovalBuilderDraft => ({
   levels: [createEmptyApprovalLevel()],
 });
 
+const drainInfinitePages = (query: {
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => Promise<unknown>;
+}) => {
+  if (query.hasNextPage && !query.isFetchingNextPage) {
+    void query.fetchNextPage();
+  }
+};
+
 export const useApprovalStudio = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { hasPermission, isAdmin, isManager, isLoading: permissionsLoading } =
-    usePermissions();
+  const { hasPermission, isLoading: permissionsLoading } = usePermissions();
 
   const can = (permission: string) =>
-    !permissionsLoading &&
-    (isAdmin || isManager || hasPermission(permission));
+    !permissionsLoading && hasPermission(permission);
 
   const canGet = can(PermissionsList.ApprovalWorkflow.Get);
   const canCreate = can(PermissionsList.ApprovalWorkflow.Create);
@@ -154,6 +165,64 @@ export const useApprovalStudio = () => {
   const deactivateMutation = useDeactivateApprovalWorkflow();
   const decideMutation = useForceDecideApprovalRequest();
 
+  const {
+    hasNextPage: pendingHasNextPage,
+    isFetchingNextPage: pendingIsFetchingNextPage,
+    fetchNextPage: fetchNextPendingPage,
+  } = pendingQuery;
+  const {
+    hasNextPage: employeesHasNextPage,
+    isFetchingNextPage: employeesIsFetchingNextPage,
+    fetchNextPage: fetchNextEmployeesPage,
+  } = employeesQuery;
+  const {
+    hasNextPage: rolesHasNextPage,
+    isFetchingNextPage: rolesIsFetchingNextPage,
+    fetchNextPage: fetchNextRolesPage,
+  } = rolesQuery;
+
+  useEffect(() => {
+    if (!canGetPending) return;
+    drainInfinitePages({
+      hasNextPage: Boolean(pendingHasNextPage),
+      isFetchingNextPage: pendingIsFetchingNextPage,
+      fetchNextPage: fetchNextPendingPage,
+    });
+  }, [
+    canGetPending,
+    pendingHasNextPage,
+    pendingIsFetchingNextPage,
+    fetchNextPendingPage,
+  ]);
+
+  useEffect(() => {
+    if (!canGetEmployees) return;
+    drainInfinitePages({
+      hasNextPage: Boolean(employeesHasNextPage),
+      isFetchingNextPage: employeesIsFetchingNextPage,
+      fetchNextPage: fetchNextEmployeesPage,
+    });
+  }, [
+    canGetEmployees,
+    employeesHasNextPage,
+    employeesIsFetchingNextPage,
+    fetchNextEmployeesPage,
+  ]);
+
+  useEffect(() => {
+    if (!canGetRoles) return;
+    drainInfinitePages({
+      hasNextPage: Boolean(rolesHasNextPage),
+      isFetchingNextPage: rolesIsFetchingNextPage,
+      fetchNextPage: fetchNextRolesPage,
+    });
+  }, [
+    canGetRoles,
+    rolesHasNextPage,
+    rolesIsFetchingNextPage,
+    fetchNextRolesPage,
+  ]);
+
   const entityTypes = useMemo(
     () =>
       entityTypesQuery.data?.isSuccess &&
@@ -173,13 +242,11 @@ export const useApprovalStudio = () => {
 
   const pending = useMemo(() => {
     if (!canGetPending) return null;
-    if (
-      pendingQuery.data?.isSuccess &&
-      pendingQuery.data.data?.data
-    ) {
-      return pendingQuery.data.data.data;
-    }
-    return [];
+    return (
+      pendingQuery.data?.pages.flatMap((page) =>
+        page.isSuccess && page.data?.data ? page.data.data : [],
+      ) ?? []
+    );
   }, [canGetPending, pendingQuery.data]);
 
   const employees = useMemo(
@@ -313,7 +380,11 @@ export const useApprovalStudio = () => {
     if (!canCreate) return;
     const workflow = workflows.find((item) => item.id === workflowId);
     if (!workflow) return;
-    openBuilder(workflowToDraft(workflow, true));
+    openBuilder(
+      workflowToDraft(workflow, {
+        copyName: t("approval.workflow.copyName", { name: workflow.name }),
+      }),
+    );
   };
 
   const draftToCommand = (
@@ -384,13 +455,20 @@ export const useApprovalStudio = () => {
       return false;
     }
     const body = draftToCommand(builder);
-    if (builder.id) {
-      await updateMutation.mutateAsync({ id: builder.id, body });
-    } else {
-      await createMutation.mutateAsync(body);
+    try {
+      const response = builder.id
+        ? await updateMutation.mutateAsync({ id: builder.id, body })
+        : await createMutation.mutateAsync(body);
+
+      if (!response.isSuccess) {
+        return false;
+      }
+
+      closeBuilder();
+      return true;
+    } catch {
+      return false;
     }
-    closeBuilder();
-    return true;
   };
 
   const requestsForOpen =
@@ -435,13 +513,17 @@ export const useApprovalStudio = () => {
     isLoading:
       entityTypesQuery.isPending ||
       workflowsQuery.isPending ||
-      (canGetPending && pendingQuery.isPending),
+      (canGetPending &&
+        (pendingQuery.isPending ||
+          pendingQuery.hasNextPage ||
+          pendingQuery.isFetchingNextPage)),
     isError:
       entityTypesQuery.isError ||
       workflowsQuery.isError ||
       (entityTypesQuery.data !== undefined &&
         !entityTypesQuery.data.isSuccess) ||
-      (workflowsQuery.data !== undefined && !workflowsQuery.data.isSuccess),
+      (workflowsQuery.data !== undefined && !workflowsQuery.data.isSuccess) ||
+      (canGetPending && pendingQuery.isError),
     isSaving:
       createMutation.isPending ||
       updateMutation.isPending ||
@@ -495,16 +577,32 @@ export const useApprovalStudio = () => {
     createEmptyApprovalLevel,
     requestsForOpen,
     decide: async (comment?: string) => {
-      if (!decideState || !canForceDecide) return;
-      for (const requestId of decideState.requestIds) {
-        await decideMutation.mutateAsync({
-          requestId,
-          decision: decideState.decision,
-          comment,
-        });
+      if (!decideState || !canForceDecide) return false;
+
+      const queue = [...decideState.requestIds];
+      let nextIndex = 0;
+
+      try {
+        for (; nextIndex < queue.length; nextIndex += 1) {
+          const response = await decideMutation.mutateAsync({
+            requestId: queue[nextIndex],
+            decision: decideState.decision,
+            comment,
+          });
+
+          if (!response.isSuccess) {
+            break;
+          }
+        }
+      } catch {
+        // Stop at the first transport/API failure.
       }
+
+      const remaining = queue.slice(nextIndex);
+      setSelectedRequestIds(new Set(remaining));
       setDecideState(null);
-      setSelectedRequestIds(new Set());
+      await queryClient.invalidateQueries({ queryKey: approvalQueryRootKey });
+      return remaining.length === 0;
     },
     reload: async () => {
       await queryClient.invalidateQueries({ queryKey: approvalQueryRootKey });

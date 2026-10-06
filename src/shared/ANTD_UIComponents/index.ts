@@ -4,6 +4,7 @@ export {
   type AppButtonProps,
   type AppButtonVariant,
   type AppButtonIconPlacement,
+  type AppButtonPadding,
 } from "./AppButton/AppButton";
 export { AppInput, type AppInputProps } from "./AppInput";
 export {

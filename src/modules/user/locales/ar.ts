@@ -1,6 +1,7 @@
 const user = {
   "profile": {
     "navLabel": "الملف الشخصي",
+    "menuAriaLabel": "قائمة الحساب",
     "title": "الملف الشخصي",
     "loadError": "تعذر تحميل ملفك الشخصي. يرجى المحاولة مرة أخرى.",
     "imageSection": "صورة الملف الشخصي",
@@ -63,7 +64,9 @@ const user = {
     },
     "markAsRead": "تعليم كمقروء",
     "markAsUnread": "تعليم كغير مقروء",
-    "markAllAsRead": "تعليم الكل كمقروء"
+    "markAllAsRead": "تعليم الكل كمقروء",
+    "expandDetails": "عرض التفاصيل",
+    "collapseDetails": "إخفاء التفاصيل"
   }
 } as const;
 

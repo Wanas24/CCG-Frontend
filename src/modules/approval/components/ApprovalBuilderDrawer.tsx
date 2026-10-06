@@ -22,6 +22,7 @@ import type {
   ApprovalStudioApi,
 } from "../hooks/useApprovalStudio";
 import ApprovalHintIcon from "./ApprovalHintIcon";
+import ApprovalPlainWords from "./ApprovalPlainWords";
 
 type Props = {
   studio: ApprovalStudioApi;
@@ -507,6 +508,8 @@ const ApprovalBuilderDrawer = ({ studio }: Props) => {
               })}
             </AppButton>
           </section>
+
+          <ApprovalPlainWords studio={studio} />
         </div>
       ) : null}
     </AppDrawer>

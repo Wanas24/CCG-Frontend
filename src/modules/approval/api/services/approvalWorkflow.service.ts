@@ -35,7 +35,7 @@ export const approvalWorkflowService = {
       {
         queryParams: {
           page: params?.page ?? 1,
-          pageSize: params?.pageSize ?? 1000,
+          pageSize: params?.pageSize ?? 50,
           sortDescending: params?.sortDescending ?? true,
         },
       },

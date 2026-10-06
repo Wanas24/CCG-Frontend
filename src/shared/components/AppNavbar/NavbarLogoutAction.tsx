@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { LogOutIcon } from "lucide-react";
 import clsx from "clsx";
 import { AppButton } from "@/shared/ANTD_UIComponents";
-import { navbarIconActionClassName } from "./navbarIconActionClassName";
 
 type Props = {
   logout: () => void | Promise<void>;
@@ -32,7 +31,7 @@ const NavbarLogoutAction = ({
       aria-label={label}
       title={label}
       className={clsx(
-        showLabel ? "w-full !justify-start" : navbarIconActionClassName,
+        showLabel && "w-full! justify-start! hover:bg-(--Grey100)!",
       )}
     >
       {showLabel ? label : null}

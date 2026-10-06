@@ -52,7 +52,7 @@ export type ThemeColorTokens = {
 
 const sharedBrand = {
   Primary300: "#6d7cff",
-  Primary400: "#6d7cff",
+  Primary400: "#063264",
 
   Secondary300: "#a26bff",
 

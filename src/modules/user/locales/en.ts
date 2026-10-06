@@ -1,6 +1,7 @@
 const user = {
   "profile": {
     "navLabel": "Profile",
+    "menuAriaLabel": "Account menu",
     "title": "Profile",
     "loadError": "Unable to load your profile. Please try again.",
     "imageSection": "Profile image",
@@ -63,7 +64,9 @@ const user = {
     },
     "markAsRead": "Mark as read",
     "markAsUnread": "Mark as unread",
-    "markAllAsRead": "Mark all as read"
+    "markAllAsRead": "Mark all as read",
+    "expandDetails": "Show details",
+    "collapseDetails": "Hide details"
   }
 } as const;
 

@@ -16,7 +16,7 @@ const MobileNavbarMenu = ({ logout, isPending, onNavigate }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <nav className="flex flex-col items-start  gap-3" aria-label={t("common.menu")}>
+    <nav className="flex flex-col items-start gap-3" aria-label={t("common.menu")}>
       <CompanySwitcher />
       <NotificationsBell showLabel />
       <NavbarProfileAction showLabel onNavigate={onNavigate} />

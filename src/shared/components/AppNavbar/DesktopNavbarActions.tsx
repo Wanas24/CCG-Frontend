@@ -2,8 +2,7 @@ import { AppLocaleSwitcher } from "@/i18n";
 import CompanySwitcher from "@/modules/company/components/CompanySwitcher";
 import NotificationsBell from "@/modules/user/components/Notifications/NotificationsBell";
 import AppThemeToggle from "@/shared/components/AppThemeToggle";
-import NavbarLogoutAction from "./NavbarLogoutAction";
-import NavbarProfileAction from "./NavbarProfileAction";
+import NavbarUserMenu from "./NavbarUserMenu";
 
 type Props = {
   logout: () => void | Promise<void>;
@@ -17,8 +16,7 @@ const DesktopNavbarActions = ({ logout, isPending }: Props) => {
       <NotificationsBell />
       <AppThemeToggle />
       <AppLocaleSwitcher />
-      <NavbarProfileAction />
-      <NavbarLogoutAction logout={logout} isPending={isPending} />
+      <NavbarUserMenu logout={logout} isPending={isPending} />
     </div>
   );
 };
