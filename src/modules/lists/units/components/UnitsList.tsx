@@ -84,8 +84,8 @@ const UnitsList = ({
         ) : null}
       </div>
 
-      <AppFormSection className="gap-4!">
-        <div className="flex flex-wrap items-center gap-2">
+     
+        <div className="flex flex-wrap items-center gap-2 mb-3">
           <h2 className="m-0 text-sm font-semibold text-(--app-text)">
             {t("lists.units.title")}
           </h2>
@@ -173,7 +173,7 @@ const UnitsList = ({
             ) : null}
           </>
         )}
-      </AppFormSection>
+      
 
       {mode === "manage" ? (
         <>

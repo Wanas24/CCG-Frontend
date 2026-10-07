@@ -28,7 +28,7 @@ const ItemCatalogTypeLegend = ({
     .filter((segment) => segment.count > 0);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 mb-3">
       <p className="m-0 text-xs font-medium text-(--Grey500)">
         {t("lists.itemCatalog.mixTitle")}
       </p>

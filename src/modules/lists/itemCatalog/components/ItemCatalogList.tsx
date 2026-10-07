@@ -244,8 +244,8 @@ const ItemCatalogList = ({ className }: Props) => {
         ) : null}
       </div>
 
-      <AppFormSection className="min-w-0 gap-4!">
-        <div className="flex flex-wrap items-center gap-2">
+      
+        <div className="flex flex-wrap items-center gap-2 mb-2">
           <h2 className="m-0 text-sm font-semibold text-(--app-text)">
             {t("lists.itemCatalog.title")}
           </h2>
@@ -264,7 +264,7 @@ const ItemCatalogList = ({ className }: Props) => {
         </div>
 
         {renderResults()}
-      </AppFormSection>
+      
 
       <ItemCategoryDrawer
         open={manager.drawerOpen}
@@ -282,7 +282,7 @@ const ItemCatalogList = ({ className }: Props) => {
         canDeleteFile={manager.canDeleteFile}
         isSaving={manager.isSaving}
         isUploading={manager.isUploading}
-        isDownloading={manager.isDownloading}
+        fileAction={manager.fileAction}
         onSubmit={manager.submitItem}
         onClose={manager.closeDrawer}
         onDelete={() => {
@@ -292,6 +292,9 @@ const ItemCatalogList = ({ className }: Props) => {
         }}
         onUpload={(files) => {
           void manager.uploadFiles(files);
+        }}
+        onView={(file) => {
+          void manager.viewFile(file);
         }}
         onDownload={(file) => {
           void manager.downloadFile(file);

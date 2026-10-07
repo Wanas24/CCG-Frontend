@@ -21,12 +21,30 @@ import {
 } from "../schemas/itemCategoryFormSchema";
 import type { TItemCategory, TItemCategoryFile } from "../types/itemCategory";
 
+export type ItemCategoryFileAction = {
+  fileId: number;
+  kind: "view" | "download";
+};
+
 const emptyValues: ItemCategoryFormValues = {
   name: "",
   type: 0,
   unitId: 0,
   description: "",
   notes: "",
+};
+
+const triggerAnchorDownload = (url: string, fileName?: string) => {
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.target = "_blank";
+  anchor.rel = "noopener";
+  if (fileName) {
+    anchor.download = fileName;
+  }
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
 };
 
 export const useItemCatalogManager = () => {
@@ -54,6 +72,9 @@ export const useItemCatalogManager = () => {
   const [createdItemId, setCreatedItemId] = useState<number | null>(null);
   const [deletingItem, setDeletingItem] = useState<TItemCategory | null>(null);
   const [deletingFile, setDeletingFile] = useState<TItemCategoryFile | null>(
+    null,
+  );
+  const [fileAction, setFileAction] = useState<ItemCategoryFileAction | null>(
     null,
   );
 
@@ -174,11 +195,47 @@ export const useItemCatalogManager = () => {
     await invalidateItemCategoryFiles(activeItemId);
   };
 
-  const downloadFile = async (file: TItemCategoryFile) => {
-    if (!canDownload) return;
+  const resolveFileUrl = async (file: TItemCategoryFile) => {
+    if (file.url?.trim()) {
+      return {
+        url: file.url.trim(),
+        fileName: file.fileName,
+      };
+    }
+    if (!canDownload) return null;
     const response = await fileUrlMutation.mutateAsync(file.fileId);
-    if (!response.isSuccess || !response.data?.url) return;
-    window.open(response.data.url, "_blank", "noopener,noreferrer");
+    if (!response.isSuccess || !response.data?.url) return null;
+    return {
+      url: response.data.url,
+      fileName: response.data.fileName || file.fileName,
+    };
+  };
+
+  const viewFile = async (file: TItemCategoryFile) => {
+    if (fileAction) return;
+    setFileAction({ fileId: file.fileId, kind: "view" });
+    try {
+      const resolved = await resolveFileUrl(file);
+      if (!resolved) return;
+      window.open(resolved.url, "_blank", "noopener,noreferrer");
+    } finally {
+      setFileAction(null);
+    }
+  };
+
+  const downloadFile = async (file: TItemCategoryFile) => {
+    if (!canDownload || fileAction) return;
+    setFileAction({ fileId: file.fileId, kind: "download" });
+    try {
+      const resolved = await resolveFileUrl(file);
+      if (!resolved?.url) {
+        toast.error(t("lists.itemCatalog.downloadError"));
+        return;
+      }
+      triggerAnchorDownload(resolved.url, resolved.fileName);
+    } finally {
+      setFileAction(null);
+    }
   };
 
   return {
@@ -197,11 +254,11 @@ export const useItemCatalogManager = () => {
     activeItemId,
     deletingItem,
     deletingFile,
+    fileAction,
     isSaving: createMutation.isPending || updateMutation.isPending,
     isDeleting: deleteMutation.isPending,
     isUploading: uploadMutation.isPending,
     isDeletingFile: deleteFileMutation.isPending,
-    isDownloading: fileUrlMutation.isPending,
     openCreate,
     openEdit,
     closeDrawer,
@@ -213,6 +270,7 @@ export const useItemCatalogManager = () => {
     openDeleteFile,
     closeDeleteFile,
     confirmDeleteFile,
+    viewFile,
     downloadFile,
   };
 };

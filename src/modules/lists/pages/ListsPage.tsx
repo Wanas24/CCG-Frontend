@@ -17,7 +17,7 @@ const ListsPage = () => {
   const [activeTab, setActiveTab] = useState<ListsTabId>("units");
 
   return (
-    <div className="min-w-0 p-4 sm:p-6">
+    <div>
       <AppFormPage title={t("lists.title")} className="min-w-0 gap-4!">
         <AppFormSection className="min-w-0 gap-4!">
           <p className={`m-0 ${DesignTokens.typography.muted}`}>

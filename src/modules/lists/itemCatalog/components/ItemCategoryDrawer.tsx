@@ -2,7 +2,7 @@ import type { BaseSyntheticEvent } from "react";
 import { useRef } from "react";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Download, FileText } from "lucide-react";
+import { Download, Eye, FileText } from "lucide-react";
 import {
   AppButton,
   AppDrawer,
@@ -16,6 +16,7 @@ import { useTranslatedFormError } from "@/shared/validation";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { useGetItemCategoryFiles } from "../api/hooks/useGetItemCategoryFiles";
 import type { ItemCategoryFormValues } from "../schemas/itemCategoryFormSchema";
+import type { ItemCategoryFileAction } from "../hooks/useItemCatalogManager";
 import type {
   TItemCategory,
   TItemCategoryFile,
@@ -39,11 +40,12 @@ type Props = {
   canDeleteFile: boolean;
   isSaving: boolean;
   isUploading: boolean;
-  isDownloading: boolean;
+  fileAction: ItemCategoryFileAction | null;
   onSubmit: (event?: BaseSyntheticEvent) => Promise<void>;
   onClose: () => void;
   onDelete: () => void;
   onUpload: (files: File[]) => void;
+  onView: (file: TItemCategoryFile) => void;
   onDownload: (file: TItemCategoryFile) => void;
   onDeleteFile: (file: TItemCategoryFile) => void;
 };
@@ -75,11 +77,12 @@ const ItemCategoryDrawer = ({
   canDeleteFile,
   isSaving,
   isUploading,
-  isDownloading,
+  fileAction,
   onSubmit,
   onClose,
   onDelete,
   onUpload,
+  onView,
   onDownload,
   onDeleteFile,
 }: Props) => {
@@ -311,17 +314,35 @@ const ItemCategoryDrawer = ({
                       {formatFileSize(file.fileSize)}
                     </p>
                   </div>
+                  {canDownload || Boolean(file.url?.trim()) ? (
+                    <AppButton
+                      variant="default"
+                      padding="none"
+                      className="size-8! text-(--Grey600)! hover:text-(--app-text)!"
+                      loading={
+                        fileAction?.fileId === file.fileId &&
+                        fileAction.kind === "view"
+                      }
+                      disabled={Boolean(fileAction)}
+                      icon={<Eye size={16} />}
+                      aria-label={t("lists.itemCatalog.viewFile")}
+                      onClick={() => onView(file)}
+                    />
+                  ) : null}
                   {canDownload ? (
                     <AppButton
                       variant="default"
                       padding="none"
-                      className="size-8!"
-                      loading={isDownloading}
+                      className="size-8! text-(--Grey600)! hover:text-(--app-text)!"
+                      loading={
+                        fileAction?.fileId === file.fileId &&
+                        fileAction.kind === "download"
+                      }
+                      disabled={Boolean(fileAction)}
+                      icon={<Download size={16} />}
                       aria-label={t("lists.itemCatalog.download")}
                       onClick={() => onDownload(file)}
-                    >
-                      <Download size={16} />
-                    </AppButton>
+                    />
                   ) : null}
                   {canDeleteFile ? (
                     <AppButton

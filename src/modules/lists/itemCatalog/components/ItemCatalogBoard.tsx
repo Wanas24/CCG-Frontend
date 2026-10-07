@@ -106,24 +106,25 @@ const ItemCatalogBoard = ({
   }
 
   return (
-    <div
-      className="grid w-full min-w-0 gap-2 sm:gap-3"
-      style={{
-        gridTemplateColumns: `repeat(${lanes.length}, minmax(0, 1fr))`,
-      }}
-    >
-      {lanes.map(({ type, items: laneItems }) => {
-        const hue = typeHue(type.value);
+    <div className="w-full min-w-0 overflow-x-auto overscroll-x-contain pb-2 lg:overflow-x-visible lg:pb-0">
+      <div
+        className="flex w-max min-w-full gap-3 lg:grid lg:w-full"
+        style={{
+          gridTemplateColumns: `repeat(${lanes.length}, minmax(0, 1fr))`,
+        }}
+      >
+        {lanes.map(({ type, items: laneItems }) => {
+          const hue = typeHue(type.value);
 
-        return (
-          <section
-            key={type.value}
-            className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-(--Grey300) bg-(--Grey100)"
-            style={{
-              borderTopWidth: 2,
-              borderTopColor: `hsl(${hue} 75% 55%)`,
-            }}
-          >
+          return (
+            <section
+              key={type.value}
+              className="flex w-[min(16.5rem,78vw)] shrink-0 flex-col overflow-hidden rounded-2xl border border-(--Grey300) bg-(--Grey100) lg:w-auto lg:min-w-0"
+              style={{
+                borderTopWidth: 2,
+                borderTopColor: `hsl(${hue} 75% 55%)`,
+              }}
+            >
             <header className="flex items-center gap-2 p-2.5 sm:gap-2.5 sm:p-3">
               <div
                 className="flex size-7 shrink-0 items-center justify-center rounded-xl text-white sm:size-8"
@@ -173,8 +174,9 @@ const ItemCatalogBoard = ({
               ) : null}
             </div>
           </section>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
