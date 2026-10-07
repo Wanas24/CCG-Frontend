@@ -1,18 +1,57 @@
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { Controller, useForm, type Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "antd";
 import { useTranslation } from "react-i18next";
-import { AppButton, AppDialog } from "@/shared/ANTD_UIComponents";
+import { AppButton, AppDialog, AppInput } from "@/shared/ANTD_UIComponents";
 import type { ReportLayoutStudioApi } from "../hooks/useReportLayoutStudio";
+import {
+  createLayoutSaveSchema,
+  type TLayoutSaveValues,
+} from "../schemas/layoutIdentitySchema";
+import { LAYOUT_LIMITS } from "../schemas/layoutLimits";
+import { companyLayouts } from "../utils/layoutPayload";
 
 type Props = {
   studio: ReportLayoutStudioApi;
 };
 
+const SAVE_FORM_ID = "report-layout-save";
+
 const ReportLayoutDialogs = ({ studio }: Props) => {
   const { t } = useTranslation();
-  const [code, setCode] = useState(studio.saveDraft?.code ?? "");
-  const [name, setName] = useState(studio.saveDraft?.name ?? "");
-  const [isDefault, setIsDefault] = useState(studio.saveDraft?.isDefault ?? false);
+  const [blockedMessages, setBlockedMessages] = useState<string[]>([]);
+  const takenCodes = useMemo(() => {
+    const codes = new Map<string, string>();
+    companyLayouts(studio.layouts).forEach((layout) => {
+      codes.set(layout.code, layout.name);
+    });
+    return codes;
+  }, [studio.layouts]);
+  const schema = useMemo(
+    () => createLayoutSaveSchema(t, takenCodes),
+    [t, takenCodes],
+  );
+  const schemaRef = useRef(schema);
+  schemaRef.current = schema;
+  const resolver = useRef<Resolver<TLayoutSaveValues>>((values, context, options) =>
+    zodResolver(schemaRef.current)(values, context, options),
+  ).current;
+  const { control, handleSubmit, reset, setError } = useForm<TLayoutSaveValues>({
+    resolver,
+    defaultValues: {
+      code: "",
+      name: "",
+      isDefault: false,
+    },
+  });
+
+  const onSubmit = (values: TLayoutSaveValues) => {
+    const result = studio.submitSave(values);
+    if (result.fields.code) setError("code", { message: result.fields.code });
+    if (result.fields.name) setError("name", { message: result.fields.name });
+    setBlockedMessages(result.messages);
+  };
 
   return (
     <>
@@ -23,47 +62,69 @@ const ReportLayoutDialogs = ({ studio }: Props) => {
         destroyOnHidden
         afterOpenChange={(open) => {
           if (!open || !studio.saveDraft) return;
-          setCode(studio.saveDraft.code);
-          setName(studio.saveDraft.name);
-          setIsDefault(studio.saveDraft.isDefault);
+          reset(studio.saveDraft);
+          setBlockedMessages([]);
         }}
         footer={
           <div className="flex justify-end gap-2">
             <AppButton variant="secondary" onClick={studio.closeSave}>
               {t("reportLayout.save.cancel")}
             </AppButton>
-            <AppButton
-              loading={studio.isSaving}
-              onClick={() => studio.submitSave({ code, name, isDefault })}
-            >
+            <AppButton htmlType="submit" form={SAVE_FORM_ID} loading={studio.isSaving}>
               {t("reportLayout.save.submit")}
             </AppButton>
           </div>
         }
       >
-        <p className="mb-4 text-sm text-(--Grey600)">{t("reportLayout.save.hint")}</p>
-        <label className="mb-3 block text-sm font-semibold">
-          {t("reportLayout.save.code")}
-          <input
-            className="mt-1 w-full rounded-[10px] border border-(--Grey300) bg-(--Grey100) px-2.5 py-2 outline-none focus:border-(--Primary400)"
-            maxLength={100}
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
+        <form
+          id={SAVE_FORM_ID}
+          onSubmit={handleSubmit(onSubmit, () => setBlockedMessages([]))}
+        >
+          <p className="mb-4 text-sm text-(--Grey600)">{t("reportLayout.save.hint")}</p>
+          <Controller
+            name="code"
+            control={control}
+            render={({ field, fieldState }) => (
+              <AppInput
+                {...field}
+                className="mb-3"
+                label={t("reportLayout.save.code")}
+                required
+                maxLength={LAYOUT_LIMITS.code}
+                errorMsg={fieldState.error?.message}
+              />
+            )}
           />
-        </label>
-        <label className="mb-3 block text-sm font-semibold">
-          {t("reportLayout.save.name")}
-          <input
-            className="mt-1 w-full rounded-[10px] border border-(--Grey300) bg-(--Grey100) px-2.5 py-2 outline-none focus:border-(--Primary400)"
-            maxLength={250}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
+          <Controller
+            name="name"
+            control={control}
+            render={({ field, fieldState }) => (
+              <AppInput
+                {...field}
+                className="mb-3"
+                label={t("reportLayout.save.name")}
+                required
+                maxLength={LAYOUT_LIMITS.name}
+                errorMsg={fieldState.error?.message}
+              />
+            )}
           />
-        </label>
-        <label className="flex items-center gap-2 text-sm font-semibold">
-          <Switch size="small" checked={isDefault} onChange={setIsDefault} />
-          {t("reportLayout.save.makeDefault")}
-        </label>
+          <Controller
+            name="isDefault"
+            control={control}
+            render={({ field }) => (
+              <label className="flex items-center gap-2 text-sm font-semibold">
+                <Switch size="small" checked={field.value} onChange={field.onChange} />
+                {t("reportLayout.save.makeDefault")}
+              </label>
+            )}
+          />
+          {blockedMessages.map((message, index) => (
+            <p key={`${index}-${message}`} className="mt-2 text-xs text-(--statusR200)">
+              {message}
+            </p>
+          ))}
+        </form>
       </AppDialog>
 
       <AppDialog

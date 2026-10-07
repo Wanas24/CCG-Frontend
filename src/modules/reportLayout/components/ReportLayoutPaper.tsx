@@ -31,10 +31,7 @@ type Props = {
   sampleTitle: string;
   sampleSubtitle: string;
   contentKind: TContentKind;
-  guides: boolean;
   pxPerMm: number;
-  showCaptions: boolean;
-  maxPages: 1 | 2;
 };
 
 const alignOf = (align: TTextAlign): CSSProperties["textAlign"] => {
@@ -244,10 +241,7 @@ const ReportLayoutPaper = ({
   sampleTitle,
   sampleSubtitle,
   contentKind,
-  guides,
   pxPerMm,
-  showCaptions,
-  maxPages,
 }: Props) => {
   const { t } = useTranslation();
   const px = (mm: number) => mm * pxPerMm;
@@ -275,18 +269,7 @@ const ReportLayoutPaper = ({
   const contentTop = draft.marginTopMm + (repeatingHeader ? draft.headerHeightMm : 0);
   const contentMm = Math.max(0, heightMm - contentTop - draft.marginBottomMm - footerBand);
   const cap1 = rowCapacity(draft, true);
-  const cap2 = rowCapacity(draft, false);
-  const pages = maxPages;
-  const pageRows = [
-    SAMPLE_ROWS.slice(0, cap1),
-    SAMPLE_ROWS.slice(cap1, cap1 + cap2),
-  ];
-  let leftover = SAMPLE_ROWS.length - cap1 - (pages > 1 ? cap2 : 0);
-  let extraPages = 0;
-  while (leftover > 0 && extraPages < 8) {
-    extraPages += 1;
-    leftover -= cap2;
-  }
+  const pageRows = [SAMPLE_ROWS.slice(0, cap1)];
   const columns = [
     t("reportLayout.sample.code"),
     t("reportLayout.sample.project"),
@@ -328,7 +311,7 @@ const ReportLayoutPaper = ({
 
   const renderPage = (pageNumber: number) => {
     const isFirst = pageNumber === 1;
-    const isLast = pageNumber === pages;
+    const isLast = true;
     const rows = contentKind === 1 ? pageRows[pageNumber - 1] ?? [] : [];
     let body: ReactNode;
     if (contentKind === 2) {
@@ -394,11 +377,6 @@ const ReportLayoutPaper = ({
 
     return (
       <div key={pageNumber} className="flex flex-col items-center gap-1.5">
-        {showCaptions ? (
-          <span className="text-[11px] font-bold tracking-wide text-(--Grey500) uppercase">
-            {t("reportLayout.canvas.page", { page: pageNumber, total: pages })}
-          </span>
-        ) : null}
         <div
           className="relative overflow-hidden shadow-lg"
           style={{
@@ -411,17 +389,6 @@ const ReportLayoutPaper = ({
             fontSize: px(draft.baseFontSizePt * MM_PER_PT),
           }}
         >
-          {guides ? (
-            <div
-              className="pointer-events-none absolute border border-dashed border-(--Primary400)"
-              style={{
-                top: px(draft.marginTopMm),
-                bottom: px(draft.marginBottomMm),
-                left: px(draft.marginLeftMm),
-                right: px(draft.marginRightMm),
-              }}
-            />
-          ) : null}
           {repeatingHeader ? (
             <div
               className="absolute overflow-hidden"
@@ -538,29 +505,6 @@ const ReportLayoutPaper = ({
               </span>
             </div>
           ) : null}
-          {guides && pxPerMm > 1.4 ? (
-            <>
-              <span className="pointer-events-none absolute top-0.5 left-1/2 -translate-x-1/2 bg-(--app-surface) px-1 text-[8px] font-semibold text-(--Primary400)">
-                {t("reportLayout.canvas.margin", { mm: draft.marginTopMm })}
-              </span>
-              {repeatingHeader ? (
-                <span
-                  className="pointer-events-none absolute bg-(--app-surface) px-1 text-[8px] font-semibold text-(--Primary400)"
-                  style={{ top: px(draft.marginTopMm), left: px(draft.marginLeftMm + 1) }}
-                >
-                  {t("reportLayout.canvas.headerBand", { mm: draft.headerHeightMm })}
-                </span>
-              ) : null}
-              {footerBand > 0 ? (
-                <span
-                  className="pointer-events-none absolute bg-(--app-surface) px-1 text-[8px] font-semibold text-(--Primary400)"
-                  style={{ bottom: px(draft.marginBottomMm), left: px(draft.marginLeftMm + 1) }}
-                >
-                  {t("reportLayout.canvas.footerBand", { mm: Math.round(footerBand) })}
-                </span>
-              ) : null}
-            </>
-          ) : null}
         </div>
       </div>
     );
@@ -568,12 +512,7 @@ const ReportLayoutPaper = ({
 
   return (
     <div className="flex flex-col items-center gap-5">
-      {Array.from({ length: pages }, (_item, index) => renderPage(index + 1))}
-      {showCaptions && contentKind === 1 && extraPages > 0 ? (
-        <span className="text-xs text-(--Grey500)">
-          {t("reportLayout.canvas.morePages", { count: extraPages })}
-        </span>
-      ) : null}
+      {renderPage(1)}
     </div>
   );
 };

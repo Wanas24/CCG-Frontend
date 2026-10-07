@@ -1,15 +1,11 @@
-import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { AlertCircle, CheckCircle2, Copy, FileText, Info, PenLine } from "lucide-react";
 import { Switch } from "antd";
 import { useTranslation } from "react-i18next";
 import { AppButton } from "@/shared/ANTD_UIComponents";
-import AppSegmented from "@/shared/ANTD_UIComponents/AppTabs/AppSegmented";
 import { CONTENT_KIND } from "../types";
-import { paperSizeMm } from "../utils/paperGeometry";
-import type { ReportLayoutStudioApi, TCanvasMode, TZoom } from "../hooks/useReportLayoutStudio";
+import type { ReportLayoutStudioApi } from "../hooks/useReportLayoutStudio";
 import ReportLayoutInspector from "./ReportLayoutInspector";
-import ReportLayoutPaper from "./ReportLayoutPaper";
 
 type Props = {
   studio: ReportLayoutStudioApi;
@@ -28,30 +24,6 @@ const noteClass = {
 
 const ReportLayoutDesigner = ({ studio }: Props) => {
   const { t } = useTranslation();
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [fitScale, setFitScale] = useState(1);
-  const [widthMm] = paperSizeMm(studio.draft);
-  const basePx = 2.2;
-  const naturalWidth = widthMm * basePx;
-
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage || (studio.zoom !== "fit" && studio.zoom !== "fitw")) return;
-    const update = () => {
-      const available = Math.max(120, stage.clientWidth - 48);
-      const pageFit = available / naturalWidth;
-      setFitScale(studio.zoom === "fitw" ? pageFit : Math.min(pageFit, 1.15));
-    };
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, [naturalWidth, studio.zoom]);
-
-  const numericZoom = studio.zoom === "fit" || studio.zoom === "fitw"
-    ? fitScale
-    : Number(studio.zoom);
-  const pxPerMm = basePx * (Number.isFinite(numericZoom) && numericZoom > 0 ? numericZoom : 1);
   const quotaBlocksCreate = studio.quotaReached;
   const canUpdate =
     Boolean(studio.editing && !studio.editing.isSystem) &&
@@ -151,15 +123,6 @@ const ReportLayoutDesigner = ({ studio }: Props) => {
         <ReportLayoutInspector studio={studio} />
         <section className="flex h-[calc(100vh-120px)] min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-(--Grey300) bg-(--app-surface) shadow-sm">
           <div className="flex shrink-0 flex-wrap items-center gap-2.5 border-b border-(--Grey300) px-4 py-3">
-            <AppSegmented<TCanvasMode>
-              className="w-fit!"
-              value={studio.canvas}
-              onChange={studio.setCanvas}
-              options={[
-                { value: "mock", label: t("reportLayout.canvas.live") },
-                { value: "pdf", label: t("reportLayout.canvas.pdf") },
-              ]}
-            />
             <select
               className={inputClass}
               value={studio.contentKind}
@@ -168,22 +131,6 @@ const ReportLayoutDesigner = ({ studio }: Props) => {
               <option value={1}>{t("reportLayout.canvas.table")}</option>
               <option value={2}>{t("reportLayout.canvas.text")}</option>
             </select>
-            <select
-              className={inputClass}
-              value={studio.zoom}
-              onChange={(event) => studio.setZoom(event.target.value as TZoom)}
-            >
-              <option value="fit">{t("reportLayout.canvas.fit")}</option>
-              <option value="fitw">{t("reportLayout.canvas.fitWidth")}</option>
-              <option value="0.5">{t("reportLayout.canvas.zoom50")}</option>
-              <option value="0.75">{t("reportLayout.canvas.zoom75")}</option>
-              <option value="1">{t("reportLayout.canvas.zoom100")}</option>
-              <option value="1.5">{t("reportLayout.canvas.zoom150")}</option>
-            </select>
-            <label className="inline-flex items-center gap-2 text-[13px] font-semibold">
-              <Switch size="small" checked={studio.guides} onChange={studio.setGuides} />
-              {t("reportLayout.canvas.guides")}
-            </label>
             <span className="flex-1" />
             {studio.pdfStale ? (
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-(--statusY200)">
@@ -223,20 +170,7 @@ const ReportLayoutDesigner = ({ studio }: Props) => {
               onChange={(event) => studio.setSampleSubtitle(event.target.value)}
             />
           </div>
-          {studio.canvas === "mock" ? (
-            <div ref={stageRef} className="min-h-0 flex-1 overflow-auto bg-(--Grey100) px-4 py-5">
-              <ReportLayoutPaper
-                draft={studio.draft}
-                sampleTitle={studio.sampleTitle}
-                sampleSubtitle={studio.sampleSubtitle}
-                contentKind={studio.contentKind}
-                guides={studio.guides}
-                pxPerMm={pxPerMm}
-                showCaptions
-                maxPages={2}
-              />
-            </div>
-          ) : studio.pdfUrl && !studio.pdfError ? (
+          {studio.pdfUrl && !studio.pdfError ? (
             <iframe
               title={t("reportLayout.canvas.pdf")}
               src={studio.pdfUrl}

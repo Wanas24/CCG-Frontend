@@ -8,6 +8,13 @@ import { contentRoomMm } from "./paperGeometry";
 export type TLayoutCheck = {
   level: "err" | "warn" | "info";
   text: string;
+  field?: keyof TLayoutDraft;
+  signatureIndex?: number;
+};
+
+export type TLayoutFieldErrors = {
+  fields: Partial<Record<keyof TLayoutDraft, string>>;
+  signatures: Partial<Record<number, string>>;
 };
 
 type TCheckInput = {
@@ -21,7 +28,25 @@ type TCheckInput = {
   t: TFunction;
 };
 
-const textLength = (value: string | null | undefined) => value?.length ?? 0;
+export const layoutFieldErrors = (checks: TLayoutCheck[]): TLayoutFieldErrors => {
+  const fields: TLayoutFieldErrors["fields"] = {};
+  const signatures: TLayoutFieldErrors["signatures"] = {};
+
+  checks.forEach((item) => {
+    if (item.level !== "err") return;
+    if (item.signatureIndex !== undefined) {
+      if (signatures[item.signatureIndex] === undefined) {
+        signatures[item.signatureIndex] = item.text;
+      }
+      return;
+    }
+    if (item.field && fields[item.field] === undefined) {
+      fields[item.field] = item.text;
+    }
+  });
+
+  return { fields, signatures };
+};
 
 export const buildLayoutChecks = ({
   draft,
@@ -34,68 +59,89 @@ export const buildLayoutChecks = ({
   t,
 }: TCheckInput): TLayoutCheck[] => {
   const checks: TLayoutCheck[] = [];
-  const err = (text: string) => checks.push({ level: "err", text });
+  const err = (text: string, field?: keyof TLayoutDraft, signatureIndex?: number) => {
+    checks.push({
+      level: "err",
+      text,
+      ...(field ? { field } : {}),
+      ...(signatureIndex !== undefined ? { signatureIndex } : {}),
+    });
+  };
   const warn = (text: string) => checks.push({ level: "warn", text });
   const info = (text: string) => checks.push({ level: "info", text });
 
   const code = draft.code.trim();
   const name = draft.name.trim();
 
-  if (!code) err(t("reportLayout.checks.codeRequired"));
+  if (!code) err(t("reportLayout.checks.codeRequired"), "code");
   else if (code.length > LAYOUT_LIMITS.code) {
-    err(t("reportLayout.checks.tooLong", { field: t("reportLayout.fields.code"), max: LAYOUT_LIMITS.code }));
+    err(
+      t("reportLayout.checks.tooLong", { field: t("reportLayout.fields.code"), max: LAYOUT_LIMITS.code }),
+      "code",
+    );
   } else {
     const clash = companyLayouts(layouts).find(
       (layout) => layout.code === code && layout.id !== editingId,
     );
     if (clash) {
-      err(t("reportLayout.checks.duplicateCode", { code, name: clash.name }));
+      err(t("reportLayout.checks.duplicateCode", { code, name: clash.name }), "code");
     }
   }
 
-  if (!name) err(t("reportLayout.checks.nameRequired"));
+  if (!name) err(t("reportLayout.checks.nameRequired"), "name");
   else if (name.length > LAYOUT_LIMITS.name) {
-    err(t("reportLayout.checks.tooLong", { field: t("reportLayout.fields.name"), max: LAYOUT_LIMITS.name }));
+    err(
+      t("reportLayout.checks.tooLong", { field: t("reportLayout.fields.name"), max: LAYOUT_LIMITS.name }),
+      "name",
+    );
   }
 
-  const lengths: Array<[string | null | undefined, number, string]> = [
-    [draft.description, LAYOUT_LIMITS.description, "reportLayout.fields.description"],
-    [draft.defaultTitle, LAYOUT_LIMITS.title, "reportLayout.fields.defaultTitle"],
-    [draft.defaultSubtitle, LAYOUT_LIMITS.title, "reportLayout.fields.defaultSubtitle"],
-    [draft.logoUrl, LAYOUT_LIMITS.logoUrl, "reportLayout.fields.logoUrl"],
-    [draft.headerLeftText, LAYOUT_LIMITS.headerText, "reportLayout.fields.headerLeft"],
-    [draft.headerCenterText, LAYOUT_LIMITS.headerText, "reportLayout.fields.headerCenter"],
-    [draft.headerRightText, LAYOUT_LIMITS.headerText, "reportLayout.fields.headerRight"],
-    [draft.footerLeftText, LAYOUT_LIMITS.headerText, "reportLayout.fields.footerLeft"],
-    [draft.footerCenterText, LAYOUT_LIMITS.headerText, "reportLayout.fields.footerCenter"],
-    [draft.footerRightText, LAYOUT_LIMITS.headerText, "reportLayout.fields.footerRight"],
-    [draft.watermarkText, LAYOUT_LIMITS.watermarkText, "reportLayout.fields.watermarkText"],
-    [draft.pageNumberFormat, LAYOUT_LIMITS.pageNumberFormat, "reportLayout.fields.pageNumberFormat"],
-    [draft.generatedAtFormat, LAYOUT_LIMITS.pageNumberFormat, "reportLayout.fields.generatedAtFormat"],
-    [draft.generatedAtLabel, LAYOUT_LIMITS.generatedAtLabel, "reportLayout.fields.generatedAtLabel"],
+  const lengths: Array<[keyof TLayoutDraft, number, string]> = [
+    ["description", LAYOUT_LIMITS.description, "reportLayout.fields.description"],
+    ["defaultTitle", LAYOUT_LIMITS.title, "reportLayout.fields.defaultTitle"],
+    ["defaultSubtitle", LAYOUT_LIMITS.title, "reportLayout.fields.defaultSubtitle"],
+    ["logoUrl", LAYOUT_LIMITS.logoUrl, "reportLayout.fields.logoUrl"],
+    ["headerLeftText", LAYOUT_LIMITS.headerText, "reportLayout.fields.headerLeft"],
+    ["headerCenterText", LAYOUT_LIMITS.headerText, "reportLayout.fields.headerCenter"],
+    ["headerRightText", LAYOUT_LIMITS.headerText, "reportLayout.fields.headerRight"],
+    ["footerLeftText", LAYOUT_LIMITS.headerText, "reportLayout.fields.footerLeft"],
+    ["footerCenterText", LAYOUT_LIMITS.headerText, "reportLayout.fields.footerCenter"],
+    ["footerRightText", LAYOUT_LIMITS.headerText, "reportLayout.fields.footerRight"],
+    ["watermarkText", LAYOUT_LIMITS.watermarkText, "reportLayout.fields.watermarkText"],
+    ["pageNumberFormat", LAYOUT_LIMITS.pageNumberFormat, "reportLayout.fields.pageNumberFormat"],
+    ["generatedAtFormat", LAYOUT_LIMITS.pageNumberFormat, "reportLayout.fields.generatedAtFormat"],
+    ["generatedAtLabel", LAYOUT_LIMITS.generatedAtLabel, "reportLayout.fields.generatedAtLabel"],
   ];
 
-  lengths.forEach(([value, max, labelKey]) => {
-    if (textLength(value) > max) {
+  lengths.forEach(([key, max, labelKey]) => {
+    const value = draft[key];
+    if (typeof value === "string" && value.length > max) {
       err(
         t("reportLayout.checks.tooLong", {
           field: layoutText(t, labelKey),
           max,
         }),
+        key,
       );
     }
   });
 
   if (draft.watermarkOpacity < 0 || draft.watermarkOpacity > 1) {
-    err(t("reportLayout.checks.opacity"));
+    err(t("reportLayout.checks.opacity"), "watermarkOpacity");
   }
 
   draft.signatures.forEach((signature, index) => {
     if (!signature.label.trim()) {
-      err(t("reportLayout.checks.signatureLabel", { index: index + 1 }));
-    }
-    if (signature.label.length > LAYOUT_LIMITS.signatureText) {
-      err(t("reportLayout.checks.tooLong", { field: t("reportLayout.fields.signatureLabel"), max: LAYOUT_LIMITS.signatureText }));
+      err(t("reportLayout.checks.signatureLabel", { index: index + 1 }), undefined, index);
+    } else if (signature.label.length > LAYOUT_LIMITS.signatureText) {
+      err(
+        t("reportLayout.checks.tooLong", {
+          field: t("reportLayout.fields.signatureLabel"),
+          max: LAYOUT_LIMITS.signatureText,
+        }),
+        undefined,
+        index,
+      );
     }
   });
 

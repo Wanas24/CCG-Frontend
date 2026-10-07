@@ -64,10 +64,7 @@ const LayoutCard = memo(({
           sampleTitle=""
           sampleSubtitle=""
           contentKind={1}
-          guides={false}
           pxPerMm={0.46}
-          showCaptions={false}
-          maxPages={1}
         />
       </div>
       <h3 className="truncate text-[15px] font-bold" title={layout.name}>

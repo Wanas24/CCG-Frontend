@@ -14,7 +14,6 @@ import { useGetReportLayoutSummary } from "../api/hooks/useGetReportLayoutSummar
 import { useLoadReportLayout } from "../api/hooks/useLoadReportLayout";
 import { useUpdateReportLayout } from "../api/hooks/useUpdateReportLayout";
 import { reportLayoutQueryRootKey } from "../api/queryKeys/reportLayoutQueryKeys";
-import { layoutIdentitySchema } from "../schemas/layoutIdentitySchema";
 import { LAYOUT_LIMITS } from "../schemas/layoutLimits";
 import {
   CONTENT_KIND,
@@ -28,7 +27,7 @@ import {
   type TSignatureDraft,
 } from "../types";
 import { buildLayoutChanges } from "../utils/layoutDiff";
-import { buildLayoutChecks } from "../utils/layoutChecks";
+import { buildLayoutChecks, layoutFieldErrors, type TLayoutCheck } from "../utils/layoutChecks";
 import { cloneDraft, createBlankDraft, createSignature } from "../utils/layoutDefaults";
 import { LAYOUT_PRESETS, type TPresetKey } from "../utils/layoutPresets";
 import {
@@ -39,11 +38,9 @@ import {
   toStoredLayoutInput,
 } from "../utils/layoutPayload";
 import { layoutText } from "../utils/layoutText";
-import { SECTION_IDS } from "../utils/layoutFields";
+import { LAYOUT_FIELDS, SECTION_IDS } from "../utils/layoutFields";
 
 export type TStudioView = "gallery" | "designer" | "usage";
-export type TCanvasMode = "mock" | "pdf";
-export type TZoom = "fit" | "fitw" | "0.5" | "0.75" | "1" | "1.5";
 
 export type TUsageEntry =
   | { status: "idle" }
@@ -56,6 +53,11 @@ export type TSaveDraft = {
   code: string;
   name: string;
   isDefault: boolean;
+};
+
+export type TSaveSubmitResult = {
+  fields: Partial<Record<"code" | "name", string>>;
+  messages: string[];
 };
 
 export type TConfirmState = {
@@ -100,9 +102,6 @@ export const useReportLayoutStudio = () => {
   const [editing, setEditing] = useState<{ id: string; isSystem: boolean } | null>(null);
   const [inspectorQuery, setInspectorQuery] = useState("");
   const [openSections, setOpenSections] = useState<Set<string>>(() => new Set(INITIAL_SECTIONS));
-  const [canvas, setCanvas] = useState<TCanvasMode>("mock");
-  const [zoom, setZoom] = useState<TZoom>("fit");
-  const [guides, setGuides] = useState(true);
   const [sampleTitle, setSampleTitle] = useState("");
   const [sampleSubtitle, setSampleSubtitle] = useState("");
   const [contentKind, setContentKind] = useState<TContentKind>(CONTENT_KIND.Table);
@@ -169,6 +168,7 @@ export const useReportLayoutStudio = () => {
     [baseline, draft, t],
   );
   const blockingCount = checks.filter((checkItem) => checkItem.level === "err").length;
+  const fieldErrors = useMemo(() => layoutFieldErrors(checks), [checks]);
   const draftRef = useRef(draft);
   const sampleTitleRef = useRef(sampleTitle);
   const sampleSubtitleRef = useRef(sampleSubtitle);
@@ -233,13 +233,16 @@ export const useReportLayoutStudio = () => {
   }, [changes.length]);
 
   const beginDraft = useCallback((next: TLayoutDraft, nextEditing: { id: string; isSystem: boolean } | null) => {
+    previewRequestRef.current += 1;
+    abortRef.current?.abort();
     setDraft(next);
     setBaseline(cloneDraft(next));
     setEditing(nextEditing);
     setView("designer");
-    setCanvas("mock");
     setPdfError(null);
-  }, []);
+    setRenderedKey(null);
+    replacePdfUrl(null);
+  }, [replacePdfUrl]);
 
   const askConfirm = useCallback((state: TConfirmState, action: () => void) => {
     confirmKindRef.current = "action";
@@ -473,62 +476,56 @@ export const useReportLayoutStudio = () => {
     setOpenSections(new Set());
   }, []);
 
-  const runPreview = useCallback(
-    async (switchCanvas: boolean) => {
-      if (!permissions.canPreview) return;
-      const requestId = previewRequestRef.current + 1;
-      previewRequestRef.current = requestId;
-      abortRef.current?.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
-      const isCurrent = () => previewRequestRef.current === requestId;
-      if (switchCanvas) setCanvas("pdf");
-      setPdfLoading(true);
-      setPdfError(null);
-      const body: TPreviewInput = {
-        title: emptyToNull(sampleTitleRef.current),
-        subtitle: emptyToNull(sampleSubtitleRef.current),
-        contentKind: contentKindRef.current,
-        layout: toLayoutInput(draftRef.current),
-      };
-      try {
-        const result = await preview(body, controller.signal);
-        if (!isCurrent()) return;
-        if (controller.signal.aborted) {
-          setPdfLoading(false);
-          return;
-        }
-        if (!result.ok) {
-          setAutoPdf(false);
-          setPdfError(result.message || t("reportLayout.preview.failed"));
-          setPdfLoading(false);
-          if (!switchCanvas) setCanvas("pdf");
-          return;
-        }
-        replacePdfUrl(URL.createObjectURL(result.blob));
-        setRenderedKey(JSON.stringify(body));
+  const runPreview = useCallback(async () => {
+    if (!permissions.canPreview) return;
+    const requestId = previewRequestRef.current + 1;
+    previewRequestRef.current = requestId;
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const isCurrent = () => previewRequestRef.current === requestId;
+    setPdfLoading(true);
+    setPdfError(null);
+    const body: TPreviewInput = {
+      title: emptyToNull(sampleTitleRef.current),
+      subtitle: emptyToNull(sampleSubtitleRef.current),
+      contentKind: contentKindRef.current,
+      layout: toLayoutInput(draftRef.current),
+    };
+    try {
+      const result = await preview(body, controller.signal);
+      if (!isCurrent()) return;
+      if (controller.signal.aborted) {
         setPdfLoading(false);
-      } catch (error) {
-        if (!isCurrent()) return;
-        if (controller.signal.aborted) {
-          setPdfLoading(false);
-          return;
-        }
-        setAutoPdf(false);
-        setPdfError(
-          getSimpleResultFromAxiosError(error)?.message || t("reportLayout.preview.failed"),
-        );
-        setPdfLoading(false);
-        setCanvas("pdf");
+        return;
       }
-    },
-    [permissions.canPreview, preview, replacePdfUrl, t],
-  );
+      if (!result.ok) {
+        setAutoPdf(false);
+        setPdfError(result.message || t("reportLayout.preview.failed"));
+        setPdfLoading(false);
+        return;
+      }
+      replacePdfUrl(URL.createObjectURL(result.blob));
+      setRenderedKey(JSON.stringify(body));
+      setPdfLoading(false);
+    } catch (error) {
+      if (!isCurrent()) return;
+      if (controller.signal.aborted) {
+        setPdfLoading(false);
+        return;
+      }
+      setAutoPdf(false);
+      setPdfError(
+        getSimpleResultFromAxiosError(error)?.message || t("reportLayout.preview.failed"),
+      );
+      setPdfLoading(false);
+    }
+  }, [permissions.canPreview, preview, replacePdfUrl, t]);
 
   useEffect(() => {
     if (!autoPdf || !permissions.canPreview || !baseline) return;
     const timer = window.setTimeout(() => {
-      void runPreview(false);
+      void runPreview();
     }, 700);
     return () => {
       window.clearTimeout(timer);
@@ -545,11 +542,31 @@ export const useReportLayoutStudio = () => {
     sampleTitle,
   ]);
 
+  const openSectionsForChecks = useCallback((items: TLayoutCheck[]) => {
+    setOpenSections((current) => {
+      let changed = false;
+      const next = new Set(current);
+      items.forEach((item) => {
+        if (item.level !== "err") return;
+        const section =
+          item.signatureIndex !== undefined
+            ? "signatures"
+            : item.field
+              ? LAYOUT_FIELDS.find((field) => field.key === item.field)?.section
+              : undefined;
+        if (!section || next.has(section)) return;
+        next.add(section);
+        changed = true;
+      });
+      return changed ? next : current;
+    });
+  }, []);
+
   const updateLayout = useCallback(() => {
     const currentEditing = editing;
     if (!currentEditing || currentEditing.isSystem || !permissions.canUpdate) return;
     if (blockingCount > 0) {
-      toast.warn(t("reportLayout.toast.fixIssues"));
+      openSectionsForChecks(checks);
       return;
     }
     updateMutation.mutate(
@@ -565,7 +582,7 @@ export const useReportLayoutStudio = () => {
         },
       },
     );
-  }, [beginDraft, blockingCount, draft, editing, permissions.canUpdate, t, updateMutation]);
+  }, [beginDraft, blockingCount, checks, draft, editing, openSectionsForChecks, permissions.canUpdate, t, updateMutation]);
 
   const openSaveAsNew = useCallback(() => {
     if (!permissions.canCreate || !baseline) return;
@@ -581,16 +598,11 @@ export const useReportLayoutStudio = () => {
   }, [baseline, draft.code, draft.isDefault, draft.name, layouts, permissions.canCreate, quotaLimit, quotaReached, t]);
 
   const submitSave = useCallback(
-    (values: TSaveDraft) => {
-      const parsed = layoutIdentitySchema.safeParse(values);
-      if (!parsed.success) {
-        toast.warn(t("reportLayout.save.invalid"));
-        return;
-      }
+    (values: TSaveDraft): TSaveSubmitResult => {
       const next = {
         ...draft,
-        code: parsed.data.code,
-        name: parsed.data.name,
+        code: values.code.trim(),
+        name: values.name.trim(),
         isDefault: values.isDefault,
       };
       const nextChecks = buildLayoutChecks({
@@ -603,11 +615,19 @@ export const useReportLayoutStudio = () => {
         quotaLimit,
         t,
       });
-      if (nextChecks.some((item) => item.level === "err")) {
-        setDraft(next);
-        setEditing(null);
-        toast.warn(t("reportLayout.toast.fixIssues"));
-        return;
+      const blockers = nextChecks.filter((item) => item.level === "err");
+      if (blockers.length > 0) {
+        const fields: TSaveSubmitResult["fields"] = {};
+        const messages: string[] = [];
+        blockers.forEach((item) => {
+          if (item.field === "code" || item.field === "name") {
+            fields[item.field] ??= item.text;
+            return;
+          }
+          messages.push(item.text);
+        });
+        openSectionsForChecks(blockers);
+        return { fields, messages };
       }
       createMutation.mutate(toLayoutInput(next), {
         onSuccess: (result) => {
@@ -620,8 +640,9 @@ export const useReportLayoutStudio = () => {
           toast.success(result.message || t("reportLayout.toast.created"));
         },
       });
+      return { fields: {}, messages: [] };
     },
-    [beginDraft, contentKind, createMutation, draft, layouts, quotaLimit, quotaUsed, t],
+    [beginDraft, contentKind, createMutation, draft, layouts, openSectionsForChecks, quotaLimit, quotaUsed, t],
   );
 
   const syncCleanEditor = useCallback(
@@ -829,6 +850,7 @@ export const useReportLayoutStudio = () => {
     hasDraft: baseline !== null,
     draft,
     checks,
+    fieldErrors,
     changes,
     blockingCount,
     permissions,
@@ -838,12 +860,6 @@ export const useReportLayoutStudio = () => {
     toggleSection,
     expandAll,
     collapseAll,
-    canvas,
-    setCanvas,
-    zoom,
-    setZoom,
-    guides,
-    setGuides,
     sampleTitle,
     setSampleTitle,
     sampleSubtitle,
@@ -856,7 +872,7 @@ export const useReportLayoutStudio = () => {
     pdfError,
     pdfStale,
     pdfLoading,
-    renderPdf: () => void runPreview(true),
+    renderPdf: () => void runPreview(),
     openLayout,
     duplicateLayout,
     duplicateDraft,
