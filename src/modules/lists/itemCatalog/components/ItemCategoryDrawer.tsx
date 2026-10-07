@@ -23,6 +23,7 @@ import type {
   TItemCategoryType,
 } from "../types/itemCategory";
 import type { TMeasurement } from "../../units/types/measurement";
+import ItemCatalogFilesSkeleton from "./ItemCatalogFilesSkeleton";
 
 type Props = {
   open: boolean;
@@ -288,9 +289,7 @@ const ItemCategoryDrawer = ({
             }
           />
         ) : filesQuery.isPending ? (
-          <p className={`m-0 ${DesignTokens.typography.muted}`}>
-            {t("common.loading")}
-          </p>
+          <ItemCatalogFilesSkeleton />
         ) : (
           <div className="flex flex-col gap-2">
             {files.length === 0 ? (

@@ -11,6 +11,7 @@ import { useUnitsManager } from "../hooks/useUnitsManager";
 import type { TMeasurement } from "../types/measurement";
 import UnitCard from "./UnitCard";
 import { UnitDeleteDialog, UnitFormDrawer } from "./UnitDialogs";
+import UnitsListSkeleton from "./UnitsListSkeleton";
 
 export type UnitsListMode = "manage" | "select";
 
@@ -111,9 +112,7 @@ const UnitsList = ({
             </AppButton>
           </div>
         ) : isPending ? (
-          <p className={`m-0 ${DesignTokens.typography.muted}`}>
-            {t("common.loading")}
-          </p>
+          <UnitsListSkeleton />
         ) : !showGrid ? (
           <AppEmptyState
             icon={

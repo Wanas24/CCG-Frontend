@@ -37,7 +37,7 @@ const emptyValues: ItemCategoryFormValues = {
 
 export const useItemCatalogManager = () => {
   const { t } = useTranslation();
-  const { hasPermission } = usePermissions();
+  const { hasPermission, isLoading: isPermissionsLoading } = usePermissions();
 
   const canGet = hasPermission(PermissionsList.ItemCategory.Get);
   const canCreate = hasPermission(PermissionsList.ItemCategory.Create);
@@ -233,6 +233,7 @@ export const useItemCatalogManager = () => {
   };
 
   return {
+    isPermissionsLoading,
     canGet,
     canCreate,
     canEdit,

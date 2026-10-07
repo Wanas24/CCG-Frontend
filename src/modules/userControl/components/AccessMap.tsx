@@ -1,7 +1,6 @@
 import { useState } from "react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import { AppSkeleton } from "@/shared/ANTD_UIComponents";
 import { useLocale } from "@/i18n/useLocale";
 import type { UserControlModel } from "../hooks/useUserControl";
 import { accentIndex, personName } from "../utils/userControlDisplay";
@@ -13,6 +12,7 @@ import {
   panelTitleClass,
 } from "../styles/userControlClasses";
 import ScrollLoadSentinel from "./ScrollLoadSentinel";
+import { AccessMapSkeleton } from "./UserControlBoardSkeletons";
 
 type Props = {
   userControl: UserControlModel;
@@ -46,7 +46,7 @@ const AccessMap = ({ userControl }: Props) => {
     !userControl.rolesFailed &&
     !userControl.employeesFailed
   ) {
-    return <AppSkeleton active paragraph={{ rows: 8 }} />;
+    return <AccessMapSkeleton />;
   }
 
   if (roles.length === 0 && employees.length === 0) {

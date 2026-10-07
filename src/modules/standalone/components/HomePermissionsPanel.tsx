@@ -1,11 +1,12 @@
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
-import { AppSkeleton, AppTag } from "@/shared/ANTD_UIComponents";
+import { AppTag } from "@/shared/ANTD_UIComponents";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import {
   PermissionsList,
   type AppPermission,
 } from "@/modules/user/permissions/PermissionsList";
 import { useTranslation } from "react-i18next";
+import HomePermissionsPanelSkeleton from "./HomePermissionsPanelSkeleton";
 
 const permissionGroups = Object.entries(PermissionsList).map(
   ([group, permissions]) => ({
@@ -20,7 +21,7 @@ const HomePermissionsPanel = () => {
     usePermissions();
 
   if (isLoading) {
-    return <AppSkeleton active paragraph={{ rows: 6 }} />;
+    return <HomePermissionsPanelSkeleton />;
   }
 
   if (isError) {

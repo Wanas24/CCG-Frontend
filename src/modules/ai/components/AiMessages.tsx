@@ -230,10 +230,37 @@ const AiMessages = ({
         className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4"
         aria-busy="true"
       >
-        <p className="m-0 text-sm text-(--Grey600)">
-          {t("ai.chat.loadingMessages")}
-        </p>
-        <AppSkeleton active paragraph={{ rows: 6 }} title={false} />
+        {Array.from({ length: 5 }).map((_, index) => {
+          const isUser = index % 2 === 1;
+          return (
+            <div
+              key={index}
+              className={
+                isUser
+                  ? "ms-auto flex w-[min(85%,28rem)] flex-col items-end gap-1"
+                  : "me-auto flex w-[min(85%,28rem)] flex-col items-start gap-1"
+              }
+            >
+              <div
+                className={
+                  isUser
+                    ? "w-full rounded-2xl rounded-ee-md border border-(--Grey300) bg-(--Primary100) p-3"
+                    : "w-full rounded-2xl rounded-es-md border border-(--Grey300) bg-(--Grey100) p-3"
+                }
+              >
+                <AppSkeleton.Input
+                  active
+                  block
+                  className="!mb-2 !h-3 !w-full !min-w-0"
+                />
+                <AppSkeleton.Input
+                  active
+                  className={`!h-3 ${isUser ? "!w-2/3" : "!w-4/5"} !min-w-20`}
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }

@@ -16,6 +16,7 @@ import { normalizeAlert } from "../utils/normalizeAlert";
 import AlertBoard from "./AlertBoard";
 import AlertConfirmDialogs from "./AlertConfirmDialogs";
 import AlertCreateDrawer from "./AlertCreateDrawer";
+import AlertsContentSkeleton from "./AlertsContentSkeleton";
 import AlertTimeline from "./AlertTimeline";
 
 const AlertsList = () => {
@@ -174,9 +175,7 @@ const AlertsList = () => {
               </AppButton>
             </div>
           ) : isPending ? (
-            <p className={`m-0 ${DesignTokens.typography.muted}`}>
-              {t("common.loading")}
-            </p>
+            <AlertsContentSkeleton viewMode={listState.viewMode} />
           ) : showFilteredEmpty ? (
             <AppEmptyState
               icon={<SearchX size={DesignTokens.media.iconMd} />}
