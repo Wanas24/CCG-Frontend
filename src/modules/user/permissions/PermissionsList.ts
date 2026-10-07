@@ -41,6 +41,15 @@ export const PermissionsList = {
     GetActiveProjects: "ProjectEmployee.GetActiveProjects",
     SetProjects: "ProjectEmployee.SetProjects",
   },
+  ReportLayout: {
+    GetLayouts: "ReportLayout.GetLayouts",
+    GetById: "ReportLayout.GetById",
+    GetLastUsedLayout: "ReportLayout.GetLastUsedLayout",
+    Create: "ReportLayout.Create",
+    Update: "ReportLayout.Update",
+    Deactivate: "ReportLayout.Deactivate",
+    PreviewSample: "ReportLayout.PreviewSample",
+  },
 } as const;
 
 type DeepStringValues<T> = T extends string

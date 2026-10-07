@@ -1,8 +1,10 @@
 import type { TFunction } from "i18next";
-import { GitBranch, Home, Settings, ShieldCheck, Users } from "lucide-react";
+import { FileText, GitBranch, Home, Settings, ShieldCheck, Users } from "lucide-react";
 import { AI_ROUTES } from "@/modules/ai/routes/paths";
 import { APPROVAL_ROUTES } from "@/modules/approval/routes/paths";
 import { approvalAccessPermissions } from "@/modules/approval/utils/approvalAccess";
+import { REPORT_LAYOUT_ROUTES } from "@/modules/reportLayout/routes/paths";
+import { reportLayoutAccessPermissions } from "@/modules/reportLayout/utils/reportLayoutAccess";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { USER_CONTROL_ROUTES } from "@/modules/userControl/routes/paths";
 import { userControlAccessPermissions } from "@/modules/userControl/utils/userControlAccess";
@@ -41,6 +43,13 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
         path: APPROVAL_ROUTES.approval,
         icon: <GitBranch size={18} />,
         permissions: [...approvalAccessPermissions],
+      },
+      {
+        key: "report-layouts",
+        label: t("reportLayout.navLabel"),
+        path: REPORT_LAYOUT_ROUTES.studio,
+        icon: <FileText size={18} />,
+        permissions: [...reportLayoutAccessPermissions],
       },
     ],
   },

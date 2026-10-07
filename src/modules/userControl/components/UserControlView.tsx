@@ -20,6 +20,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { LayoutGrid, Network, RefreshCw, Table2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppButton } from "@/shared/ANTD_UIComponents";
+import AppSegmented from "@/shared/ANTD_UIComponents/AppTabs/AppSegmented";
 import type { UserControlModel } from "../hooks/useUserControl";
 import { permissionLabel, personName } from "../utils/userControlDisplay";
 import {
@@ -90,12 +91,6 @@ const permissionLandsOnRole = (
   const group = userControl.groups.find((item) => item.name === payload.id);
   return group?.actions.some((action) => !current.has(action.id)) ?? false;
 };
-
-const viewTabClass = (active: boolean) =>
-  clsx(
-    "inline-flex cursor-pointer items-center gap-2 rounded-[9px] border-0 px-3.5 py-2 text-[13px] font-semibold",
-    active ? "bg-(--Primary400) text-(--app-surface)" : "bg-transparent text-(--Grey600)",
-  );
 
 const collisionDetection: CollisionDetection = (args) => {
   const pointerHits = pointerWithin(args);
@@ -254,32 +249,28 @@ const UserControlView = ({ userControl }: Props) => {
         <InviteEmployeeSection userControl={userControl} drag={drag} />
 
         <div className="flex flex-wrap items-center gap-3">
-          <div className="inline-flex gap-1 rounded-xl border border-(--Grey300) bg-(--app-surface) p-1">
-            <button
-              type="button"
-              className={viewTabClass(view === "board")}
-              onClick={() => startTransition(() => setView("board"))}
-            >
-              <LayoutGrid size={16} aria-hidden />
-              {t("userControl.views.board")}
-            </button>
-            <button
-              type="button"
-              className={viewTabClass(view === "matrix")}
-              onClick={() => startTransition(() => setView("matrix"))}
-            >
-              <Table2 size={16} aria-hidden />
-              {t("userControl.views.matrix")}
-            </button>
-            <button
-              type="button"
-              className={viewTabClass(view === "map")}
-              onClick={() => startTransition(() => setView("map"))}
-            >
-              <Network size={16} aria-hidden />
-              {t("userControl.views.map")}
-            </button>
-          </div>
+          <AppSegmented<View>
+            className="w-fit!"
+            value={view}
+            onChange={(next) => startTransition(() => setView(next))}
+            options={[
+              {
+                value: "board",
+                label: t("userControl.views.board"),
+                icon: <LayoutGrid size={16} aria-hidden />,
+              },
+              {
+                value: "matrix",
+                label: t("userControl.views.matrix"),
+                icon: <Table2 size={16} aria-hidden />,
+              },
+              {
+                value: "map",
+                label: t("userControl.views.map"),
+                icon: <Network size={16} aria-hidden />,
+              },
+            ]}
+          />
           <span className={faintClass}>{t("userControl.views.dragTip")}</span>
           <AppButton
             variant="secondary"
