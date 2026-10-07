@@ -42,8 +42,6 @@ import { layoutText } from "../utils/layoutText";
 import { SECTION_IDS } from "../utils/layoutFields";
 
 export type TStudioView = "gallery" | "designer" | "usage";
-export type TCanvasMode = "mock" | "pdf";
-export type TZoom = "fit" | "fitw" | "0.5" | "0.75" | "1" | "1.5";
 
 export type TUsageEntry =
   | { status: "idle" }
@@ -100,9 +98,6 @@ export const useReportLayoutStudio = () => {
   const [editing, setEditing] = useState<{ id: string; isSystem: boolean } | null>(null);
   const [inspectorQuery, setInspectorQuery] = useState("");
   const [openSections, setOpenSections] = useState<Set<string>>(() => new Set(INITIAL_SECTIONS));
-  const [canvas, setCanvas] = useState<TCanvasMode>("mock");
-  const [zoom, setZoom] = useState<TZoom>("fit");
-  const [guides, setGuides] = useState(true);
   const [sampleTitle, setSampleTitle] = useState("");
   const [sampleSubtitle, setSampleSubtitle] = useState("");
   const [contentKind, setContentKind] = useState<TContentKind>(CONTENT_KIND.Table);
@@ -233,13 +228,16 @@ export const useReportLayoutStudio = () => {
   }, [changes.length]);
 
   const beginDraft = useCallback((next: TLayoutDraft, nextEditing: { id: string; isSystem: boolean } | null) => {
+    previewRequestRef.current += 1;
+    abortRef.current?.abort();
     setDraft(next);
     setBaseline(cloneDraft(next));
     setEditing(nextEditing);
     setView("designer");
-    setCanvas("mock");
     setPdfError(null);
-  }, []);
+    setRenderedKey(null);
+    replacePdfUrl(null);
+  }, [replacePdfUrl]);
 
   const askConfirm = useCallback((state: TConfirmState, action: () => void) => {
     confirmKindRef.current = "action";
@@ -473,62 +471,56 @@ export const useReportLayoutStudio = () => {
     setOpenSections(new Set());
   }, []);
 
-  const runPreview = useCallback(
-    async (switchCanvas: boolean) => {
-      if (!permissions.canPreview) return;
-      const requestId = previewRequestRef.current + 1;
-      previewRequestRef.current = requestId;
-      abortRef.current?.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
-      const isCurrent = () => previewRequestRef.current === requestId;
-      if (switchCanvas) setCanvas("pdf");
-      setPdfLoading(true);
-      setPdfError(null);
-      const body: TPreviewInput = {
-        title: emptyToNull(sampleTitleRef.current),
-        subtitle: emptyToNull(sampleSubtitleRef.current),
-        contentKind: contentKindRef.current,
-        layout: toLayoutInput(draftRef.current),
-      };
-      try {
-        const result = await preview(body, controller.signal);
-        if (!isCurrent()) return;
-        if (controller.signal.aborted) {
-          setPdfLoading(false);
-          return;
-        }
-        if (!result.ok) {
-          setAutoPdf(false);
-          setPdfError(result.message || t("reportLayout.preview.failed"));
-          setPdfLoading(false);
-          if (!switchCanvas) setCanvas("pdf");
-          return;
-        }
-        replacePdfUrl(URL.createObjectURL(result.blob));
-        setRenderedKey(JSON.stringify(body));
+  const runPreview = useCallback(async () => {
+    if (!permissions.canPreview) return;
+    const requestId = previewRequestRef.current + 1;
+    previewRequestRef.current = requestId;
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const isCurrent = () => previewRequestRef.current === requestId;
+    setPdfLoading(true);
+    setPdfError(null);
+    const body: TPreviewInput = {
+      title: emptyToNull(sampleTitleRef.current),
+      subtitle: emptyToNull(sampleSubtitleRef.current),
+      contentKind: contentKindRef.current,
+      layout: toLayoutInput(draftRef.current),
+    };
+    try {
+      const result = await preview(body, controller.signal);
+      if (!isCurrent()) return;
+      if (controller.signal.aborted) {
         setPdfLoading(false);
-      } catch (error) {
-        if (!isCurrent()) return;
-        if (controller.signal.aborted) {
-          setPdfLoading(false);
-          return;
-        }
-        setAutoPdf(false);
-        setPdfError(
-          getSimpleResultFromAxiosError(error)?.message || t("reportLayout.preview.failed"),
-        );
-        setPdfLoading(false);
-        setCanvas("pdf");
+        return;
       }
-    },
-    [permissions.canPreview, preview, replacePdfUrl, t],
-  );
+      if (!result.ok) {
+        setAutoPdf(false);
+        setPdfError(result.message || t("reportLayout.preview.failed"));
+        setPdfLoading(false);
+        return;
+      }
+      replacePdfUrl(URL.createObjectURL(result.blob));
+      setRenderedKey(JSON.stringify(body));
+      setPdfLoading(false);
+    } catch (error) {
+      if (!isCurrent()) return;
+      if (controller.signal.aborted) {
+        setPdfLoading(false);
+        return;
+      }
+      setAutoPdf(false);
+      setPdfError(
+        getSimpleResultFromAxiosError(error)?.message || t("reportLayout.preview.failed"),
+      );
+      setPdfLoading(false);
+    }
+  }, [permissions.canPreview, preview, replacePdfUrl, t]);
 
   useEffect(() => {
     if (!autoPdf || !permissions.canPreview || !baseline) return;
     const timer = window.setTimeout(() => {
-      void runPreview(false);
+      void runPreview();
     }, 700);
     return () => {
       window.clearTimeout(timer);
@@ -838,12 +830,6 @@ export const useReportLayoutStudio = () => {
     toggleSection,
     expandAll,
     collapseAll,
-    canvas,
-    setCanvas,
-    zoom,
-    setZoom,
-    guides,
-    setGuides,
     sampleTitle,
     setSampleTitle,
     sampleSubtitle,
@@ -856,7 +842,7 @@ export const useReportLayoutStudio = () => {
     pdfError,
     pdfStale,
     pdfLoading,
-    renderPdf: () => void runPreview(true),
+    renderPdf: () => void runPreview(),
     openLayout,
     duplicateLayout,
     duplicateDraft,
