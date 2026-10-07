@@ -298,7 +298,6 @@ const reportLayout = {
     makeDefault: "اجعله التنسيق الافتراضي للشركة",
     cancel: "إلغاء",
     submit: "إنشاء التنسيق",
-    invalid: "أدخل رمزًا واسمًا ضمن حدود الطول.",
   },
   confirm: {
     deactivateTitle: "إيقاف «{{name}}»؟",
@@ -343,7 +342,6 @@ const reportLayout = {
     deactivated: "تم إيقاف التنسيق.",
     reactivated: "تمت إعادة تفعيل التنسيق.",
     defaultSet: "تم تحديث التنسيق الافتراضي.",
-    fixIssues: "أصلح المشكلات التي تمنع الحفظ أولًا.",
     detached: "انفصلت المسودة عن التنسيق المحفوظ. استخدم الحفظ كجديد.",
     openedSystem: "تم تحميل تنسيق نظام. احفظه كجديد للتعديل.",
     opened: "تم فتح التنسيق.",

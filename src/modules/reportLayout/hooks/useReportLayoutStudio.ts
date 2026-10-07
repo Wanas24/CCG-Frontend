@@ -14,7 +14,6 @@ import { useGetReportLayoutSummary } from "../api/hooks/useGetReportLayoutSummar
 import { useLoadReportLayout } from "../api/hooks/useLoadReportLayout";
 import { useUpdateReportLayout } from "../api/hooks/useUpdateReportLayout";
 import { reportLayoutQueryRootKey } from "../api/queryKeys/reportLayoutQueryKeys";
-import { layoutIdentitySchema } from "../schemas/layoutIdentitySchema";
 import { LAYOUT_LIMITS } from "../schemas/layoutLimits";
 import {
   CONTENT_KIND,
@@ -28,7 +27,7 @@ import {
   type TSignatureDraft,
 } from "../types";
 import { buildLayoutChanges } from "../utils/layoutDiff";
-import { buildLayoutChecks } from "../utils/layoutChecks";
+import { buildLayoutChecks, layoutFieldErrors, type TLayoutCheck } from "../utils/layoutChecks";
 import { cloneDraft, createBlankDraft, createSignature } from "../utils/layoutDefaults";
 import { LAYOUT_PRESETS, type TPresetKey } from "../utils/layoutPresets";
 import {
@@ -39,7 +38,7 @@ import {
   toStoredLayoutInput,
 } from "../utils/layoutPayload";
 import { layoutText } from "../utils/layoutText";
-import { SECTION_IDS } from "../utils/layoutFields";
+import { LAYOUT_FIELDS, SECTION_IDS } from "../utils/layoutFields";
 
 export type TStudioView = "gallery" | "designer" | "usage";
 
@@ -54,6 +53,11 @@ export type TSaveDraft = {
   code: string;
   name: string;
   isDefault: boolean;
+};
+
+export type TSaveSubmitResult = {
+  fields: Partial<Record<"code" | "name", string>>;
+  messages: string[];
 };
 
 export type TConfirmState = {
@@ -164,6 +168,7 @@ export const useReportLayoutStudio = () => {
     [baseline, draft, t],
   );
   const blockingCount = checks.filter((checkItem) => checkItem.level === "err").length;
+  const fieldErrors = useMemo(() => layoutFieldErrors(checks), [checks]);
   const draftRef = useRef(draft);
   const sampleTitleRef = useRef(sampleTitle);
   const sampleSubtitleRef = useRef(sampleSubtitle);
@@ -537,11 +542,31 @@ export const useReportLayoutStudio = () => {
     sampleTitle,
   ]);
 
+  const openSectionsForChecks = useCallback((items: TLayoutCheck[]) => {
+    setOpenSections((current) => {
+      let changed = false;
+      const next = new Set(current);
+      items.forEach((item) => {
+        if (item.level !== "err") return;
+        const section =
+          item.signatureIndex !== undefined
+            ? "signatures"
+            : item.field
+              ? LAYOUT_FIELDS.find((field) => field.key === item.field)?.section
+              : undefined;
+        if (!section || next.has(section)) return;
+        next.add(section);
+        changed = true;
+      });
+      return changed ? next : current;
+    });
+  }, []);
+
   const updateLayout = useCallback(() => {
     const currentEditing = editing;
     if (!currentEditing || currentEditing.isSystem || !permissions.canUpdate) return;
     if (blockingCount > 0) {
-      toast.warn(t("reportLayout.toast.fixIssues"));
+      openSectionsForChecks(checks);
       return;
     }
     updateMutation.mutate(
@@ -557,7 +582,7 @@ export const useReportLayoutStudio = () => {
         },
       },
     );
-  }, [beginDraft, blockingCount, draft, editing, permissions.canUpdate, t, updateMutation]);
+  }, [beginDraft, blockingCount, checks, draft, editing, openSectionsForChecks, permissions.canUpdate, t, updateMutation]);
 
   const openSaveAsNew = useCallback(() => {
     if (!permissions.canCreate || !baseline) return;
@@ -573,16 +598,11 @@ export const useReportLayoutStudio = () => {
   }, [baseline, draft.code, draft.isDefault, draft.name, layouts, permissions.canCreate, quotaLimit, quotaReached, t]);
 
   const submitSave = useCallback(
-    (values: TSaveDraft) => {
-      const parsed = layoutIdentitySchema.safeParse(values);
-      if (!parsed.success) {
-        toast.warn(t("reportLayout.save.invalid"));
-        return;
-      }
+    (values: TSaveDraft): TSaveSubmitResult => {
       const next = {
         ...draft,
-        code: parsed.data.code,
-        name: parsed.data.name,
+        code: values.code.trim(),
+        name: values.name.trim(),
         isDefault: values.isDefault,
       };
       const nextChecks = buildLayoutChecks({
@@ -595,11 +615,19 @@ export const useReportLayoutStudio = () => {
         quotaLimit,
         t,
       });
-      if (nextChecks.some((item) => item.level === "err")) {
-        setDraft(next);
-        setEditing(null);
-        toast.warn(t("reportLayout.toast.fixIssues"));
-        return;
+      const blockers = nextChecks.filter((item) => item.level === "err");
+      if (blockers.length > 0) {
+        const fields: TSaveSubmitResult["fields"] = {};
+        const messages: string[] = [];
+        blockers.forEach((item) => {
+          if (item.field === "code" || item.field === "name") {
+            fields[item.field] ??= item.text;
+            return;
+          }
+          messages.push(item.text);
+        });
+        openSectionsForChecks(blockers);
+        return { fields, messages };
       }
       createMutation.mutate(toLayoutInput(next), {
         onSuccess: (result) => {
@@ -612,8 +640,9 @@ export const useReportLayoutStudio = () => {
           toast.success(result.message || t("reportLayout.toast.created"));
         },
       });
+      return { fields: {}, messages: [] };
     },
-    [beginDraft, contentKind, createMutation, draft, layouts, quotaLimit, quotaUsed, t],
+    [beginDraft, contentKind, createMutation, draft, layouts, openSectionsForChecks, quotaLimit, quotaUsed, t],
   );
 
   const syncCleanEditor = useCallback(
@@ -821,6 +850,7 @@ export const useReportLayoutStudio = () => {
     hasDraft: baseline !== null,
     draft,
     checks,
+    fieldErrors,
     changes,
     blockingCount,
     permissions,

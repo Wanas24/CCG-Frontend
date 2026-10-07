@@ -64,17 +64,28 @@ const safeHex = (value: string | null | undefined, fallback: string) => {
   return /^#[0-9a-fA-F]{6}$/.test(raw) ? raw : fallback;
 };
 
+const FieldError = ({ message }: { message?: string }) => {
+  if (!message) return null;
+  return <p className="mt-1 text-[11px] leading-snug text-(--statusR200)">{message}</p>;
+};
+
 const FieldControl = ({
   field,
   draft,
+  error,
   onPatch,
 }: {
   field: TLayoutField;
   draft: TLayoutDraft;
+  error?: string;
   onPatch: (patch: Partial<TLayoutDraft>) => void;
 }) => {
   const { t } = useTranslation();
   const active = isFieldActive(field, draft);
+  const controlClass = clsx(
+    inputClass,
+    error && "border-(--statusR200)! focus:border-(--statusR200)!",
+  );
   const value = draft[field.key];
   const label = layoutText(t, field.labelKey);
   const id = `layout-${field.key}`;
@@ -116,7 +127,7 @@ const FieldControl = ({
         </label>
         <select
           id={id}
-          className={inputClass}
+          className={controlClass}
           value={String(value ?? "")}
           onChange={(event) => {
             const next = event.target.value;
@@ -141,7 +152,7 @@ const FieldControl = ({
         </label>
         <input
           id={id}
-          className={inputClass}
+          className={controlClass}
           type="number"
           min={field.min}
           max={field.max}
@@ -175,7 +186,7 @@ const FieldControl = ({
           />
           <input
             id={id}
-            className={clsx(inputClass, "font-mono text-xs")}
+            className={clsx(controlClass, "font-mono text-xs")}
             maxLength={20}
             value={isAuto ? "" : String(value ?? "")}
             placeholder={isAuto ? t("reportLayout.inspector.auto") : undefined}
@@ -204,7 +215,7 @@ const FieldControl = ({
       maxLength: field.maxLength,
       value: typeof value === "string" ? value : "",
       onChange: (event: { target: { value: string } }) => setText(event.target.value),
-      className: clsx(inputClass, field.mono && "font-mono text-xs"),
+      className: clsx(controlClass, field.mono && "font-mono text-xs"),
     };
     control = (
       <>
@@ -243,6 +254,7 @@ const FieldControl = ({
   return (
     <div className={clsx(field.fullWidth && "col-span-2", !active && "opacity-45")}>
       {control}
+      <FieldError message={error} />
       {field.helpKey ? (
         <p className="mt-1 text-[11px] leading-snug text-(--Grey500)">{layoutText(t, field.helpKey)}</p>
       ) : null}
@@ -318,11 +330,16 @@ const SignatureEditor = ({ studio }: Props) => {
             <label className="col-span-2 text-[11px] font-semibold text-(--Grey600)">
               {t("reportLayout.signature.label")}
               <textarea
-                className={clsx(inputClass, "mt-1")}
+                className={clsx(
+                  inputClass,
+                  "mt-1",
+                  studio.fieldErrors.signatures[index] && "border-(--statusR200)! focus:border-(--statusR200)!",
+                )}
                 maxLength={1000}
                 value={signature.label}
                 onChange={(event) => update(signature.uid, { label: event.target.value })}
               />
+              <FieldError message={studio.fieldErrors.signatures[index]} />
             </label>
             <label className="col-span-2 text-[11px] font-semibold text-(--Grey600)">
               {t("reportLayout.signature.title")}
@@ -539,6 +556,7 @@ const ReportLayoutInspector = ({ studio }: Props) => {
                       key={field.key}
                       field={field}
                       draft={studio.draft}
+                      error={studio.fieldErrors.fields[field.key]}
                       onPatch={studio.patchDraft}
                     />
                   ))}

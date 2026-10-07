@@ -298,7 +298,6 @@ const reportLayout = {
     makeDefault: "Make it the company default",
     cancel: "Cancel",
     submit: "Create layout",
-    invalid: "Enter a code and a name within the length limits.",
   },
   confirm: {
     deactivateTitle: "Deactivate “{{name}}”?",
@@ -343,7 +342,6 @@ const reportLayout = {
     deactivated: "Layout deactivated.",
     reactivated: "Layout reactivated.",
     defaultSet: "Default layout updated.",
-    fixIssues: "Fix the blocking issues first.",
     detached: "The draft is detached from the saved layout. Use Save as new.",
     openedSystem: "Loaded a system layout. Save it as new to edit.",
     opened: "Layout opened.",
