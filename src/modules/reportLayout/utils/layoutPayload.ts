@@ -157,9 +157,6 @@ export const toDraft = (
 export const companyLayouts = (layouts: TLayout[]) =>
   layouts.filter((layout) => !layout.isSystem);
 
-export const activeCompanyCount = (layouts: TLayout[]) =>
-  companyLayouts(layouts).filter((layout) => layout.isActive).length;
-
 const codeWithSuffix = (stem: string, suffix: string, max: number) => {
   if (max <= 0) return "";
   const ending = suffix.length >= max ? suffix.slice(-max) : suffix;

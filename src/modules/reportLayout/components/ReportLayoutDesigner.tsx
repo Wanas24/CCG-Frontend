@@ -5,7 +5,7 @@ import { Switch } from "antd";
 import { useTranslation } from "react-i18next";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import AppSegmented from "@/shared/ANTD_UIComponents/AppTabs/AppSegmented";
-import { COMPANY_LAYOUT_LIMIT, CONTENT_KIND } from "../types";
+import { CONTENT_KIND } from "../types";
 import { paperSizeMm } from "../utils/paperGeometry";
 import type { ReportLayoutStudioApi, TCanvasMode, TZoom } from "../hooks/useReportLayoutStudio";
 import ReportLayoutInspector from "./ReportLayoutInspector";
@@ -52,7 +52,7 @@ const ReportLayoutDesigner = ({ studio }: Props) => {
     ? fitScale
     : Number(studio.zoom);
   const pxPerMm = basePx * (Number.isFinite(numericZoom) && numericZoom > 0 ? numericZoom : 1);
-  const quotaBlocksCreate = studio.activeCount >= COMPANY_LAYOUT_LIMIT;
+  const quotaBlocksCreate = studio.quotaReached;
   const canUpdate =
     Boolean(studio.editing && !studio.editing.isSystem) &&
     studio.permissions.canUpdate &&
@@ -125,7 +125,11 @@ const ReportLayoutDesigner = ({ studio }: Props) => {
             variant="secondary"
             className={compactButton}
             disabled={quotaBlocksCreate || studio.isSaving}
-            title={quotaBlocksCreate ? t("reportLayout.editor.quotaBlocked") : undefined}
+            title={
+              quotaBlocksCreate && studio.quotaLimit !== null
+                ? t("reportLayout.editor.quotaBlocked", { limit: studio.quotaLimit })
+                : undefined
+            }
             onClick={studio.openSaveAsNew}
           >
             {t("reportLayout.editor.saveAsNew")}

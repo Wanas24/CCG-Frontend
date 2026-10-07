@@ -1,5 +1,3 @@
-export const COMPANY_LAYOUT_LIMIT = 10;
-
 export const PAPER_SIZE = {
   A4: 1,
   A3: 2,

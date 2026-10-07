@@ -5,6 +5,7 @@ const reportLayout = {
   loading: "Loading layouts…",
   reload: "Reload layouts",
   loadFailed: "Couldn't load layouts.",
+  summaryFailed: "Couldn't load the layout summary.",
   systemHint: "System layouts are read-only — duplicate one to get an editable company layout",
   showInactive: "Show inactive",
   views: {
@@ -64,7 +65,7 @@ const reportLayout = {
     revert: "Revert",
     empty: "Open a layout from the gallery, or start a new one.",
     startBlank: "Start blank",
-    quotaBlocked: "This company already has 10 active layouts",
+    quotaBlocked: "This company already has {{limit}} active layouts",
   },
   inspector: {
     title: "Inspector",
@@ -362,7 +363,7 @@ const reportLayout = {
     duplicated: "Loaded as a new draft. Review the code and name before saving.",
     blank: "Started a blank layout.",
     preset: "Started from {{name}}.",
-    quota: "Deactivate a layout before creating another. The limit is 10 active layouts.",
+    quota: "Deactivate a layout before creating another. The limit is {{limit}} active layouts.",
     gone: "That layout is no longer available.",
   },
   sample: {

@@ -32,17 +32,30 @@ type StatCardProps = {
   extra?: ReactNode;
 };
 
+const summarySkeleton = (
+  <>
+    <AppSkeleton.Node active className="h-[118px]! w-full!" />
+    <AppSkeleton.Node active className="h-[118px]! w-full!" />
+    <AppSkeleton.Node active className="h-[118px]! w-full!" />
+  </>
+);
+
 const ReportLayoutStats = ({ studio }: Props) => {
   const { t } = useTranslation();
   const summary = studio.summary;
-  const quotaUsed = summary?.activeCompanyCount ?? 0;
-  const quotaLimit = summary?.quotaLimit ?? 0;
+  const quotaUsed = studio.quotaUsed ?? 0;
+  const quotaLimit = studio.quotaLimit ?? 0;
   const slotsLeft = Math.max(0, quotaLimit - quotaUsed);
   const quotaWidth = quotaLimit > 0 ? Math.min(100, (quotaUsed / quotaLimit) * 100) : 0;
   const unsavedCount = studio.changes.length;
-
-  return (
-    <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-4">
+  const summaryCards = studio.isSummaryLoading ? (
+    summarySkeleton
+  ) : studio.summaryError ? (
+    <p className="rounded-xl border border-(--statusR200) bg-(--statusR100) p-4 text-sm text-(--statusR200) lg:col-span-2 xl:col-span-3">
+      {studio.summaryError}
+    </p>
+  ) : (
+    <>
       <StatCard
         title={t("reportLayout.stats.layouts")}
         value={String(summary?.totalCount ?? 0)}
@@ -81,6 +94,12 @@ const ReportLayoutStats = ({ studio }: Props) => {
         }
         glow="green"
       />
+    </>
+  );
+
+  return (
+    <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-4">
+      {summaryCards}
       <StatCard
         title={t("reportLayout.stats.unsaved")}
         value={String(unsavedCount)}
@@ -164,16 +183,7 @@ const ReportLayoutStudioView = ({ studio }: Props) => {
         </AppButton>
       </div>
 
-      {studio.isSummaryLoading ? (
-        <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-2 xl:grid-cols-4">
-          <AppSkeleton.Node active className="h-[118px]! w-full!" />
-          <AppSkeleton.Node active className="h-[118px]! w-full!" />
-          <AppSkeleton.Node active className="h-[118px]! w-full!" />
-          <AppSkeleton.Node active className="h-[118px]! w-full!" />
-        </div>
-      ) : (
-        <ReportLayoutStats studio={studio} />
-      )}
+      <ReportLayoutStats studio={studio} />
 
       <div className="flex flex-wrap items-center gap-3">
         <AppSegmented<TStudioView>

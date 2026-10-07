@@ -18,7 +18,6 @@ export type {
 } from "./reportLayout";
 
 export {
-  COMPANY_LAYOUT_LIMIT,
   CONTENT_KIND,
   CONTENT_TEMPLATE,
   LAYOUT_FONTS,

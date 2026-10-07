@@ -1,7 +1,7 @@
 import type { TFunction } from "i18next";
 import { LAYOUT_LIMITS } from "../schemas/layoutLimits";
-import { COMPANY_LAYOUT_LIMIT, type TContentKind, type TLayout, type TLayoutDraft } from "../types";
-import { activeCompanyCount, companyLayouts } from "./layoutPayload";
+import type { TContentKind, TLayout, TLayoutDraft } from "../types";
+import { companyLayouts } from "./layoutPayload";
 import { layoutText } from "./layoutText";
 import { contentRoomMm } from "./paperGeometry";
 
@@ -16,6 +16,8 @@ type TCheckInput = {
   editingId: string | null;
   editingIsSystem: boolean;
   contentKind: TContentKind;
+  quotaUsed: number | null;
+  quotaLimit: number | null;
   t: TFunction;
 };
 
@@ -27,6 +29,8 @@ export const buildLayoutChecks = ({
   editingId,
   editingIsSystem,
   contentKind,
+  quotaUsed,
+  quotaLimit,
   t,
 }: TCheckInput): TLayoutCheck[] => {
   const checks: TLayoutCheck[] = [];
@@ -97,11 +101,12 @@ export const buildLayoutChecks = ({
 
   if (editingIsSystem) info(t("reportLayout.checks.systemReadOnly"));
 
-  const active = activeCompanyCount(layouts);
-  if (!editingId && active >= COMPANY_LAYOUT_LIMIT) {
-    err(t("reportLayout.checks.quota", { count: active, limit: COMPANY_LAYOUT_LIMIT }));
-  } else if (editingId && active >= COMPANY_LAYOUT_LIMIT) {
-    warn(t("reportLayout.checks.quotaSaveAsNew", { limit: COMPANY_LAYOUT_LIMIT }));
+  if (quotaUsed !== null && quotaLimit !== null && quotaUsed >= quotaLimit) {
+    if (!editingId) {
+      err(t("reportLayout.checks.quota", { count: quotaUsed, limit: quotaLimit }));
+    } else {
+      warn(t("reportLayout.checks.quotaSaveAsNew", { limit: quotaLimit }));
+    }
   }
 
   if (draft.isDefault) {

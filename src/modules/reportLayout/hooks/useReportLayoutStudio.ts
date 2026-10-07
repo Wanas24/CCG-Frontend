@@ -17,7 +17,6 @@ import { reportLayoutQueryRootKey } from "../api/queryKeys/reportLayoutQueryKeys
 import { layoutIdentitySchema } from "../schemas/layoutIdentitySchema";
 import { LAYOUT_LIMITS } from "../schemas/layoutLimits";
 import {
-  COMPANY_LAYOUT_LIMIT,
   CONTENT_KIND,
   REPORT_TYPES,
   type TContentKind,
@@ -33,7 +32,6 @@ import { buildLayoutChecks } from "../utils/layoutChecks";
 import { cloneDraft, createBlankDraft, createSignature } from "../utils/layoutDefaults";
 import { LAYOUT_PRESETS, type TPresetKey } from "../utils/layoutPresets";
 import {
-  activeCompanyCount,
   nextFreeCode,
   suffixCopy,
   toDraft,
@@ -136,11 +134,21 @@ export const useReportLayoutStudio = () => {
     () => (summaryQuery.data?.isSuccess ? (summaryQuery.data.data ?? null) : null),
     [summaryQuery.data],
   );
+  const quotaUsed = summary?.activeCompanyCount ?? null;
+  const quotaLimit = summary?.quotaLimit ?? null;
+  const quotaReached = quotaUsed !== null && quotaLimit !== null && quotaUsed >= quotaLimit;
   const loadError = listQuery.data && !listQuery.data.isSuccess
     ? listQuery.data.message
     : listQuery.isError
       ? (getSimpleResultFromAxiosError(listQuery.error)?.message ?? t("reportLayout.loadFailed"))
       : null;
+  const summaryError = summaryQuery.data && !summaryQuery.data.isSuccess
+    ? summaryQuery.data.message || t("reportLayout.summaryFailed")
+    : summaryQuery.isError
+      ? (getSimpleResultFromAxiosError(summaryQuery.error)?.message ?? t("reportLayout.summaryFailed"))
+      : summaryQuery.isSuccess && !summary
+        ? t("reportLayout.summaryFailed")
+        : null;
 
   const checks = useMemo(
     () =>
@@ -150,9 +158,11 @@ export const useReportLayoutStudio = () => {
         editingId: editing?.id ?? null,
         editingIsSystem: editing?.isSystem ?? false,
         contentKind,
+        quotaUsed,
+        quotaLimit,
         t,
       }),
-    [contentKind, draft, editing?.id, editing?.isSystem, layouts, t],
+    [contentKind, draft, editing?.id, editing?.isSystem, layouts, quotaLimit, quotaUsed, t],
   );
   const changes = useMemo(
     () => buildLayoutChanges(baseline, draft, t),
@@ -366,13 +376,13 @@ export const useReportLayoutStudio = () => {
   const startNew = useCallback(
     (presetKey: TPresetKey | null) => {
       if (!permissions.canCreate) return;
-      if (activeCompanyCount(layouts) >= COMPANY_LAYOUT_LIMIT) {
-        toast.warn(t("reportLayout.toast.quota"));
+      if (quotaReached && quotaLimit !== null) {
+        toast.warn(t("reportLayout.toast.quota", { limit: quotaLimit }));
         return;
       }
       runUnlessDirty(() => startBlank(presetKey));
     },
-    [layouts, permissions.canCreate, runUnlessDirty, startBlank, t],
+    [permissions.canCreate, quotaLimit, quotaReached, runUnlessDirty, startBlank, t],
   );
 
   const duplicateDraft = useCallback(() => {
@@ -559,8 +569,8 @@ export const useReportLayoutStudio = () => {
 
   const openSaveAsNew = useCallback(() => {
     if (!permissions.canCreate || !baseline) return;
-    if (activeCompanyCount(layouts) >= COMPANY_LAYOUT_LIMIT) {
-      toast.warn(t("reportLayout.toast.quota"));
+    if (quotaReached && quotaLimit !== null) {
+      toast.warn(t("reportLayout.toast.quota", { limit: quotaLimit }));
       return;
     }
     setSaveDraft({
@@ -568,7 +578,7 @@ export const useReportLayoutStudio = () => {
       name: (draft.name || t("reportLayout.editor.newTitle")).slice(0, LAYOUT_LIMITS.name),
       isDefault: draft.isDefault,
     });
-  }, [baseline, draft.code, draft.isDefault, draft.name, layouts, permissions.canCreate, t]);
+  }, [baseline, draft.code, draft.isDefault, draft.name, layouts, permissions.canCreate, quotaLimit, quotaReached, t]);
 
   const submitSave = useCallback(
     (values: TSaveDraft) => {
@@ -589,6 +599,8 @@ export const useReportLayoutStudio = () => {
         editingId: null,
         editingIsSystem: false,
         contentKind,
+        quotaUsed,
+        quotaLimit,
         t,
       });
       if (nextChecks.some((item) => item.level === "err")) {
@@ -609,7 +621,7 @@ export const useReportLayoutStudio = () => {
         },
       });
     },
-    [beginDraft, contentKind, createMutation, draft, layouts, t],
+    [beginDraft, contentKind, createMutation, draft, layouts, quotaLimit, quotaUsed, t],
   );
 
   const syncCleanEditor = useCallback(
@@ -738,13 +750,13 @@ export const useReportLayoutStudio = () => {
     (layoutId: string) => {
       const layout = layouts.find((item) => item.id === layoutId);
       if (!layout || layout.isSystem || !permissions.canUpdate) return;
-      if (activeCompanyCount(layouts) >= COMPANY_LAYOUT_LIMIT) {
-        toast.warn(t("reportLayout.toast.quota"));
+      if (quotaReached && quotaLimit !== null) {
+        toast.warn(t("reportLayout.toast.quota", { limit: quotaLimit }));
         return;
       }
       writeStored(layout, { isActive: true }, t("reportLayout.toast.reactivated"));
     },
-    [layouts, permissions.canUpdate, t, writeStored],
+    [layouts, permissions.canUpdate, quotaLimit, quotaReached, t, writeStored],
   );
 
   const applyUsage = useCallback((reportType: string, result: TLastUsedResult) => {
@@ -803,8 +815,12 @@ export const useReportLayoutStudio = () => {
     setIncludeInactive,
     reload,
     isLoading: listQuery.isPending,
-    isSummaryLoading: summaryQuery.isPending,
+    isSummaryLoading: summaryQuery.isPending || summaryQuery.isPlaceholderData,
     summary,
+    summaryError,
+    quotaUsed,
+    quotaLimit,
+    quotaReached,
     isOpening,
     isSaving: createMutation.isPending || updateMutation.isPending || deactivateMutation.isPending,
     loadError,
@@ -815,7 +831,6 @@ export const useReportLayoutStudio = () => {
     checks,
     changes,
     blockingCount,
-    activeCount: activeCompanyCount(layouts),
     permissions,
     inspectorQuery,
     setInspectorQuery,
