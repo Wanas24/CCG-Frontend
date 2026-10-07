@@ -20,6 +20,7 @@ import {
   type ItemCategoryFormValues,
 } from "../schemas/itemCategoryFormSchema";
 import type { TItemCategory, TItemCategoryFile } from "../types/itemCategory";
+import { downloadRemoteFile } from "../utils/downloadRemoteFile";
 
 export type ItemCategoryFileAction = {
   fileId: number;
@@ -32,19 +33,6 @@ const emptyValues: ItemCategoryFormValues = {
   unitId: 0,
   description: "",
   notes: "",
-};
-
-const triggerAnchorDownload = (url: string, fileName?: string) => {
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.target = "_blank";
-  anchor.rel = "noopener";
-  if (fileName) {
-    anchor.download = fileName;
-  }
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
 };
 
 export const useItemCatalogManager = () => {
@@ -227,12 +215,18 @@ export const useItemCatalogManager = () => {
     if (!canDownload || fileAction) return;
     setFileAction({ fileId: file.fileId, kind: "download" });
     try {
-      const resolved = await resolveFileUrl(file);
-      if (!resolved?.url) {
+      const response = await fileUrlMutation.mutateAsync(file.fileId);
+      if (!response.isSuccess || !response.data?.url) {
         toast.error(t("lists.itemCatalog.downloadError"));
         return;
       }
-      triggerAnchorDownload(resolved.url, resolved.fileName);
+
+      await downloadRemoteFile(
+        response.data.url,
+        response.data.fileName || file.fileName || "download",
+      );
+    } catch {
+      toast.error(t("lists.itemCatalog.downloadError"));
     } finally {
       setFileAction(null);
     }
