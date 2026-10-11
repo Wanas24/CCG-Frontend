@@ -185,12 +185,37 @@ const AiSubscriptionDrawer = ({
       classNames={{ body: "flex flex-col gap-4" }}
     >
       {isPending && (
-        <div aria-busy="true" aria-live="polite" className="flex flex-col gap-3">
-          <p className="m-0 text-xs text-(--Grey600)">
-            {t("ai.subscriptions.loadingDetails")}
-          </p>
-          <AppSkeleton active paragraph={{ rows: 4 }} />
-          <AppSkeleton active paragraph={{ rows: 5 }} />
+        <div aria-busy="true" aria-live="polite" className="flex flex-col gap-5">
+          <div>
+            <AppSkeleton.Input active className="!mb-1 !h-5 !w-40 !min-w-32" />
+            <AppSkeleton.Input active className="!h-4 !w-52 !min-w-40" />
+          </div>
+
+          <section className="flex flex-col gap-2 border-t border-(--Grey300) pt-4">
+            <AppSkeleton.Input active className="!mb-1 !h-4 !w-24 !min-w-20" />
+            <AppSkeleton.Input active block className="!h-3 !w-full !min-w-0" />
+            <AppSkeleton.Input active block className="!h-2 !w-full !min-w-0" />
+            <AppSkeleton.Input active block className="!mt-2 !h-3 !w-full !min-w-0" />
+            <AppSkeleton.Input active block className="!h-2 !w-full !min-w-0" />
+          </section>
+
+          <section className="flex flex-col gap-3 border-t border-(--Grey300) pt-4">
+            <AppSkeleton.Input active className="!h-4 !w-28 !min-w-24" />
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="flex items-center justify-between gap-3">
+                <AppSkeleton.Input active className="!h-4 !w-32 !min-w-24" />
+                <AppSkeleton.Button active size="small" className="!h-6 !w-10 !min-w-10" />
+              </div>
+            ))}
+          </section>
+
+          <section className="flex flex-col gap-3 border-t border-(--Grey300) pt-4">
+            <AppSkeleton.Input active className="!h-4 !w-24 !min-w-20" />
+            <AppSkeleton.Input active block className="!h-10 !w-full !min-w-0" />
+            <AppSkeleton.Input active block className="!h-10 !w-full !min-w-0" />
+          </section>
+
+          <AppSkeleton.Button active className="!h-10 !w-full" />
         </div>
       )}
 

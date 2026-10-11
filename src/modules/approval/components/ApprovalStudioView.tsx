@@ -4,13 +4,14 @@ import { GitBranch, LayoutGrid, Plus, RefreshCw } from "lucide-react";
 import { Switch } from "antd";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
-import { AppButton, AppInput, AppSkeleton } from "@/shared/ANTD_UIComponents";
+import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
 import type { ApprovalStudioApi } from "../hooks/useApprovalStudio";
 import ApprovalBuilderDrawer from "./ApprovalBuilderDrawer";
 import ApprovalCoverageMap from "./ApprovalCoverageMap";
 import ApprovalDecideDialog from "./ApprovalDecideDialog";
 import ApprovalEntitySidebar from "./ApprovalEntitySidebar";
 import ApprovalRequestsDrawer from "./ApprovalRequestsDrawer";
+import ApprovalStudioSkeleton from "./ApprovalStudioSkeleton";
 import ApprovalWorkflowCard from "./ApprovalWorkflowCard";
 
 type Props = {
@@ -56,17 +57,7 @@ const ApprovalStudioView = ({ studio }: Props) => {
   const { t } = useTranslation();
 
   if (studio.isLoading) {
-    return (
-      <div className="flex flex-col gap-4">
-        <AppSkeleton active paragraph={{ rows: 2 }} />
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <AppSkeleton key={index} active paragraph={{ rows: 2 }} />
-          ))}
-        </div>
-        <p className={DesignTokens.typography.muted}>{t("approval.loading")}</p>
-      </div>
-    );
+    return <ApprovalStudioSkeleton />;
   }
 
   if (studio.isError || !studio.canGet) {

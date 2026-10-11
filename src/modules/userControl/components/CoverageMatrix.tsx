@@ -12,6 +12,7 @@ import {
   panelTitleClass,
 } from "../styles/userControlClasses";
 import ScrollLoadSentinel from "./ScrollLoadSentinel";
+import { CoverageMatrixSkeleton } from "./UserControlBoardSkeletons";
 
 type Props = {
   userControl: UserControlModel;
@@ -25,7 +26,7 @@ const CoverageMatrix = ({ userControl }: Props) => {
     (userControl.rolesPending || userControl.groupsPending) &&
     !userControl.rolesFailed
   ) {
-    return <AppSkeleton active paragraph={{ rows: 6 }} />;
+    return <CoverageMatrixSkeleton />;
   }
 
   if (userControl.roles.length === 0) {
