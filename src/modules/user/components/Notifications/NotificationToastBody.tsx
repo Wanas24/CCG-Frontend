@@ -45,7 +45,7 @@ const NotificationToastBody = ({
         <p
           className={clsx(
             DesignTokens.inputs.labelFontSize,
-            "m-0 break-words font-normal text-(--app-text)",
+            "m-0 break-words whitespace-pre-wrap font-normal text-(--app-text)",
           )}
         >
           {message}
