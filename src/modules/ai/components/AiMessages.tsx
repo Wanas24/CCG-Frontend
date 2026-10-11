@@ -1,6 +1,7 @@
 import {
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   type UIEvent,
 } from "react";
@@ -18,6 +19,15 @@ import AiMarkdown from "./AiMarkdown";
 import AiSources from "./AiSources";
 import AiToolUsage from "./AiToolUsage";
 import AiWarnings from "./AiWarnings";
+
+const isSameMessageContent = (
+  leftRole: string,
+  leftContent: string,
+  rightRole: string,
+  rightContent: string,
+) =>
+  leftRole.toLowerCase() === rightRole.toLowerCase() &&
+  leftContent === rightContent;
 
 type Props = {
   activeChatId: string | null;
@@ -131,11 +141,26 @@ const AiMessages = ({
   } = useGetAiMessages(activeChatId);
 
   const historyMessages = flattenAiMessagePages(data?.pages);
+  const visibleLocalMessages = useMemo(
+    () =>
+      localMessages.filter(
+        (local) =>
+          !historyMessages.some((history) =>
+            isSameMessageContent(
+              history.role,
+              history.content,
+              local.role,
+              local.content,
+            ),
+          ),
+      ),
+    [historyMessages, localMessages],
+  );
   const showHistoryError =
     isError ||
     Boolean(data?.pages.some((page) => page !== undefined && !page.isSuccess));
   const hasLocalContent =
-    localMessages.length > 0 || isWaitingForAssistant || sendError;
+    visibleLocalMessages.length > 0 || isWaitingForAssistant || sendError;
   const showEmptyState = !activeChatId && !hasLocalContent;
 
   useEffect(() => {
@@ -155,9 +180,9 @@ const AiMessages = ({
     }
 
     const localCountChanged =
-      localMessages.length !== previousLocalCountRef.current ||
+      visibleLocalMessages.length !== previousLocalCountRef.current ||
       isWaitingForAssistant;
-    previousLocalCountRef.current = localMessages.length;
+    previousLocalCountRef.current = visibleLocalMessages.length;
 
     if (localCountChanged && hasLocalContent) {
       container.scrollTop = container.scrollHeight;
@@ -187,7 +212,7 @@ const AiMessages = ({
     isFetchingNextPage,
     isWaitingForAssistant,
     historyMessages,
-    localMessages,
+    visibleLocalMessages,
     showHistoryError,
   ]);
 
@@ -284,7 +309,7 @@ const AiMessages = ({
         );
       })}
 
-      {localMessages.map((message) => (
+      {visibleLocalMessages.map((message) => (
         <MessageBubble key={message.id} {...message} />
       ))}
 
