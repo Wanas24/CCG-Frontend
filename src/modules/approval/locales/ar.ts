@@ -85,7 +85,7 @@ const approval = {
     levelNamePlaceholder: "اسم المستوى، مثال: مراجعة المدير",
     levelLabel: "المستوى {{index}}",
     addLevel: "إضافة المستوى {{index}}",
-    addApprover: "إضافة موافق",
+    addApprover: "إضافة مراقب",
     noApprovers: "لا يوجد موافقون بعد. أضف واحداً أو اسحب دوراً أو شخصاً هنا.",
     role: "دور",
     person: "شخص",
