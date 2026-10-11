@@ -1,5 +1,13 @@
 import type { TFunction } from "i18next";
-import { GitBranch, Home, ListTree, Settings, ShieldCheck, Users } from "lucide-react";
+import {
+  GitBranch,
+  Home,
+  ListTree,
+  Settings,
+  ShieldCheck,
+  UserCog,
+  Users,
+} from "lucide-react";
 import { AI_ROUTES } from "@/modules/ai/routes/paths";
 import { APPROVAL_ROUTES } from "@/modules/approval/routes/paths";
 import { approvalMenuPermissions } from "@/modules/approval/utils/approvalAccess";
@@ -39,8 +47,15 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
         key: "user-control",
         label: t("userControl.navLabel"),
         path: USER_CONTROL_ROUTES.userControl,
-        icon: <Users size={18} />,
+        icon: <UserCog size={18} />,
         permissions: [...userControlAccessPermissions],
+      },
+      {
+        key: "users-manager",
+        label: t("userControl.usersManager.navLabel"),
+        path: USER_CONTROL_ROUTES.usersManager,
+        icon: <Users size={18} />,
+        permissions: [PermissionsList.Employee.Get],
       },
       {
         key: "approval",

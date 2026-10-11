@@ -17,7 +17,6 @@ import { ApplicationRoleVisibility } from "../types";
 import type { ConfirmState, UserControlDrawerState } from "../types";
 import { isForbiddenError, readApiMessage } from "../utils/readApiMessage";
 import { personName, setsEqual, withUserRole } from "../utils/userControlDisplay";
-import { useUserControlInvite } from "./useUserControlInvite";
 import { useUserControlRoleForm } from "./useUserControlRoleForm";
 
 export const useUserControl = () => {
@@ -27,14 +26,12 @@ export const useUserControl = () => {
   const [roleSearch, setRoleSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<"all" | "company" | "shared">("all");
   const [permissionSearch, setPermissionSearch] = useState("");
-  const [projectSearch, setProjectSearch] = useState("");
   const [drawer, setDrawer] = useState<UserControlDrawerState | null>(null);
   const [confirmState, setConfirmState] = useState<ConfirmState>(null);
 
   const [debouncedEmployeeSearch] = useDebounce(employeeSearch.trim(), 300);
   const [debouncedRoleSearch] = useDebounce(roleSearch.trim(), 300);
   const [debouncedPermissionSearch] = useDebounce(permissionSearch.trim(), 300);
-  const [debouncedProjectSearch] = useDebounce(projectSearch.trim(), 300);
   const [debouncedDrawerPermissionSearch] = useDebounce((drawer?.query ?? "").trim(), 300);
 
   const data = useUserControlData({
@@ -47,7 +44,6 @@ export const useUserControl = () => {
           ? ApplicationRoleVisibility.Mine
           : undefined,
     permissionSearch: debouncedPermissionSearch,
-    projectSearch: debouncedProjectSearch,
     drawerPermissionSearch: debouncedDrawerPermissionSearch,
   });
   const { queryErrors, ...listData } = data;
@@ -58,7 +54,6 @@ export const useUserControl = () => {
   const can = (permission: string) =>
     !permissionsLoading && (isAdmin || isManager || hasPermission(permission));
 
-  const canRecruit = can(PermissionsList.Employee.RecruitEmployee);
   const canCreateRole = can(PermissionsList.ApplicationRole.Create);
   const canEditRole = can(PermissionsList.ApplicationRole.Edit);
   const canDeleteRole = can(PermissionsList.ApplicationRole.Delete);
@@ -66,7 +61,6 @@ export const useUserControl = () => {
   const canAssign = can(PermissionsList.ApplicationRole.AssignRoleToUser);
   const canUnassign = can(PermissionsList.ApplicationRole.UnassignRoleFromUser);
   const canSetUserRoles = can(PermissionsList.ApplicationRole.EditUserRoles);
-  const canSetProjects = can(PermissionsList.ProjectEmployee.SetProjects);
 
   const deleteRoleMutation = useDeleteApplicationRole();
   const setPermissionsMutation = useSetApplicationRolePermissions();
@@ -127,23 +121,6 @@ export const useUserControl = () => {
       touched: false,
     });
   };
-
-  const { cleanupRole, ...inviteModel } = useUserControlInvite({
-    data: {
-      isInitialLoading: data.isInitialLoading,
-      roles: data.roles,
-      projectsStatus: data.projectsStatus,
-      projects: data.projects,
-      groups: data.groups,
-      rolesFailed: data.rolesFailed,
-      roleCatalog: data.roleCatalog,
-      projectCatalog: data.projectCatalog,
-    },
-    rolePerms,
-    canSetUserRoles,
-    canSetProjects,
-    reload,
-  });
 
   const roleFormModel = useUserControlRoleForm({
     roleCatalog: data.roleCatalog,
@@ -389,7 +366,6 @@ export const useUserControl = () => {
     toast.success(
       response.message || t("userControl.toast.roleDeleted", { name: role.name }),
     );
-    cleanupRole(role.id);
     setDrawer((current) => (current?.roleId === role.id ? null : current));
     setConfirmState(null);
     await reload();
@@ -403,7 +379,6 @@ export const useUserControl = () => {
 
   const isBusy =
     data.isFetching ||
-    inviteModel.invitePending ||
     roleFormModel.roleSaving ||
     deleteRoleMutation.isPending ||
     setPermissionsMutation.isPending ||
@@ -416,7 +391,6 @@ export const useUserControl = () => {
     rolePerms,
     reload,
     isBusy,
-    canRecruit,
     canCreateRole,
     canEditRole,
     canDeleteRole,
@@ -424,7 +398,6 @@ export const useUserControl = () => {
     canAssign,
     canUnassign,
     canSetUserRoles,
-    canSetProjects,
     employeeSearch,
     setEmployeeSearch,
     roleSearch,
@@ -433,9 +406,6 @@ export const useUserControl = () => {
     setRoleFilter,
     permissionSearch,
     setPermissionSearch,
-    projectSearch,
-    setProjectSearch,
-    ...inviteModel,
     ...roleFormModel,
     confirmState,
     requestDeleteRole,

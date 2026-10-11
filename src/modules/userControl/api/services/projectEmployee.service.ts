@@ -15,6 +15,15 @@ export const projectEmployeeService = {
       { queryParams: toPagedQueryParams(params) },
     ),
 
+  userProjects: (userId: string, params?: TGetActiveProjectsParams) =>
+    callEndpoint<TGetActiveProjectsResponse>(
+      projectEmployeeEndpoints.userProjects,
+      {
+        pathParams: { userId },
+        queryParams: toPagedQueryParams(params),
+      },
+    ),
+
   setUserProjects: (userId: string, body: TSetUserProjectsRequest) =>
     callEndpoint<TSetUserProjectsResponse, TSetUserProjectsRequest>(
       projectEmployeeEndpoints.setUserProjects,

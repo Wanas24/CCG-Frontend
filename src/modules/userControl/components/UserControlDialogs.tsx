@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { AppButton, AppDialog, AppInput, AppTextArea } from "@/shared/ANTD_UIComponents";
@@ -8,15 +7,6 @@ import { mutedClass } from "../styles/userControlClasses";
 
 type Props = {
   userControl: UserControlModel;
-};
-
-const dot: Record<string, string> = {
-  ok: "✓",
-  fail: "!",
-  warn: "!",
-  skip: "–",
-  run: "…",
-  wait: "",
 };
 
 const UserControlDialogs = ({ userControl }: Props) => {
@@ -109,57 +99,6 @@ const UserControlDialogs = ({ userControl }: Props) => {
               : t("userControl.deleteRole.empty")
             : t("userControl.drawer.discardText")}
         </p>
-      </AppDialog>
-
-      <AppDialog
-        open={Boolean(userControl.inviteRun)}
-        title={userControl.inviteRun?.title}
-        closable={userControl.inviteRun?.closable ?? false}
-        maskClosable={userControl.inviteRun?.closable ?? false}
-        onCancel={userControl.inviteRun?.closable ? userControl.closeInviteRun : undefined}
-        footer={
-          <AppButton
-            disabled={!userControl.inviteRun?.closable}
-            onClick={userControl.closeInviteRun}
-          >
-            {t("userControl.invite.done")}
-          </AppButton>
-        }
-      >
-        <p className={mutedClass}>{userControl.inviteRun?.subtitle}</p>
-        <ol className="m-0 mt-4 flex list-none flex-col p-0">
-          {userControl.inviteRun?.steps.map((step, index) => (
-            <li key={step.title} className="flex gap-3.5 pb-[18px]">
-              <span
-                className={clsx(
-                  "grid size-8 shrink-0 place-items-center rounded-full border-2 border-(--Grey400) text-[13px] font-bold text-(--Grey600)",
-                  step.status === "ok" &&
-                    "border-(--statusG200) bg-(--statusG200) text-(--app-surface)",
-                  step.status === "fail" &&
-                    "border-(--statusR200) bg-(--statusR200) text-(--app-surface)",
-                  step.status === "warn" &&
-                    "border-(--statusY200) bg-(--statusY100) text-(--statusY200)",
-                  step.status === "skip" && "border-dashed",
-                )}
-              >
-                {dot[step.status] || index + 1}
-              </span>
-              <div>
-                <b className="block">{step.title}</b>
-                <small
-                  dir="auto"
-                  className={clsx(
-                    "mt-[3px] block text-(--Grey600)",
-                    step.status === "fail" && "text-(--statusR200)",
-                    step.status === "warn" && "text-(--statusY200)",
-                  )}
-                >
-                  {step.detail}
-                </small>
-              </div>
-            </li>
-          ))}
-        </ol>
       </AppDialog>
     </>
   );
