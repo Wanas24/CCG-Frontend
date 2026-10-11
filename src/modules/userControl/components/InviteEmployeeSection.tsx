@@ -37,6 +37,10 @@ const InviteEmployeeSection = ({ userControl, drag }: Props) => {
     disabled: !userControl.canRecruit || !userControl.canSetUserRoles,
   });
   const canDropRole = drag?.type === "role" && userControl.canSetUserRoles;
+  const inviteColumnClass =
+    "flex flex-col gap-1.5 min-[1251px]:row-span-2 min-[1251px]:grid min-[1251px]:grid-rows-subgrid min-[1251px]:gap-x-4 min-[1251px]:gap-y-1.5";
+  const inviteListClass =
+    "flex h-[92px] min-h-0 min-w-0 flex-wrap content-start gap-1.5 overflow-auto rounded-xl border bg-(--Grey100) p-2 min-[1251px]:h-full";
 
   if (!userControl.canRecruit) return null;
 
@@ -67,30 +71,32 @@ const InviteEmployeeSection = ({ userControl, drag }: Props) => {
       </div>
 
       <form
-        className="mt-3 grid grid-cols-1 items-start gap-4 min-[1251px]:grid-cols-[minmax(220px,1fr)_minmax(0,1.6fr)_minmax(0,1.6fr)_220px]"
+        className="mt-3 grid grid-cols-1 gap-4 min-[1251px]:grid-cols-[minmax(220px,1fr)_minmax(0,1.6fr)_minmax(0,1.6fr)_220px] min-[1251px]:grid-rows-[auto_92px] min-[1251px]:gap-x-4 min-[1251px]:gap-y-1.5 min-[1251px]:items-stretch"
         onSubmit={userControl.submitInvite}
         noValidate
       >
-        <div>
+        <div className={inviteColumnClass}>
           <div className={stepLabelClass}>{t("userControl.invite.email")}</div>
-          <Controller
-            name="employeeEmail"
-            control={userControl.inviteForm.control}
-            render={({ field, fieldState }) => (
-              <AppInput
-                {...field}
-                type="email"
-                autoComplete="off"
-                placeholder={t("userControl.invite.emailPlaceholder")}
-                prefix={<Mail size={14} aria-hidden />}
-                errorMsg={translateError(fieldState.error?.message)}
-              />
-            )}
-          />
+          <div className="self-start">
+            <Controller
+              name="employeeEmail"
+              control={userControl.inviteForm.control}
+              render={({ field, fieldState }) => (
+                <AppInput
+                  {...field}
+                  type="email"
+                  autoComplete="off"
+                  placeholder={t("userControl.invite.emailPlaceholder")}
+                  prefix={<Mail size={14} aria-hidden />}
+                  errorMsg={translateError(fieldState.error?.message)}
+                />
+              )}
+            />
+          </div>
         </div>
 
         {userControl.canSetUserRoles ? (
-          <div>
+          <div className={inviteColumnClass}>
             <div className={stepLabelClass}>
               <span>{t("userControl.invite.roles")}</span>
               <span className={faintClass}>
@@ -100,7 +106,7 @@ const InviteEmployeeSection = ({ userControl, drag }: Props) => {
             </div>
             <div
               className={clsx(
-                "flex h-[92px] flex-wrap content-start gap-1.5 overflow-auto rounded-xl border bg-(--Grey100) p-2",
+                inviteListClass,
                 canDropRole ? "border-(--Primary400)" : "border-(--Grey400)",
               )}
             >
@@ -141,7 +147,7 @@ const InviteEmployeeSection = ({ userControl, drag }: Props) => {
         ) : null}
 
         {userControl.canSetProjects ? (
-          <div>
+          <div className={inviteColumnClass}>
             <div className={stepLabelClass}>
               <span>{t("userControl.invite.projects")}</span>
               <span className={faintClass}>
@@ -158,7 +164,7 @@ const InviteEmployeeSection = ({ userControl, drag }: Props) => {
                 onChange={(event) => userControl.setProjectSearch(event.target.value)}
               />
             </div>
-            <div className="flex h-[92px] flex-wrap content-start gap-1.5 overflow-auto rounded-xl border border-(--Grey400) bg-(--Grey100) p-2">
+            <div className={clsx(inviteListClass, "border-(--Grey400)")}>
               {userControl.inviteProjectsStatus === "error" ? (
                 <span className={faintClass}>
                   {t("userControl.invite.projectsDenied")}
@@ -200,31 +206,34 @@ const InviteEmployeeSection = ({ userControl, drag }: Props) => {
           </div>
         ) : null}
 
-        <div className="flex flex-col gap-2 pt-7">
-          <div
-            className={clsx(
-              "flex justify-center rounded-[10px] border px-2.5 py-1.5 text-center text-xs",
-              userControl.invitePreview.hasRoles
-                ? "border-(--Grey300) bg-(--Grey200) text-(--Grey600)"
-                : "border-(--statusY200) bg-(--statusY100) text-(--statusY200)",
-            )}
-          >
-            {userControl.invitePreview.hasRoles
-              ? t("userControl.invite.preview", {
-                  permissions: userControl.invitePreview.permissionCount,
-                  groups: userControl.invitePreview.groupCount,
-                  projects: userControl.invitePreview.projectCount,
-                })
-              : t("userControl.invite.noAccess")}
+        <div className={inviteColumnClass}>
+          <div className="hidden min-[1251px]:block" />
+          <div className="flex flex-col justify-center gap-2 self-start">
+            <div
+              className={clsx(
+                "flex justify-center rounded-[10px] border px-2.5 py-1.5 text-center text-xs",
+                userControl.invitePreview.hasRoles
+                  ? "border-(--Grey300) bg-(--Grey200) text-(--Grey600)"
+                  : "border-(--statusY200) bg-(--statusY100) text-(--statusY200)",
+              )}
+            >
+              {userControl.invitePreview.hasRoles
+                ? t("userControl.invite.preview", {
+                    permissions: userControl.invitePreview.permissionCount,
+                    groups: userControl.invitePreview.groupCount,
+                    projects: userControl.invitePreview.projectCount,
+                  })
+                : t("userControl.invite.noAccess")}
+            </div>
+            <AppButton
+              htmlType="submit"
+              block
+              disabled={!userControl.emailValid || userControl.invitePending}
+              icon={<Send size={16} aria-hidden />}
+            >
+              {t("userControl.invite.send")}
+            </AppButton>
           </div>
-          <AppButton
-            htmlType="submit"
-            block
-            disabled={!userControl.emailValid || userControl.invitePending}
-            icon={<Send size={16} aria-hidden />}
-          >
-            {t("userControl.invite.send")}
-          </AppButton>
         </div>
       </form>
     </section>
