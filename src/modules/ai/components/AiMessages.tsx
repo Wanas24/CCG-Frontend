@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  type UIEvent,
-} from "react";
+import { useLayoutEffect, useMemo, useRef, type UIEvent } from "react";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { Sparkles } from "lucide-react";
@@ -28,6 +22,10 @@ const isSameMessageContent = (
 ) =>
   leftRole.toLowerCase() === rightRole.toLowerCase() &&
   leftContent === rightContent;
+
+const pinScrollToBottom = (container: HTMLElement) => {
+  container.scrollTop = container.scrollHeight;
+};
 
 type Props = {
   activeChatId: string | null;
@@ -123,8 +121,8 @@ const AiMessages = ({
 }: Props) => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const shouldScrollToBottomRef = useRef(false);
-  const previousChatIdRef = useRef<string | null>(null);
+  const needsInitialBottomRef = useRef(true);
+  const previousChatIdRef = useRef<string | null | undefined>(undefined);
   const restoreScrollRef = useRef<{
     height: number;
     top: number;
@@ -162,18 +160,17 @@ const AiMessages = ({
   const hasLocalContent =
     visibleLocalMessages.length > 0 || isWaitingForAssistant || sendError;
   const showEmptyState = !activeChatId && !hasLocalContent;
-
-  useEffect(() => {
-    if (activeChatId === previousChatIdRef.current) {
-      return;
-    }
-
-    previousChatIdRef.current = activeChatId;
-    shouldScrollToBottomRef.current = Boolean(activeChatId);
-    restoreScrollRef.current = null;
-  }, [activeChatId]);
+  const hasRenderableMessages =
+    historyMessages.length > 0 || visibleLocalMessages.length > 0;
 
   useLayoutEffect(() => {
+    if (previousChatIdRef.current !== activeChatId) {
+      previousChatIdRef.current = activeChatId;
+      needsInitialBottomRef.current = true;
+      restoreScrollRef.current = null;
+      previousLocalCountRef.current = 0;
+    }
+
     const container = containerRef.current;
     if (!container) {
       return;
@@ -185,17 +182,19 @@ const AiMessages = ({
     previousLocalCountRef.current = visibleLocalMessages.length;
 
     if (localCountChanged && hasLocalContent) {
-      container.scrollTop = container.scrollHeight;
+      pinScrollToBottom(container);
+      needsInitialBottomRef.current = false;
       return;
     }
 
-    if (!activeChatId) {
-      return;
-    }
-
-    if (shouldScrollToBottomRef.current && !isPending && !showHistoryError) {
-      container.scrollTop = container.scrollHeight;
-      shouldScrollToBottomRef.current = false;
+    if (
+      needsInitialBottomRef.current &&
+      !isPending &&
+      !showHistoryError &&
+      (hasRenderableMessages || !activeChatId)
+    ) {
+      pinScrollToBottom(container);
+      needsInitialBottomRef.current = false;
       return;
     }
 
@@ -208,6 +207,7 @@ const AiMessages = ({
   }, [
     activeChatId,
     hasLocalContent,
+    hasRenderableMessages,
     isPending,
     isFetchingNextPage,
     isWaitingForAssistant,
