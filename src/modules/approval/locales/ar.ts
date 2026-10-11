@@ -189,6 +189,94 @@ const approval = {
     forceDecide:
       "الموافقة أو الرفض الإجباري يتم نيابةً عن الموافقين المعيّنين ويمكن أن يفتح مساراً مقفلاً.",
   },
+  myRequests: {
+    navLabel: "طلبات الموافقة الخاصة بي",
+    title: "طلبات الموافقة الخاصة بي",
+    subtitle:
+      "الطلبات التي بدأتها في هذه الشركة، مع القيم القديمة والجديدة جنباً إلى جنب.",
+    loading: "جارٍ تحميل طلبات الموافقة الخاصة بك…",
+    loadFailed:
+      "تعذر تحميل طلبات الموافقة. تحقق من صلاحياتك ثم أعد المحاولة.",
+    reload: "تحديث",
+    noAccess: "ليس لديك صلاحية لعرض طلبات الموافقة الخاصة بك.",
+    searchPlaceholder: "معرّف الكيان أو نوعه",
+    entityType: "نوع الكيان",
+    allEntities: "كل الكيانات",
+    listTitle: "الطلبات",
+    emptyList: "لا توجد طلبات موافقة تطابق هذه عوامل التصفية.",
+    emptyDetail:
+      "اختر طلباً لمقارنة القيم السابقة مع القيم المقترحة.",
+    emptyValue: "—",
+    noMatches: "لا توجد نتائج",
+    pageLabel: "صفحة {{page}} من {{total}}",
+    previous: "السابق",
+    next: "التالي",
+    fieldsChanged: "{{count}} حقول تغيّرت",
+    nextApproversPrefix: "التالي:",
+    showUnchanged: "إظهار غير المتغيّر",
+    levelOrder: "المستوى {{order}}",
+    levelFallback: "مستوى",
+    waitingForPrefix: "بانتظار",
+    waitingAt: "في {{level}}",
+    launcher: {
+      open: "فتح طلبات الموافقة الخاصة بي",
+    },
+    stats: {
+      all: "الكل",
+      pending: "معلّق",
+      approved: "موافق عليه",
+      rejected: "مرفوض",
+      cancelled: "ملغى",
+    },
+    status: {
+      pending: "معلّق",
+      approved: "موافق عليه",
+      rejected: "مرفوض",
+      cancelled: "ملغى",
+    },
+    decision: {
+      approve: "موافقة",
+      reject: "رفض",
+      skip: "تخطي",
+    },
+    levelStatus: {
+      notStarted: "لم يبدأ",
+      open: "مفتوح",
+      completed: "مكتمل",
+      skipped: "متخطى",
+    },
+    boolean: {
+      yes: "نعم",
+      no: "لا",
+    },
+    entityApprovalStatus: {
+      pending: "معلّق",
+      approved: "موافق عليه",
+    },
+    meta: {
+      request: "الطلب",
+      completed: "اكتمل",
+      changed: "تغيّر",
+      unchanged: "لم يتغيّر",
+    },
+    story: {
+      create:
+        "إنشاء. عمود «بعد» هو السجل الجديد. لا توجد نسخة سابقة.",
+      delete:
+        "حذف. عمود «قبل» هو السجل الذي سيُزال. الرفض يعيد تلك القيم.",
+      update:
+        "تحديث. «قبل» هو السجل السابق المحفوظ. «بعد» هو ما ستُبقيه الموافقة.",
+    },
+    diff: {
+      field: "الحقل",
+      before: "قبل",
+      after: "بعد",
+      empty: "القيم المقترحة تطابق السجل السابق.",
+    },
+    timeline: {
+      by: "بواسطة",
+    },
+  },
 } as const;
 
 export default approval;

@@ -22,6 +22,18 @@ const approvalRouteConfig: AppRouteObject[] = [
               return { Component };
             },
           },
+          {
+            path: APPROVAL_ROUTES.myRequests,
+            label: "approval.myRequests.navLabel",
+            showInMenu: false,
+            order: 46,
+            lazy: async () => {
+              const { default: Component } = await import(
+                "../pages/MyApprovalRequestsPage"
+              );
+              return { Component };
+            },
+          },
         ],
       },
     ],

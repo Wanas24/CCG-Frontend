@@ -1,0 +1,1 @@
+export const MY_APPROVAL_REQUESTS_PAGE_SIZE = 8;

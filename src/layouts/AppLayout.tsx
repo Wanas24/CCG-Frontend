@@ -1,6 +1,7 @@
 import { Suspense, useState } from "react";
 import { Outlet } from "react-router";
 import AiAssistant from "@/modules/ai/components/AiAssistant";
+import MyApprovalRequestsLauncher from "@/modules/approval/components/MyApprovalRequestsLauncher";
 import { useLocale } from "@/i18n/useLocale";
 import { AppNavbar } from "@/shared/components";
 import { AppDrawer, AppSidebar } from "@/shared/ANTD_UIComponents";
@@ -76,6 +77,7 @@ const AppLayout = () => {
           </Suspense>
         </main>
         <AiAssistant />
+        <MyApprovalRequestsLauncher />
       </div>
     </div>
   );

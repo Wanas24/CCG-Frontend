@@ -192,6 +192,94 @@ const approval = {
     forceDecide:
       "Force approve or decline decides on behalf of assigned approvers and can unlock a locked workflow.",
   },
+  myRequests: {
+    navLabel: "My approval requests",
+    title: "My approval requests",
+    subtitle:
+      "Requests you started in this company, with the old and new values side by side.",
+    loading: "Loading your approval requests…",
+    loadFailed:
+      "Couldn't load your approval requests. Check your access and try again.",
+    reload: "Refresh",
+    noAccess: "You don't have permission to view your approval requests.",
+    searchPlaceholder: "Entity id or type",
+    entityType: "Entity type",
+    allEntities: "All entities",
+    listTitle: "Requests",
+    emptyList: "No approval requests match these filters.",
+    emptyDetail:
+      "Select a request to compare the previous values with the proposed ones.",
+    emptyValue: "—",
+    noMatches: "No matches",
+    pageLabel: "Page {{page}} of {{total}}",
+    previous: "Previous",
+    next: "Next",
+    fieldsChanged: "{{count}} fields changed",
+    nextApproversPrefix: "Next:",
+    showUnchanged: "Show unchanged",
+    levelOrder: "Level {{order}}",
+    levelFallback: "Level",
+    waitingForPrefix: "Waiting for",
+    waitingAt: "at {{level}}",
+    launcher: {
+      open: "Open my approval requests",
+    },
+    stats: {
+      all: "All",
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+      cancelled: "Cancelled",
+    },
+    status: {
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+      cancelled: "Cancelled",
+    },
+    decision: {
+      approve: "Approve",
+      reject: "Reject",
+      skip: "Skip",
+    },
+    levelStatus: {
+      notStarted: "Not started",
+      open: "Open",
+      completed: "Completed",
+      skipped: "Skipped",
+    },
+    boolean: {
+      yes: "Yes",
+      no: "No",
+    },
+    entityApprovalStatus: {
+      pending: "Pending",
+      approved: "Approved",
+    },
+    meta: {
+      request: "Request",
+      completed: "Completed",
+      changed: "Changed",
+      unchanged: "Unchanged",
+    },
+    story: {
+      create:
+        "Create. The after column is the new record. There is no previous version.",
+      delete:
+        "Delete. The before column is the record being removed. Rejection puts those values back.",
+      update:
+        "Update. Before is the saved previous record. After is what approval would keep.",
+    },
+    diff: {
+      field: "Field",
+      before: "Before",
+      after: "After",
+      empty: "The proposed values match the previous record.",
+    },
+    timeline: {
+      by: "by",
+    },
+  },
 } as const;
 
 export default approval;
