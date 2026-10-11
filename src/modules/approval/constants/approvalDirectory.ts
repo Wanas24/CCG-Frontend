@@ -1,0 +1,1 @@
+export const APPROVAL_DIRECTORY_PAGE_SIZE = 10;

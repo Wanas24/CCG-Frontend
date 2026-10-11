@@ -2,22 +2,33 @@ import { useState } from "react";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
+import { useAiAssistantSession } from "../hooks/useAiAssistantSession";
 import AiAssistantHint from "./AiAssistantHint";
 import AiAssistantLauncher from "./AiAssistantLauncher";
 import AiAssistantPanel from "./AiAssistantPanel";
 
-const AiAssistant = () => {
-  const [openForCompanyId, setOpenForCompanyId] = useState<number | null>(
-    null,
+const AiAssistantController = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const session = useAiAssistantSession();
+
+  return (
+    <>
+      {!isOpen && <AiAssistantHint />}
+      {isOpen ? (
+        <AiAssistantPanel session={session} onClose={() => setIsOpen(false)} />
+      ) : null}
+      <AiAssistantLauncher
+        isOpen={isOpen}
+        onToggle={() => setIsOpen((current) => !current)}
+      />
+    </>
   );
+};
+
+const AiAssistant = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const companyId = useAuthStore((state) => state.user?.companyId ?? null);
   const { hasPermission, isLoading: isPermissionsLoading } = usePermissions();
-
-  const isOpen =
-    companyId !== null &&
-    openForCompanyId !== null &&
-    openForCompanyId === companyId;
 
   if (!isAuthenticated || isPermissionsLoading) {
     return null;
@@ -31,25 +42,7 @@ const AiAssistant = () => {
     return null;
   }
 
-  return (
-    <>
-      {!isOpen && <AiAssistantHint />}
-      {isOpen && (
-        <AiAssistantPanel
-          key={companyId}
-          onClose={() => setOpenForCompanyId(null)}
-        />
-      )}
-      <AiAssistantLauncher
-        isOpen={isOpen}
-        onToggle={() => {
-          setOpenForCompanyId((current) =>
-            current === companyId ? null : companyId,
-          );
-        }}
-      />
-    </>
-  );
+  return <AiAssistantController key={companyId} />;
 };
 
 export default AiAssistant;

@@ -1,4 +1,10 @@
-import { useCallback, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "antd";
 import { Paperclip, SendHorizontal, Square } from "lucide-react";
@@ -30,7 +36,9 @@ type Props = {
 
 const AiComposer = ({ isSending, onSend, onCancel }: Props) => {
   const { t } = useTranslation();
+  const composerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const wasSendingRef = useRef(false);
   const [message, setMessage] = useState("");
   const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -41,6 +49,36 @@ const AiComposer = ({ isSending, onSend, onCancel }: Props) => {
   const isVoiceMode = isRecording || Boolean(audioFile);
   const canSend =
     !isSending && (trimmedMessage.length > 0 || Boolean(audioFile));
+
+  useLayoutEffect(() => {
+    if (isSending) {
+      wasSendingRef.current = true;
+      return;
+    }
+
+    if (!wasSendingRef.current) {
+      return;
+    }
+
+    wasSendingRef.current = false;
+
+    if (isVoiceMode) {
+      return;
+    }
+
+    const active = document.activeElement;
+    if (
+      active &&
+      active !== document.body &&
+      composerRef.current &&
+      !composerRef.current.contains(active)
+    ) {
+      return;
+    }
+
+    const textarea = composerRef.current?.querySelector("textarea");
+    textarea?.focus();
+  }, [isSending, isVoiceMode]);
 
   const handleRecordingChange = useCallback((recording: boolean) => {
     setIsRecording(recording);
@@ -211,7 +249,10 @@ const AiComposer = ({ isSending, onSend, onCancel }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 border-t border-(--Grey300) p-3">
+    <div
+      ref={composerRef}
+      className="flex flex-col gap-2 border-t border-(--Grey300) p-3"
+    >
       {!isVoiceMode && (
         <AiAttachmentList
           attachments={attachments}

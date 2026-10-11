@@ -1,23 +1,9 @@
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
 import { useLocale } from "@/i18n";
-import { queryClient } from "@/lib/queryClient";
 import { AppDrawer } from "@/shared/ANTD_UIComponents";
-import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { useGetAiChats } from "../api/hooks/useGetAiChats";
-import { useSendAiChat } from "../api/hooks/useSendAiChat";
-import {
-  aiChatsQueryKey,
-  aiMessagesQueryKey,
-  aiUsageQueryKey,
-} from "../api/queryKeys/aiQueryKeys";
-import type {
-  TAiAssistantUiMeta,
-  TAiComposerSendPayload,
-  TAiUiMessage,
-} from "../types";
-import { createAiAssistantMetaKey } from "../utils/aiResponseMeta";
+import type { AiAssistantSession } from "../hooks/useAiAssistantSession";
 import AiChatHeader from "./AiChatHeader";
 import AiChatSidebar from "./AiChatSidebar";
 import AiComposer from "./AiComposer";
@@ -25,6 +11,7 @@ import AiMessages from "./AiMessages";
 import AiUsagePanel from "./AiUsagePanel";
 
 type Props = {
+  session: AiAssistantSession;
   onClose: () => void;
 };
 
@@ -37,45 +24,11 @@ const sharedDrawerProps = {
 
 const embeddedPanelClassName = "min-h-0 w-full! flex-1 border-0!";
 
-const createLocalMessageId = (role: "user" | "assistant") =>
-  `local-${role}-${crypto.randomUUID()}`;
-
-const isAbortError = (error: unknown) => {
-  if (axios.isCancel(error)) {
-    return true;
-  }
-
-  if (!axios.isAxiosError(error)) {
-    return false;
-  }
-
-  return (
-    error.code === "ERR_CANCELED" ||
-    error.name === "CanceledError" ||
-    error.name === "AbortError"
-  );
-};
-
-const AiAssistantPanel = ({ onClose }: Props) => {
+const AiAssistantPanel = ({ session, onClose }: Props) => {
   const { t } = useTranslation();
   const { isRtl } = useLocale();
-  const companyId = useAuthStore((state) => state.user?.companyId ?? null);
   const [isChatSidebarOpen, setIsChatSidebarOpen] = useState(false);
   const [isUsageOpen, setIsUsageOpen] = useState(false);
-  const [activeChatId, setActiveChatId] = useState<string | null>(null);
-  const [localMessages, setLocalMessages] = useState<TAiUiMessage[]>([]);
-  const [isWaitingForAssistant, setIsWaitingForAssistant] = useState(false);
-  const [sendError, setSendError] = useState(false);
-  const [assistantMetaByKey, setAssistantMetaByKey] = useState<
-    Record<string, TAiAssistantUiMeta>
-  >({});
-
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const isSendingRef = useRef(false);
-  const pendingUserMessageIdRef = useRef<string | null>(null);
-
-  const { mutateAsync: sendAiChat, isPending: isSendMutationPending } =
-    useSendAiChat();
 
   const { data: chatsResult } = useGetAiChats();
   const chats =
@@ -83,203 +36,16 @@ const AiAssistantPanel = ({ onClose }: Props) => {
       ? chatsResult.data
       : [];
   const activeChatTitle =
-    chats.find((chat) => chat.id === activeChatId)?.title ?? null;
-
-  const isSending = isSendMutationPending || isWaitingForAssistant;
-
-  const resetLocalConversation = useCallback(() => {
-    abortControllerRef.current?.abort();
-    abortControllerRef.current = null;
-    isSendingRef.current = false;
-    pendingUserMessageIdRef.current = null;
-    setLocalMessages([]);
-    setIsWaitingForAssistant(false);
-    setSendError(false);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      abortControllerRef.current?.abort();
-    };
-  }, []);
-
-  const removePendingUserMessage = () => {
-    const pendingId = pendingUserMessageIdRef.current;
-    if (!pendingId) {
-      return;
-    }
-
-    setLocalMessages((current) =>
-      current.filter((message) => message.id !== pendingId),
-    );
-    pendingUserMessageIdRef.current = null;
-  };
+    chats.find((chat) => chat.id === session.activeChatId)?.title ?? null;
 
   const handleSelectChat = (chatId: string) => {
-    resetLocalConversation();
-    setActiveChatId(chatId);
+    session.selectChat(chatId);
     setIsChatSidebarOpen(false);
   };
 
   const handleNewChat = () => {
-    resetLocalConversation();
-    setActiveChatId(null);
+    session.startNewChat();
     setIsChatSidebarOpen(false);
-  };
-
-  const handleCancelSend = () => {
-    abortControllerRef.current?.abort();
-  };
-
-  const handleSend = async (payload: TAiComposerSendPayload) => {
-    if (!companyId || isSendingRef.current || isSending) {
-      return { ok: false, restore: payload };
-    }
-
-    const message = payload.message.trim();
-    const audio = payload.audio ?? null;
-    const attachments = payload.attachments ?? [];
-
-    if (!message && !audio) {
-      return { ok: false, restore: payload };
-    }
-
-    isSendingRef.current = true;
-    setSendError(false);
-
-    const userMessageId = createLocalMessageId("user");
-    pendingUserMessageIdRef.current = userMessageId;
-
-    setLocalMessages((current) => [
-      ...current,
-      {
-        id: userMessageId,
-        role: "user",
-        content: message,
-        localAttachments: attachments.map((file) => ({
-          id: crypto.randomUUID(),
-          fileName: file.name,
-          contentType: file.type,
-          size: file.size,
-          file,
-        })),
-        localAudio: audio
-          ? {
-              fileName: audio.name,
-              contentType: audio.type,
-              size: audio.size,
-              file: audio,
-            }
-          : null,
-      },
-    ]);
-    setIsWaitingForAssistant(true);
-
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-
-    try {
-      const response = await sendAiChat({
-        ...(message ? { message } : {}),
-        ...(audio ? { audio } : {}),
-        ...(attachments.length > 0 ? { attachments } : {}),
-        ...(activeChatId ? { chatId: activeChatId } : {}),
-        signal: controller.signal,
-      });
-
-      if (controller.signal.aborted) {
-        setIsWaitingForAssistant(false);
-        removePendingUserMessage();
-        return { ok: false, aborted: true, restore: payload };
-      }
-
-      if (!response.isSuccess || !response.data) {
-        setIsWaitingForAssistant(false);
-        setSendError(true);
-        setLocalMessages((current) =>
-          current.map((item) =>
-            item.id === userMessageId ? { ...item, isError: true } : item,
-          ),
-        );
-        return { ok: false, restore: payload };
-      }
-
-      const {
-        chatId,
-        answer,
-        usedTools,
-        selectedToolGroups,
-        warnings,
-        sources,
-        artifacts,
-        transcript,
-      } = response.data;
-      const responseMeta: TAiAssistantUiMeta = {
-        usedTools,
-        selectedToolGroups,
-        warnings,
-        sources,
-        artifacts,
-        transcript,
-      };
-
-      setLocalMessages((current) => [
-        ...current.map((item) =>
-          item.id === userMessageId && transcript
-            ? { ...item, content: transcript }
-            : item,
-        ),
-        {
-          id: createLocalMessageId("assistant"),
-          role: "assistant",
-          content: answer,
-          ...responseMeta,
-        },
-      ]);
-      setIsWaitingForAssistant(false);
-      setActiveChatId(chatId);
-      pendingUserMessageIdRef.current = null;
-      setAssistantMetaByKey((current) => ({
-        ...current,
-        [createAiAssistantMetaKey(chatId, answer)]: responseMeta,
-      }));
-
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: aiChatsQueryKey }),
-        queryClient.invalidateQueries({
-          queryKey: aiMessagesQueryKey(chatId),
-        }),
-        queryClient.invalidateQueries({ queryKey: aiUsageQueryKey }),
-      ]);
-
-      if (!controller.signal.aborted) {
-        setLocalMessages([]);
-        setSendError(false);
-      }
-
-      return { ok: true };
-    } catch (error) {
-      if (controller.signal.aborted || isAbortError(error)) {
-        setIsWaitingForAssistant(false);
-        setSendError(false);
-        removePendingUserMessage();
-        return { ok: false, aborted: true, restore: payload };
-      }
-
-      setIsWaitingForAssistant(false);
-      setSendError(true);
-      setLocalMessages((current) =>
-        current.map((item) =>
-          item.id === userMessageId ? { ...item, isError: true } : item,
-        ),
-      );
-      return { ok: false, restore: payload };
-    } finally {
-      if (abortControllerRef.current === controller) {
-        abortControllerRef.current = null;
-      }
-      isSendingRef.current = false;
-    }
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -297,7 +63,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
     >
       <AiChatSidebar
         className="max-[650px]:hidden"
-        activeChatId={activeChatId}
+        activeChatId={session.activeChatId}
         onSelectChat={handleSelectChat}
         onNewChat={handleNewChat}
       />
@@ -310,16 +76,16 @@ const AiAssistantPanel = ({ onClose }: Props) => {
           onClose={onClose}
         />
         <AiMessages
-          activeChatId={activeChatId}
-          localMessages={localMessages}
-          isWaitingForAssistant={isWaitingForAssistant}
-          sendError={sendError}
-          assistantMetaByKey={assistantMetaByKey}
+          activeChatId={session.activeChatId}
+          localMessages={session.localMessages}
+          isWaitingForAssistant={session.isWaitingForAssistant}
+          sendError={session.sendError}
+          assistantMetaByKey={session.assistantMetaByKey}
         />
         <AiComposer
-          isSending={isSending}
-          onSend={handleSend}
-          onCancel={handleCancelSend}
+          isSending={session.isSending}
+          onSend={session.sendMessage}
+          onCancel={session.cancelSend}
         />
       </div>
 
@@ -333,7 +99,7 @@ const AiAssistantPanel = ({ onClose }: Props) => {
       >
         <AiChatSidebar
           className={embeddedPanelClassName}
-          activeChatId={activeChatId}
+          activeChatId={session.activeChatId}
           onSelectChat={handleSelectChat}
           onNewChat={handleNewChat}
         />

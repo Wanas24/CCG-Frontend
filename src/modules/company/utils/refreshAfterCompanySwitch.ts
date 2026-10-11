@@ -2,6 +2,8 @@ import { queryClient } from "@/lib/queryClient";
 import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/availableCompaniesQueryKey";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { clearAiQueries } from "@/modules/ai/api/queryKeys/aiQueryKeys";
+import { clearItemCategoryQueries } from "@/modules/lists/itemCatalog/api/queryKeys/itemCategoryQueryKeys";
+import { clearMeasurementQueries } from "@/modules/lists/units/api/queryKeys/measurementQueryKeys";
 import { userMeQueryKey } from "@/modules/user/api/hooks/useGetMe";
 import { userNotificationsQueryRootKey } from "@/modules/user/api/hooks/notificationsQueryKey";
 import { refreshPermissions } from "@/modules/user/api/hooks/permissionsQueryKey";
@@ -10,6 +12,10 @@ import {
   companyLogoQueryKey,
   currentCompanyQueryKey,
 } from "../api/hooks/companyQueryKeys";
+
+const clearListsQueries = async () => {
+  await Promise.all([clearMeasurementQueries(), clearItemCategoryQueries()]);
+};
 
 export const refreshAfterCompanySwitch = async () => {
   const companyId = useAuthStore.getState().user?.companyId ?? null;
@@ -28,6 +34,7 @@ export const refreshAfterCompanySwitch = async () => {
       queryClient.invalidateQueries({ queryKey: userNotificationsQueryRootKey }),
       refreshPermissions(),
       clearAiQueries(),
+      clearListsQueries(),
     ]);
   } else {
     await Promise.all([
@@ -38,6 +45,7 @@ export const refreshAfterCompanySwitch = async () => {
       queryClient.invalidateQueries({ queryKey: userNotificationsQueryRootKey }),
       refreshPermissions(),
       clearAiQueries(),
+      clearListsQueries(),
     ]);
   }
 

@@ -41,5 +41,6 @@ export const useGetAiMessages = (chatId: string | null, options: Options = {}) =
       isAuthenticated &&
       companyId !== null &&
       Boolean(chatId),
+    refetchOnMount: "always",
   });
 };
