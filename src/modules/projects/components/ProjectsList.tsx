@@ -1,5 +1,5 @@
 import { Pagination } from "antd";
-import { FolderKanban, Search, SearchX } from "lucide-react";
+import { Download, FolderKanban, Search, SearchX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import {
@@ -16,6 +16,7 @@ import {
   PROJECT_TYPE_OPTIONS,
   type TProjectQuickFilter,
 } from "../constants/projectList";
+import { useExportProjectsManager } from "../hooks/useExportProjectsManager";
 import { useProjectsListState } from "../hooks/useProjectsListState";
 import {
   projectApprovalLabelKey,
@@ -24,6 +25,7 @@ import {
 } from "../utils/projectLabels";
 import ClientSelect from "./ClientSelect";
 import ProjectCard from "./ProjectCard";
+import ProjectExportDialog from "./ProjectExportDialog";
 import ProjectsListSkeleton from "./ProjectsListSkeleton";
 
 const quickFilters: TProjectQuickFilter[] = [
@@ -41,6 +43,7 @@ const chipClass = (active: boolean) =>
 const ProjectsList = () => {
   const { t } = useTranslation();
   const listState = useProjectsListState();
+  const exportManager = useExportProjectsManager(listState.params);
   const { data, isPending, isError, isFetching, refetch } = useGetProjects(
     listState.params,
   );
@@ -199,6 +202,16 @@ const ProjectsList = () => {
           >
             {t("projects.clear")}
           </AppButton>
+          {exportManager.canExport ? (
+            <AppButton
+              variant="secondary"
+              className="w-fit!"
+              icon={<Download size={16} />}
+              onClick={exportManager.openExport}
+            >
+              {t("projects.export.action")}
+            </AppButton>
+          ) : null}
         </div>
       </div>
 
@@ -278,6 +291,34 @@ const ProjectsList = () => {
           ) : null}
         </>
       )}
+
+      {exportManager.canExport ? (
+        <ProjectExportDialog
+          open={exportManager.open}
+          loading={exportManager.isExporting}
+          layoutsLoading={exportManager.layoutsLoading}
+          layoutsError={exportManager.layoutsError}
+          lastUsedLoading={exportManager.lastUsedLoading}
+          format={exportManager.format}
+          layoutId={exportManager.layoutId}
+          title={exportManager.title}
+          columns={exportManager.columns}
+          layouts={exportManager.layouts}
+          lastUsedName={exportManager.lastUsedName}
+          selectedLayout={exportManager.selectedLayout}
+          onFormatChange={exportManager.setFormat}
+          onLayoutChange={exportManager.setLayoutId}
+          onTitleChange={exportManager.setTitle}
+          onToggleColumn={exportManager.toggleColumn}
+          onSelectAllColumns={exportManager.selectAllColumns}
+          onSelectEssentialColumns={exportManager.selectEssentialColumns}
+          onClearColumns={exportManager.clearColumns}
+          onSubmit={() => {
+            void exportManager.submitExport();
+          }}
+          onClose={exportManager.closeExport}
+        />
+      ) : null}
     </div>
   );
 };

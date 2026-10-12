@@ -15,6 +15,7 @@ export const useProjectsAccess = () => {
   const canCreate = !isLoading && hasPermission(PermissionsList.Project.Create);
   const canEdit = !isLoading && hasPermission(PermissionsList.Project.Edit);
   const canDelete = !isLoading && hasPermission(PermissionsList.Project.Delete);
+  const canExport = !isLoading && hasPermission(PermissionsList.Project.Export);
 
-  return { isLoading, canOpen, canCreate, canEdit, canDelete };
+  return { isLoading, canOpen, canCreate, canEdit, canDelete, canExport };
 };

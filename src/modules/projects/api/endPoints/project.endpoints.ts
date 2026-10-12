@@ -27,4 +27,11 @@ export const projectEndpoints = {
     auth: "required",
     permissions: [PermissionsList.Project.Delete],
   }),
+  export: createEndpoint({
+    method: "GET",
+    path: `/Project/export`,
+    auth: "required",
+    permissions: [PermissionsList.Project.Export],
+    skipToast: true,
+  }),
 };

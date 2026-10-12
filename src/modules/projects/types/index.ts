@@ -5,6 +5,7 @@ export type {
   TGetProjectsParams,
   TGetProjectsResponse,
   TProject,
+  TProjectExportResult,
   TProjectWriteBody,
   TUpdateProjectRequest,
   TUpdateProjectResponse,

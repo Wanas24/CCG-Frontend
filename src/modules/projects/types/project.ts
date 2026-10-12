@@ -79,3 +79,7 @@ export type TCreateProjectResponse = TSimpleResult<number>;
 export type TUpdateProjectResponse = TSimpleResult;
 
 export type TDeleteProjectResponse = TSimpleResult;
+
+export type TProjectExportResult =
+  | { ok: true; blob: Blob; fileName: string }
+  | { ok: false; message: string };
