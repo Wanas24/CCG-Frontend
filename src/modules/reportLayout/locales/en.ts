@@ -355,8 +355,6 @@ const reportLayout = {
     reactivated: "Layout reactivated.",
     defaultSet: "Default layout updated.",
     detached: "The draft is detached from the saved layout. Use Save as new.",
-    openedSystem: "Loaded a system layout. Save it as new to edit.",
-    opened: "Layout opened.",
     duplicated: "Loaded as a new draft. Review the code and name before saving.",
     blank: "Started a blank layout.",
     preset: "Started from {{name}}.",

@@ -31,12 +31,12 @@ const uploadedImage = (data: TReportLayoutImage | TReportLayoutImage[] | null | 
 
 const MAX_SIGNATURE_IMAGE_BYTES = 5 * 1024 * 1024;
 
-export const useReportLayoutSignatureImage = () => {
+export const useReportLayoutSignatureImage = (libraryOpen: boolean) => {
   const { t } = useTranslation();
   const [uploadIssues, setUploadIssues] = useState<string[]>([]);
   const uploadMutation = useUploadReportLayoutImage();
   const deleteMutation = useDeleteReportLayoutImage();
-  const imagesQuery = useGetReportLayoutImages();
+  const imagesQuery = useGetReportLayoutImages(libraryOpen);
 
   const showIssues = (issues: string[]) => {
     setUploadIssues(issues);

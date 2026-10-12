@@ -290,18 +290,13 @@ export const useReportLayoutStudio = () => {
           id: result.data.id,
           isSystem: result.data.isSystem,
         });
-        toast.success(
-          result.data.isSystem
-            ? t("reportLayout.toast.openedSystem")
-            : result.message || t("reportLayout.toast.opened"),
-        );
       } catch (error) {
         await forgetMissing(getSimpleResultFromAxiosError(error)?.message);
       } finally {
         setIsOpening(false);
       }
     },
-    [beginDraft, forgetMissing, loadLayout, t],
+    [beginDraft, forgetMissing, loadLayout],
   );
 
   const openLayout = useCallback(

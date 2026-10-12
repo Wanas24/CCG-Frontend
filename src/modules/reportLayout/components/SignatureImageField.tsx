@@ -32,7 +32,7 @@ const SignatureImageField = ({ value, onChange, onRemoved }: Props) => {
     deletingFileId,
     isLoadingImages,
     images,
-  } = useReportLayoutSignatureImage();
+  } = useReportLayoutSignatureImage(libraryOpen);
   const preview = safeMediaUrl(value);
   const hasImage = value.trim().length > 0;
   const libraryPageCount = Math.max(1, Math.ceil(images.length / DEFAULT_LAYOUT_IMAGES_PAGE_SIZE));
