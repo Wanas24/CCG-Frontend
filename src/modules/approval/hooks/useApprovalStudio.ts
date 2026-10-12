@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDebounce } from "use-debounce";
 import { useQueryClient } from "@tanstack/react-query";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useGetEmployees } from "@/modules/userControl/api/hooks/useGetEmployees";
 import { useGetApplicationRoles } from "@/modules/userControl/api/hooks/useGetApplicationRoles";
+import type { TApplicationRole, TEmployee } from "@/modules/userControl/types";
+import { APPROVAL_DIRECTORY_PAGE_SIZE } from "../constants/approvalDirectory";
 import { useGetApprovalEntityTypes } from "../api/hooks/useGetApprovalEntityTypes";
 import { useGetApprovalWorkflows } from "../api/hooks/useGetApprovalWorkflows";
 import { useGetPendingApprovalRequests } from "../api/hooks/useGetPendingApprovalRequests";
@@ -23,6 +26,7 @@ import {
   type TApprovalWorkflow,
   type TApprovalWorkflowCommand,
 } from "../types";
+import { useApprovalDirectoryLabels } from "./useApprovalDirectoryLabels";
 
 export type ApprovalStudioViewMode = "workflows" | "coverage";
 
@@ -151,14 +155,34 @@ export const useApprovalStudio = () => {
     requestIds: string[];
   } | null>(null);
 
+  const [employeeDirectorySearch, setEmployeeDirectorySearch] = useState("");
+  const [roleDirectorySearch, setRoleDirectorySearch] = useState("");
+  const [debouncedEmployeeSearch] = useDebounce(
+    employeeDirectorySearch.trim(),
+    300,
+  );
+  const [debouncedRoleSearch] = useDebounce(roleDirectorySearch.trim(), 300);
+
+  const directoryPickerEnabled = builder !== null;
+
   const entityTypesQuery = useGetApprovalEntityTypes(canGet);
   const workflowsQuery = useGetApprovalWorkflows(true, canGet);
   const pendingQuery = useGetPendingApprovalRequests(canGetPending);
   const employeesQuery = useGetEmployees(
-    { pageSize: 200, isFired: false },
-    canGetEmployees,
+    {
+      pageSize: APPROVAL_DIRECTORY_PAGE_SIZE,
+      isFired: false,
+      ...(debouncedEmployeeSearch ? { search: debouncedEmployeeSearch } : {}),
+    },
+    canGetEmployees && directoryPickerEnabled,
   );
-  const rolesQuery = useGetApplicationRoles({ pageSize: 200 }, canGetRoles);
+  const rolesQuery = useGetApplicationRoles(
+    {
+      pageSize: APPROVAL_DIRECTORY_PAGE_SIZE,
+      ...(debouncedRoleSearch ? { search: debouncedRoleSearch } : {}),
+    },
+    canGetRoles && directoryPickerEnabled,
+  );
 
   const createMutation = useCreateApprovalWorkflow();
   const updateMutation = useUpdateApprovalWorkflow();
@@ -170,16 +194,6 @@ export const useApprovalStudio = () => {
     isFetchingNextPage: pendingIsFetchingNextPage,
     fetchNextPage: fetchNextPendingPage,
   } = pendingQuery;
-  const {
-    hasNextPage: employeesHasNextPage,
-    isFetchingNextPage: employeesIsFetchingNextPage,
-    fetchNextPage: fetchNextEmployeesPage,
-  } = employeesQuery;
-  const {
-    hasNextPage: rolesHasNextPage,
-    isFetchingNextPage: rolesIsFetchingNextPage,
-    fetchNextPage: fetchNextRolesPage,
-  } = rolesQuery;
 
   useEffect(() => {
     if (!canGetPending) return;
@@ -193,34 +207,6 @@ export const useApprovalStudio = () => {
     pendingHasNextPage,
     pendingIsFetchingNextPage,
     fetchNextPendingPage,
-  ]);
-
-  useEffect(() => {
-    if (!canGetEmployees) return;
-    drainInfinitePages({
-      hasNextPage: Boolean(employeesHasNextPage),
-      isFetchingNextPage: employeesIsFetchingNextPage,
-      fetchNextPage: fetchNextEmployeesPage,
-    });
-  }, [
-    canGetEmployees,
-    employeesHasNextPage,
-    employeesIsFetchingNextPage,
-    fetchNextEmployeesPage,
-  ]);
-
-  useEffect(() => {
-    if (!canGetRoles) return;
-    drainInfinitePages({
-      hasNextPage: Boolean(rolesHasNextPage),
-      isFetchingNextPage: rolesIsFetchingNextPage,
-      fetchNextPage: fetchNextRolesPage,
-    });
-  }, [
-    canGetRoles,
-    rolesHasNextPage,
-    rolesIsFetchingNextPage,
-    fetchNextRolesPage,
   ]);
 
   const entityTypes = useMemo(
@@ -249,24 +235,20 @@ export const useApprovalStudio = () => {
     );
   }, [canGetPending, pendingQuery.data]);
 
-  const employees = useMemo(
+  const pickerEmployees = useMemo(
     () =>
-      canGetEmployees
-        ? (employeesQuery.data?.pages.flatMap((page) =>
-            page.isSuccess && page.data?.data ? page.data.data : [],
-          ) ?? [])
-        : null,
-    [canGetEmployees, employeesQuery.data],
+      employeesQuery.data?.pages.flatMap((page) =>
+        page.isSuccess && page.data?.data ? page.data.data : [],
+      ) ?? [],
+    [employeesQuery.data],
   );
 
-  const roles = useMemo(
+  const pickerRoles = useMemo(
     () =>
-      canGetRoles
-        ? (rolesQuery.data?.pages.flatMap((page) =>
-            page.isSuccess && page.data?.data ? page.data.data : [],
-          ) ?? [])
-        : null,
-    [canGetRoles, rolesQuery.data],
+      rolesQuery.data?.pages.flatMap((page) =>
+        page.isSuccess && page.data?.data ? page.data.data : [],
+      ) ?? [],
+    [rolesQuery.data],
   );
 
   const pendingByWorkflow = useMemo(() => {
@@ -329,6 +311,81 @@ export const useApprovalStudio = () => {
     workflows,
   ]);
 
+  const requestsForOpen = useMemo(
+    () =>
+      requestsWorkflowId && pending
+        ? pending.filter((request) => request.workflowId === requestsWorkflowId)
+        : [],
+    [pending, requestsWorkflowId],
+  );
+
+  const visibleDirectoryIds = useMemo(() => {
+    const roleIds: string[] = [];
+    const employeeIds: string[] = [];
+
+    const collectGroup = (approverType: number, approverKey: string) => {
+      if (!approverKey.trim()) return;
+      if (approverType === ApprovalApproverType.Role) {
+        roleIds.push(approverKey);
+        return;
+      }
+      employeeIds.push(approverKey);
+    };
+
+    for (const workflow of filteredWorkflows) {
+      for (const level of workflow.levels) {
+        for (const group of level.groups) {
+          collectGroup(group.approverType, group.approverKey);
+        }
+      }
+    }
+
+    if (builder) {
+      for (const level of builder.levels) {
+        for (const group of level.groups) {
+          collectGroup(group.approverType, group.approverKey);
+        }
+      }
+    }
+
+    for (const request of requestsForOpen) {
+      employeeIds.push(request.requestedByUserId);
+    }
+
+    return { roleIds, employeeIds };
+  }, [builder, filteredWorkflows, requestsForOpen]);
+
+  const directoryLabels = useApprovalDirectoryLabels({
+    roleIds: visibleDirectoryIds.roleIds,
+    employeeIds: visibleDirectoryIds.employeeIds,
+    canGetRoles,
+    canGetEmployees,
+  });
+
+  const employees = useMemo(() => {
+    if (!canGetEmployees) return null;
+    const map = new Map<string, TEmployee>();
+    directoryLabels.employees.forEach((employee, id) => {
+      map.set(id, employee);
+    });
+    for (const employee of pickerEmployees) {
+      map.set(employee.id, employee);
+    }
+    return [...map.values()];
+  }, [canGetEmployees, directoryLabels.employees, pickerEmployees]);
+
+  const roles = useMemo(() => {
+    if (!canGetRoles) return null;
+    const map = new Map<string, TApplicationRole>();
+    directoryLabels.roles.forEach((role, id) => {
+      map.set(id, role);
+    });
+    for (const role of pickerRoles) {
+      map.set(role.id, role);
+    }
+    return [...map.values()];
+  }, [canGetRoles, directoryLabels.roles, pickerRoles]);
+
   const stats = useMemo(() => {
     const active = workflows.filter((workflow) => workflow.isActive);
     const coveredEntities = new Set(
@@ -354,7 +411,11 @@ export const useApprovalStudio = () => {
   }, [entityTypes.length, lockedWorkflowIds.size, pending, workflows]);
 
   const openBuilder = (draft: ApprovalBuilderDraft) => setBuilder(draft);
-  const closeBuilder = () => setBuilder(null);
+  const closeBuilder = () => {
+    setBuilder(null);
+    setEmployeeDirectorySearch("");
+    setRoleDirectorySearch("");
+  };
 
   const openNew = (entityType?: string, scope?: TApprovalActionScope) => {
     if (!canCreate) return;
@@ -471,11 +532,6 @@ export const useApprovalStudio = () => {
     }
   };
 
-  const requestsForOpen =
-    requestsWorkflowId && pending
-      ? pending.filter((request) => request.workflowId === requestsWorkflowId)
-      : [];
-
   return {
     view,
     setView,
@@ -509,6 +565,40 @@ export const useApprovalStudio = () => {
     lockedWorkflowIds,
     employees,
     roles,
+    employeeDirectorySearch,
+    setEmployeeDirectorySearch,
+    roleDirectorySearch,
+    setRoleDirectorySearch,
+    loadMoreEmployees: () => {
+      if (
+        !directoryPickerEnabled ||
+        !employeesQuery.hasNextPage ||
+        employeesQuery.isFetchingNextPage
+      ) {
+        return;
+      }
+      void employeesQuery.fetchNextPage();
+    },
+    loadMoreRoles: () => {
+      if (
+        !directoryPickerEnabled ||
+        !rolesQuery.hasNextPage ||
+        rolesQuery.isFetchingNextPage
+      ) {
+        return;
+      }
+      void rolesQuery.fetchNextPage();
+    },
+    employeesHasMore: Boolean(employeesQuery.hasNextPage),
+    rolesHasMore: Boolean(rolesQuery.hasNextPage),
+    employeesLoading:
+      directoryPickerEnabled &&
+      canGetEmployees &&
+      employeesQuery.isPending,
+    rolesLoading:
+      directoryPickerEnabled && canGetRoles && rolesQuery.isPending,
+    employeesLoadingMore: employeesQuery.isFetchingNextPage,
+    rolesLoadingMore: rolesQuery.isFetchingNextPage,
     stats,
     isLoading:
       entityTypesQuery.isPending ||

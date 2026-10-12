@@ -1,4 +1,4 @@
-import { startTransition, type ReactNode } from "react";
+import { startTransition } from "react";
 import clsx from "clsx";
 import { GitBranch, LayoutGrid, Plus, RefreshCw } from "lucide-react";
 import { Switch } from "antd";
@@ -26,38 +26,16 @@ const viewTabClass = (active: boolean) =>
       : "bg-transparent text-(--Grey600)",
   );
 
-const glowClassName = {
-  primary: "bg-(--Primary400)",
-  secondary: "bg-(--Secondary300)",
-  teal: "bg-(--statusB200)",
-  amber: "bg-(--statusY200)",
-} as const;
-
-type StatGlow = keyof typeof glowClassName;
-
-type StatCardProps = {
-  title: string;
-  value: ReactNode;
-  content: ReactNode;
-  glow: StatGlow;
-};
-
-const StatCard = ({ title, value, content, glow }: StatCardProps) => (
-  <div className="relative h-fit overflow-hidden rounded-xl border border-(--Grey300) bg-(--app-surface) p-4 shadow-xl">
-    <div
-      className={`absolute -top-10 -right-8 h-25 w-25 rounded-full opacity-30 blur-2xl ${glowClassName[glow]}`}
-    />
-    <p className="text-xs font-semibold uppercase text-(--Grey600)">{title}</p>
-    <div className="py-1 text-2xl font-bold text-(--app-text)">{value}</div>
-    <div className="text-sm text-(--Grey500)">{content}</div>
-  </div>
-);
-
 const ApprovalStudioView = ({ studio }: Props) => {
   const { t } = useTranslation();
 
   if (studio.isLoading) {
-    return <ApprovalStudioSkeleton />;
+    return (
+      <div className="flex flex-col gap-4">
+        <AppSkeleton active paragraph={{ rows: 2 }} />
+        <p className={DesignTokens.typography.muted}>{t("approval.loading")}</p>
+      </div>
+    );
   }
 
   if (studio.isError || !studio.canGet) {
@@ -114,54 +92,6 @@ const ApprovalStudioView = ({ studio }: Props) => {
           {t("approval.reload")}
         </AppButton>
       </header>
-
-      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          title={t("approval.stats.active")}
-          value={String(studio.stats.activeCount)}
-          content={t("approval.stats.ofEntities", {
-            count: studio.stats.entityTypeCount,
-          })}
-          glow="primary"
-        />
-        <StatCard
-          title={t("approval.stats.coverage")}
-          value={String(studio.stats.coverageCount)}
-          content={t("approval.stats.ofEntities", {
-            count: studio.stats.entityTypeCount,
-          })}
-          glow="secondary"
-        />
-        <StatCard
-          title={t("approval.stats.pending")}
-          value={
-            studio.pending === null
-              ? "—"
-              : String(studio.stats.pendingCount)
-          }
-          content={
-            studio.pending === null
-              ? t("approval.stats.pendingDenied")
-              : studio.stats.lockedCount > 0
-                ? t("approval.stats.lockedWorkflows", {
-                    count: studio.stats.lockedCount,
-                  })
-                : t("approval.stats.noLocks")
-          }
-          glow="amber"
-        />
-        <StatCard
-          title={t("approval.stats.groups")}
-          value={String(studio.stats.groupCount)}
-          content={t("approval.workflow.levels", {
-            count: studio.filteredWorkflows.reduce(
-              (sum, workflow) => sum + workflow.levels.length,
-              0,
-            ),
-          })}
-          glow="teal"
-        />
-      </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="inline-flex gap-1 rounded-xl border border-(--Grey300) bg-(--app-surface) p-1">

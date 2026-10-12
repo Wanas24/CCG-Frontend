@@ -1,3 +1,4 @@
+import type { UIEvent } from "react";
 import clsx from "clsx";
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { InputNumber, Switch } from "antd";
@@ -23,6 +24,11 @@ import type {
 } from "../hooks/useApprovalStudio";
 import ApprovalHintIcon from "./ApprovalHintIcon";
 import ApprovalPlainWords from "./ApprovalPlainWords";
+
+const nearListBottom = (event: UIEvent<HTMLDivElement>) => {
+  const target = event.target as HTMLDivElement;
+  return target.scrollTop + target.offsetHeight >= target.scrollHeight - 32;
+};
 
 type Props = {
   studio: ApprovalStudioApi;
@@ -95,20 +101,41 @@ const ApprovalBuilderDrawer = ({ studio }: Props) => {
     });
   };
 
-  const roleOptions =
-    studio.roles?.map((role) => ({
-      value: role.id,
-      label: role.name,
-    })) ?? [];
+  const roleOptionMap = new Map(
+    (studio.roles ?? []).map((role) => [
+      role.id,
+      { value: role.id, label: role.name },
+    ]),
+  );
 
-  const employeeOptions =
-    studio.employees?.map((employee) => {
+  const employeeOptionMap = new Map(
+    (studio.employees ?? []).map((employee) => {
       const name = `${employee.firstName} ${employee.lastName}`.trim();
-      return {
-        value: employee.id,
-        label: name || employee.email,
-      };
-    }) ?? [];
+      return [
+        employee.id,
+        {
+          value: employee.id,
+          label: name || employee.email || employee.id,
+        },
+      ];
+    }),
+  );
+
+  const roleOptionsFor = (selectedKey?: string) => {
+    const options = [...roleOptionMap.values()];
+    if (selectedKey && !roleOptionMap.has(selectedKey)) {
+      options.unshift({ value: selectedKey, label: selectedKey });
+    }
+    return options;
+  };
+
+  const employeeOptionsFor = (selectedKey?: string) => {
+    const options = [...employeeOptionMap.values()];
+    if (selectedKey && !employeeOptionMap.has(selectedKey)) {
+      options.unshift({ value: selectedKey, label: selectedKey });
+    }
+    return options;
+  };
 
   const canSave = draft?.id ? studio.canUpdate : studio.canCreate;
 
@@ -348,9 +375,26 @@ const ApprovalBuilderDrawer = ({ studio }: Props) => {
                             <AppDropDownSelect
                               placeholder={t("approval.builder.chooseRole")}
                               value={group.approverKey || undefined}
-                              options={roleOptions}
+                              options={roleOptionsFor(group.approverKey)}
                               showSearch
-                              optionFilterProp="label"
+                              filterOption={false}
+                              loading={
+                                studio.rolesLoading || studio.rolesLoadingMore
+                              }
+                              onSearch={studio.setRoleDirectorySearch}
+                              onDropdownVisibleChange={(visible) => {
+                                if (!visible) {
+                                  studio.setRoleDirectorySearch("");
+                                }
+                              }}
+                              onPopupScroll={(event) => {
+                                if (
+                                  nearListBottom(event) &&
+                                  studio.rolesHasMore
+                                ) {
+                                  studio.loadMoreRoles();
+                                }
+                              }}
                               onChange={(value) =>
                                 updateGroup(level.key, group.key, (current) => ({
                                   ...current,
@@ -367,9 +411,27 @@ const ApprovalBuilderDrawer = ({ studio }: Props) => {
                           <AppDropDownSelect
                             placeholder={t("approval.builder.choosePerson")}
                             value={group.approverKey || undefined}
-                            options={employeeOptions}
+                            options={employeeOptionsFor(group.approverKey)}
                             showSearch
-                            optionFilterProp="label"
+                            filterOption={false}
+                            loading={
+                              studio.employeesLoading ||
+                              studio.employeesLoadingMore
+                            }
+                            onSearch={studio.setEmployeeDirectorySearch}
+                            onDropdownVisibleChange={(visible) => {
+                              if (!visible) {
+                                studio.setEmployeeDirectorySearch("");
+                              }
+                            }}
+                            onPopupScroll={(event) => {
+                              if (
+                                nearListBottom(event) &&
+                                studio.employeesHasMore
+                              ) {
+                                studio.loadMoreEmployees();
+                              }
+                            }}
                             onChange={(value) =>
                               updateGroup(level.key, group.key, (current) => ({
                                 ...current,
