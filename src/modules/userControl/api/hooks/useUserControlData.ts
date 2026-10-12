@@ -40,7 +40,6 @@ export type UserControlListFilters = {
   roleSearch: string;
   roleVisibility?: TApplicationRoleVisibility;
   permissionSearch: string;
-  projectSearch: string;
   drawerPermissionSearch: string;
 };
 
@@ -95,7 +94,6 @@ export const useUserControlData = ({
   roleSearch,
   roleVisibility,
   permissionSearch,
-  projectSearch,
   drawerPermissionSearch,
 }: UserControlListFilters) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -105,7 +103,6 @@ export const useUserControlData = ({
   const roleSearchActive =
     roleSearch.length > 0 || roleVisibility !== undefined;
   const permissionSearchActive = permissionSearch.length > 0;
-  const projectSearchActive = projectSearch.length > 0;
   const drawerSearchActive = drawerPermissionSearch.length > 0;
 
   const employeesQuery = useGetEmployees();
@@ -126,10 +123,6 @@ export const useUserControlData = ({
   const permissionSearchQuery = useGetApplicationRolePermissions(
     { search: permissionSearch },
     permissionSearchActive,
-  );
-  const projectSearchQuery = useGetActiveProjects(
-    { search: projectSearch },
-    projectSearchActive,
   );
   const drawerPermissionQuery = useGetApplicationRolePermissions(
     { search: drawerPermissionSearch },
@@ -188,10 +181,6 @@ export const useUserControlData = ({
     () => readPages(permissionSearchQuery.data?.pages),
     [permissionSearchQuery.data?.pages],
   );
-  const searchedProjects = useMemo(
-    () => readPages(projectSearchQuery.data?.pages),
-    [projectSearchQuery.data?.pages],
-  );
   const searchedDrawerGroups = useMemo(
     () => readPages(drawerPermissionQuery.data?.pages),
     [drawerPermissionQuery.data?.pages],
@@ -200,7 +189,6 @@ export const useUserControlData = ({
   const boardEmployees = employeeSearchActive ? searchedEmployees : employees;
   const boardRoles = roleSearchActive ? searchedRoles : roles;
   const catalogGroups = permissionSearchActive ? searchedGroups : groups;
-  const inviteProjects = projectSearchActive ? searchedProjects : projects;
   const drawerGroups = drawerSearchActive ? searchedDrawerGroups : groups;
 
   const employeesTotal = readTotal(employeesQuery.data?.pages);
@@ -373,12 +361,11 @@ export const useUserControlData = ({
   const projectCatalog = useMemo(() => {
     const map = new Map<number, TProjectWithUsers>();
     projects.forEach((project) => map.set(project.id, project));
-    inviteProjects.forEach((project) => map.set(project.id, project));
     projectDirectoryQuery.data?.forEach((project) =>
       map.set(project.id, project),
     );
     return map;
-  }, [inviteProjects, projectDirectoryQuery.data, projects]);
+  }, [projectDirectoryQuery.data, projects]);
 
   const userRolesForbidden = userRoleQueries.some(
     (query) => query.isError && isForbiddenError(query.error),
@@ -491,9 +478,6 @@ export const useUserControlData = ({
   const catalogQuery = permissionSearchActive
     ? permissionSearchQuery
     : permissionsQuery;
-  const inviteProjectsQuery = projectSearchActive
-    ? projectSearchQuery
-    : projectsQuery;
   const drawerGroupsQuery = drawerSearchActive
     ? drawerPermissionQuery
     : permissionsQuery;
@@ -549,12 +533,7 @@ export const useUserControlData = ({
     projectsHasNext: projectsQuery.hasNextPage,
     projectsLoadingMore: projectsQuery.isFetchingNextPage,
     loadMoreProjects: () => loadMore(projectsQuery),
-    inviteProjects,
-    inviteProjectsHasNext: inviteProjectsQuery.hasNextPage,
-    inviteProjectsLoadingMore: inviteProjectsQuery.isFetchingNextPage,
-    loadMoreInviteProjects: () => loadMore(inviteProjectsQuery),
     projectsStatus: listStatus(projectsQuery),
-    inviteProjectsStatus: listStatus(inviteProjectsQuery),
     projectAccessStatus: projectDirectoryQuery.isPending
       ? ("loading" as const)
       : projectDirectoryQuery.isError

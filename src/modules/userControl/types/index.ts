@@ -48,7 +48,5 @@ export type {
 
 export type {
   ConfirmState,
-  InviteRunState,
-  InviteStepStatus,
   UserControlDrawerState,
 } from "./userControlState";

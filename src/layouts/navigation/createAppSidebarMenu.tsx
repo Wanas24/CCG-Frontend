@@ -6,6 +6,7 @@ import {
   ListTree,
   Settings,
   ShieldCheck,
+  UserCog,
   Users,
 } from "lucide-react";
 import { AI_ROUTES } from "@/modules/ai/routes/paths";
@@ -54,8 +55,15 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
         key: "user-control",
         label: t("userControl.navLabel"),
         path: USER_CONTROL_ROUTES.userControl,
-        icon: <Users size={18} />,
+        icon: <UserCog size={18} />,
         permissions: [...userControlAccessPermissions],
+      },
+      {
+        key: "users-manager",
+        label: t("userControl.usersManager.navLabel"),
+        path: USER_CONTROL_ROUTES.usersManager,
+        icon: <Users size={18} />,
+        permissions: [PermissionsList.Employee.Get],
       },
       {
         key: "approval",

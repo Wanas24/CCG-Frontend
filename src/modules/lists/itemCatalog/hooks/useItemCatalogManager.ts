@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { triggerAnchorDownload } from "@/lib/files/triggerAnchorDownload";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useCreateItemCategory } from "../api/hooks/useCreateItemCategory";

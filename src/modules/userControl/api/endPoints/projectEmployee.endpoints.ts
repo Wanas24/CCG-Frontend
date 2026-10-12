@@ -9,6 +9,13 @@ export const projectEmployeeEndpoints = {
     permissions: [PermissionsList.ProjectEmployee.GetActiveProjects],
     skipToast: true,
   }),
+  userProjects: createEndpoint({
+    method: "GET",
+    path: `/ProjectEmployee/users/:userId/projects`,
+    auth: "required",
+    permissions: [PermissionsList.ProjectEmployee.GetActiveProjects],
+    skipToast: true,
+  }),
   setUserProjects: createEndpoint({
     method: "PUT",
     path: `/ProjectEmployee/users/:userId/projects`,
