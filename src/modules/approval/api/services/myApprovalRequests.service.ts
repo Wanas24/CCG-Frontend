@@ -2,6 +2,7 @@ import { callEndpoint } from "@/lib/api/callEndpoint";
 import { MY_APPROVAL_REQUESTS_PAGE_SIZE } from "../../constants/myApprovalRequests";
 import { myApprovalRequestsEndpoints } from "../endPoints/myApprovalRequests.endpoints";
 import type {
+  TCancelMyApprovalRequestResponse,
   TGetMyApprovalRequestCountsParams,
   TGetMyApprovalRequestCountsResponse,
   TGetMyApprovalRequestsParams,
@@ -37,5 +38,11 @@ export const myApprovalRequestsService = {
     callEndpoint<TGetMyApprovalRequestCountsResponse>(
       myApprovalRequestsEndpoints.counts,
       { queryParams: toCountsQueryParams(params) },
+    ),
+
+  cancel: (requestId: string) =>
+    callEndpoint<TCancelMyApprovalRequestResponse>(
+      myApprovalRequestsEndpoints.cancel,
+      { pathParams: { requestId } },
     ),
 };
