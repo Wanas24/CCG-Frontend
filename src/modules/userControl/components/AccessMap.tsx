@@ -127,7 +127,8 @@ const AccessMap = ({ userControl }: Props) => {
       >
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          className="mx-auto block h-auto w-full max-w-[980px]"
+          className="mx-auto block h-auto w-full max-w-[980px] [direction:ltr]"
+          style={{ direction: "ltr" }}
         >
           <text
             className="fill-(--Grey500) text-[11px] font-bold tracking-[0.08em] uppercase"
