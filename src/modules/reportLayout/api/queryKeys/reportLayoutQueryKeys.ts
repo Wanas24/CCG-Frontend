@@ -8,3 +8,8 @@ export const reportLayoutSummaryQueryKey = (includeInactive: boolean) =>
 
 export const reportLayoutDetailQueryKey = (layoutId: string) =>
   [...reportLayoutQueryRootKey, "detail", layoutId] as const;
+
+export const reportLayoutImagesQueryKey = [
+  ...reportLayoutQueryRootKey,
+  "images",
+] as const;

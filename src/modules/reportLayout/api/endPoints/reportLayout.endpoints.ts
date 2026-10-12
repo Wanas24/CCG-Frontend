@@ -48,6 +48,25 @@ export const reportLayoutEndpoints = {
     auth: "required",
     permissions: [PermissionsList.ReportLayout.Deactivate],
   }),
+  listImages: createEndpoint({
+    method: "GET",
+    path: `/ReportLayout/images`,
+    auth: "required",
+    permissions: [PermissionsList.ReportLayout.GetLayouts],
+    skipToast: true,
+  }),
+  uploadImage: createEndpoint({
+    method: "POST",
+    path: `/ReportLayout/images`,
+    auth: "required",
+    permissions: [PermissionsList.ReportLayout.Update],
+  }),
+  deleteImage: createEndpoint({
+    method: "DELETE",
+    path: `/ReportLayout/images/:fileId`,
+    auth: "required",
+    permissions: [PermissionsList.ReportLayout.Update],
+  }),
   preview: createEndpoint({
     method: "POST",
     path: `/ReportLayout/preview-sample`,

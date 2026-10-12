@@ -6,7 +6,7 @@ import type {
   TSignature,
   TSignatureDraft,
 } from "../types";
-import { createBlankDraft, createSignature } from "./layoutDefaults";
+import { createBlankDraft, createLayoutUid, createSignature } from "./layoutDefaults";
 
 const emptyToNull = (value: string | null | undefined) => {
   const trimmed = value?.trim() ?? "";
@@ -117,7 +117,7 @@ const withSignatureUids = (signatures: TSignature[]): TSignatureDraft[] =>
   signatures.map((signature, index) => ({
     ...createSignature(signature.displayOrder || index + 1),
     ...signature,
-    uid: crypto.randomUUID(),
+    uid: createLayoutUid(),
   }));
 
 const layoutMetaKeys = [

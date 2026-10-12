@@ -8,7 +8,10 @@ import type {
   TLayoutInput,
   TPreviewInput,
   TPreviewResult,
+  TDeleteReportLayoutImageResponse,
+  TReportLayoutImagesResponse,
   TReportLayoutSummary,
+  TUploadReportLayoutImageResponse,
 } from "../../types";
 import { reportLayoutEndpoints } from "../endPoints/reportLayout.endpoints";
 
@@ -73,6 +76,24 @@ export const reportLayoutService = {
     callEndpoint<TSimpleResult>(reportLayoutEndpoints.deactivate, {
       pathParams: { layoutId },
     }),
+
+  listImages: () =>
+    callEndpoint<TReportLayoutImagesResponse>(reportLayoutEndpoints.listImages),
+
+  uploadImage: (file: File) => {
+    const body = new FormData();
+    body.append("File", file);
+    return callEndpoint<TUploadReportLayoutImageResponse, FormData>(
+      reportLayoutEndpoints.uploadImage,
+      { body },
+    );
+  },
+
+  deleteImage: (fileId: number) =>
+    callEndpoint<TDeleteReportLayoutImageResponse>(
+      reportLayoutEndpoints.deleteImage,
+      { pathParams: { fileId } },
+    ),
 
   lastUsed: async (reportType: string): Promise<TLastUsedResult> => {
     try {

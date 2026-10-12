@@ -30,6 +30,7 @@ import {
 } from "../utils/layoutFields";
 import { layoutText } from "../utils/layoutText";
 import type { ReportLayoutStudioApi } from "../hooks/useReportLayoutStudio";
+import SignatureImageField from "./SignatureImageField";
 
 type Props = {
   studio: ReportLayoutStudioApi;
@@ -404,16 +405,17 @@ const SignatureEditor = ({ studio }: Props) => {
                 }}
               />
             </label>
-            <label className="col-span-2 text-[11px] font-semibold text-(--Grey600)">
-              {t("reportLayout.signature.imageUrl")}
-              <input
-                className={clsx(inputClass, "mt-1 font-mono text-xs")}
-                maxLength={1000}
-                value={signature.imageUrl ?? ""}
-                onChange={(event) => update(signature.uid, { imageUrl: event.target.value || null })}
-              />
-              <span className="mt-1 block font-normal text-(--Grey500)">{t("reportLayout.signature.imageHelp")}</span>
-            </label>
+            <SignatureImageField
+              value={signature.imageUrl ?? ""}
+              onChange={(imageUrl) => update(signature.uid, { imageUrl })}
+              onRemoved={(imageUrl) => {
+                draft.signatures.forEach((item) => {
+                  if ((item.imageUrl ?? "").trim() === imageUrl.trim()) {
+                    update(item.uid, { imageUrl: null });
+                  }
+                });
+              }}
+            />
             <label className="col-span-2 text-[11px] font-semibold text-(--Grey600)">
               {t("reportLayout.signature.instructions")}
               <textarea
@@ -459,7 +461,7 @@ const SignatureEditor = ({ studio }: Props) => {
       ))}
       <button
         type="button"
-        className="mt-1 w-fit rounded-[10px] border border-(--Grey300) px-2.5 py-1.5 text-xs font-semibold"
+        className="mt-1 cursor-pointer w-fit rounded-[10px] border border-(--Grey300) px-2.5 py-1.5 text-xs font-semibold"
         onClick={studio.addSignature}
       >
         {t("reportLayout.inspector.addSignature")}

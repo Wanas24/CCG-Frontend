@@ -1,9 +1,21 @@
 import type { TLayoutDraft, TSignatureDraft } from "../types";
 
-const newUid = () => crypto.randomUUID();
+const fallbackUid = () =>
+  "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+    const random = (Math.random() * 16) | 0;
+    const value = char === "x" ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  });
+
+export const createLayoutUid = () => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return fallbackUid();
+};
 
 export const createSignature = (displayOrder: number): TSignatureDraft => ({
-  uid: newUid(),
+  uid: createLayoutUid(),
   label: "",
   title: null,
   name: null,

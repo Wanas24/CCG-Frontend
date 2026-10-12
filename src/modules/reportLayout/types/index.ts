@@ -1,4 +1,11 @@
 export type {
+  TDeleteReportLayoutImageResponse,
+  TReportLayoutImage,
+  TReportLayoutImagesResponse,
+  TUploadReportLayoutImageResponse,
+} from "./reportLayoutImage";
+
+export type {
   TContentKind,
   TContentTemplate,
   TLastUsedResult,
