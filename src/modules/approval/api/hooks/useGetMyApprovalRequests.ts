@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { myApprovalRequestsService } from "../services/myApprovalRequests.service";
 import { myApprovalRequestsListQueryKey } from "../queryKeys/myApprovalRequestsQueryKeys";
@@ -15,6 +15,5 @@ export const useGetMyApprovalRequests = (
     queryKey: myApprovalRequestsListQueryKey(params),
     queryFn: () => myApprovalRequestsService.list(params),
     enabled: enabled && isAuthenticated && companyId !== null,
-    placeholderData: keepPreviousData,
   });
 };

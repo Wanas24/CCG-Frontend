@@ -836,7 +836,7 @@ export const useReportLayoutStudio = () => {
     setIncludeInactive,
     reload,
     isLoading: listQuery.isPending,
-    isSummaryLoading: summaryQuery.isPending || summaryQuery.isPlaceholderData,
+    isSummaryLoading: summaryQuery.isPending,
     summary,
     summaryError,
     quotaUsed,
