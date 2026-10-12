@@ -1,0 +1,28 @@
+::view-transition-old(.report-layout-view) {
+  animation: 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both report-layout-view-out;
+}
+
+::view-transition-new(.report-layout-view) {
+  animation: 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both report-layout-view-in;
+}
+
+@keyframes report-layout-view-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes report-layout-view-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(.report-layout-view),
+  ::view-transition-new(.report-layout-view) {
+    animation: none;
+  }
+}

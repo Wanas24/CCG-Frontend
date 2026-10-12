@@ -1,6 +1,7 @@
 import type { TFunction } from "i18next";
 import {
   Bell,
+  FileText,
   GitBranch,
   Home,
   ListTree,
@@ -14,6 +15,8 @@ import { ALERTS_ROUTES } from "@/modules/alerts/routes/paths";
 import { APPROVAL_ROUTES } from "@/modules/approval/routes/paths";
 import { approvalMenuPermissions } from "@/modules/approval/utils/approvalAccess";
 import { LISTS_ROUTES } from "@/modules/lists/routes/paths";
+import { REPORT_LAYOUT_ROUTES } from "@/modules/reportLayout/routes/paths";
+import { reportLayoutAccessPermissions } from "@/modules/reportLayout/utils/reportLayoutAccess";
 import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { USER_CONTROL_ROUTES } from "@/modules/userControl/routes/paths";
 import { userControlAccessPermissions } from "@/modules/userControl/utils/userControlAccess";
@@ -71,6 +74,13 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
         path: APPROVAL_ROUTES.approval,
         icon: <GitBranch size={18} />,
         permissions: [...approvalMenuPermissions],
+      },
+      {
+        key: "report-layouts",
+        label: t("reportLayout.navLabel"),
+        path: REPORT_LAYOUT_ROUTES.studio,
+        icon: <FileText size={18} />,
+        permissions: [...reportLayoutAccessPermissions],
       },
     ],
   },

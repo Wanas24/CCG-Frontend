@@ -1,0 +1,16 @@
+export const LAYOUT_LIMITS = {
+  code: 100,
+  name: 250,
+  description: 1000,
+  fontFamily: 100,
+  color: 20,
+  headerText: 2000,
+  logoUrl: 1000,
+  title: 500,
+  pageNumberFormat: 50,
+  generatedAtLabel: 100,
+  watermarkText: 1000,
+  signatureText: 1000,
+  dateLabel: 200,
+  instructions: 2000,
+} as const;

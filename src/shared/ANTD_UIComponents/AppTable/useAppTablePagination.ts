@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 10;
 
 export function useAppTablePagination(initialPageSize = DEFAULT_PAGE_SIZE) {
   const [page, setPage] = useState(1);

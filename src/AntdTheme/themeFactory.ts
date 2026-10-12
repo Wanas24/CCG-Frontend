@@ -27,7 +27,7 @@ export const createAntdTheme = (
     componentOverrides = {},
   }: AntdThemeOptions,
 ): ThemeConfig => {
-  const { Button, Input, Card, ...otherComponents } = componentOverrides;
+  const { Button, Input, Card, Segmented, ...otherComponents } = componentOverrides;
 
   return {
     algorithm,
@@ -79,6 +79,13 @@ export const createAntdTheme = (
       Card: {
         bodyPadding: DesignTokens.Card.bodyPadding,
         ...Card,
+      },
+      Segmented: {
+        controlPaddingHorizontal: DesignTokens.Segmented.controlPaddingHorizontal,
+        controlPaddingHorizontalSM: DesignTokens.Segmented.controlPaddingHorizontalSM,
+        controlHeight: DesignTokens.Segmented.controlHeight,
+        trackBg: cssVariables["--Grey100"],
+        ...Segmented,
       },
 
       ...otherComponents,

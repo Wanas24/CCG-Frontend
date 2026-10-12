@@ -15,6 +15,9 @@ export const lightTheme = createAntdTheme(lightCssVariables, {
     DatePicker: {
       cellHoverBg: lightCssVariables["--Primary400"],
     },
+    Segmented: {
+      trackBg: lightCssVariables["--app-surface"],
+    },
   },
 });
 

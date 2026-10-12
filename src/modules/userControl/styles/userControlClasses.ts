@@ -22,7 +22,7 @@ export const countClass =
 export const emptyClass = "px-2.5 py-[30px] text-center text-[13px] text-(--Grey500)";
 
 export const stepLabelClass =
-  "mb-1.5 flex min-h-7 items-center gap-2.5 text-xs font-semibold";
+  "flex min-h-7 items-center gap-2.5 text-xs font-semibold";
 
 export const markClass =
   "grid size-[38px] shrink-0 place-items-center rounded-xl bg-(--Primary400) text-(--app-surface)";
