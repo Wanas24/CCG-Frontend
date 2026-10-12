@@ -1,4 +1,5 @@
 import { callEndpoint } from "@/lib/api/callEndpoint";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { aiSubscriptionEndpoints } from "../endPoints/aiSubscription.endpoints";
 import type {
   TAiSubscriptionUpdateRequest,
@@ -8,13 +9,12 @@ import type {
   TUpdateAiSubscriptionResponse,
 } from "../../types";
 
-const DEFAULT_SUBSCRIPTIONS_PAGE_SIZE = 20;
 const MAX_SUBSCRIPTIONS_PAGE_SIZE = 100;
 
 const toQueryParams = (params: TGetAiSubscriptionsParams = {}) => {
   const page = params.page ?? 1;
   const pageSize = Math.min(
-    params.pageSize ?? DEFAULT_SUBSCRIPTIONS_PAGE_SIZE,
+    params.pageSize ?? DEFAULT_PAGE_SIZE,
     MAX_SUBSCRIPTIONS_PAGE_SIZE,
   );
 

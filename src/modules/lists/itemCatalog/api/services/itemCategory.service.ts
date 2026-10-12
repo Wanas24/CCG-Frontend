@@ -1,4 +1,5 @@
 import { callEndpoint } from "@/lib/api/callEndpoint";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { toPagedQueryParams } from "@/modules/userControl/api/services/toPagedQueryParams";
 import { itemCategoryEndpoints } from "../endPoints/itemCategory.endpoints";
 import type {
@@ -16,7 +17,6 @@ import type {
   TUploadItemCategoryFilesResponse,
 } from "../../types/itemCategory";
 
-const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;
 
 const toQueryParams = (params: TGetItemCategoriesParams = {}) => {

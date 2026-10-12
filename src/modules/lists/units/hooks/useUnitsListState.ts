@@ -7,7 +7,7 @@ const SEARCH_DEBOUNCE_MS = 300;
 export const useUnitsListState = () => {
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const { page, pageSize, onChange, resetPage } = useAppTablePagination(20);
+  const { page, pageSize, onChange, resetPage } = useAppTablePagination();
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

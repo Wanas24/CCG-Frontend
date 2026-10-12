@@ -1,7 +1,7 @@
 import type { TSimpleResult } from "@/modules/authentication/types";
 import type { TApiPagedResult } from "../../types";
 
-export const USER_CONTROL_PAGE_SIZE = 20;
+export { USER_CONTROL_PAGE_SIZE } from "../services/toPagedQueryParams";
 
 export const nextPagedParam = <T>(lastPage: TSimpleResult<TApiPagedResult<T>>) => {
   if (!lastPage.isSuccess || !lastPage.data) return undefined;

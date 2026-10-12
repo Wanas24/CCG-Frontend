@@ -15,7 +15,7 @@ import {
 } from "../queryKeys/applicationRoleQueryKeys";
 import { employeeQueryRootKey } from "../queryKeys/employeeQueryKeys";
 import { projectEmployeeQueryRootKey } from "../queryKeys/projectEmployeeQueryKeys";
-import { readAllPages } from "./userControlPaging";
+import { readAllPages, USER_CONTROL_PAGE_SIZE } from "./userControlPaging";
 import { isForbiddenError } from "../../utils/readApiMessage";
 import type {
   TApplicationRole,
@@ -131,25 +131,40 @@ export const useUserControlData = ({
 
   const employeeDirectoryQuery = useQuery({
     queryKey: [...employeeQueryRootKey, "directory"],
-    queryFn: () => readAllPages((page) => employeeService.list({ page })),
+    queryFn: () =>
+      readAllPages((page) =>
+        employeeService.list({ page, pageSize: USER_CONTROL_PAGE_SIZE }),
+      ),
     enabled: canQuery,
   });
   const roleDirectoryQuery = useQuery({
     queryKey: [...applicationRoleQueryRootKey, "directory"],
     queryFn: () =>
-      readAllPages((page) => applicationRoleService.list({ page })),
+      readAllPages((page) =>
+        applicationRoleService.list({ page, pageSize: USER_CONTROL_PAGE_SIZE }),
+      ),
     enabled: canQuery,
   });
   const permissionDirectoryQuery = useQuery({
     queryKey: [...applicationRoleQueryRootKey, "permission-directory"],
     queryFn: () =>
-      readAllPages((page) => applicationRoleService.getPermissions({ page })),
+      readAllPages((page) =>
+        applicationRoleService.getPermissions({
+          page,
+          pageSize: USER_CONTROL_PAGE_SIZE,
+        }),
+      ),
     enabled: canQuery,
   });
   const projectDirectoryQuery = useQuery({
     queryKey: [...projectEmployeeQueryRootKey, "directory"],
     queryFn: () =>
-      readAllPages((page) => projectEmployeeService.projects({ page })),
+      readAllPages((page) =>
+        projectEmployeeService.projects({
+          page,
+          pageSize: USER_CONTROL_PAGE_SIZE,
+        }),
+      ),
     enabled: canQuery,
   });
 

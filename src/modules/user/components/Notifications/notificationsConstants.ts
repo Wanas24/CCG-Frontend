@@ -1,4 +1,6 @@
-export const NOTIFICATIONS_PAGE_SIZE = 10;
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
+
+export const NOTIFICATIONS_PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 export type NotificationFilter = "all" | "unread" | "read";
 

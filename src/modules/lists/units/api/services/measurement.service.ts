@@ -1,4 +1,5 @@
 import { callEndpoint } from "@/lib/api/callEndpoint";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { toPagedQueryParams } from "@/modules/userControl/api/services/toPagedQueryParams";
 import { measurementEndpoints } from "../endPoints/measurement.endpoints";
 import type {
@@ -11,7 +12,6 @@ import type {
   TUpdateMeasurementResponse,
 } from "../../types/measurement";
 
-const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;
 
 const toQueryParams = (params: TGetMeasurementsParams = {}) => {

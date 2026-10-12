@@ -1,9 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { aiService } from "../services/ai.service";
 import { aiMessagesQueryKey } from "../queryKeys/aiQueryKeys";
-
-const DEFAULT_PAGE_SIZE = 10;
 
 type Options = {
   pageSize?: number;

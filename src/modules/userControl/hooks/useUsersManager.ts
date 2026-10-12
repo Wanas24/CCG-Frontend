@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useDebounce } from "use-debounce";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { triggerAnchorDownload } from "@/lib/files/triggerAnchorDownload";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
@@ -37,7 +38,7 @@ export type UsersManagerFilter =
 
 export type UsersManagerStatKey = keyof typeof USERS_MANAGER_TEMPORARY_STATS;
 
-export const USERS_MANAGER_PAGE_SIZE = 10;
+export const USERS_MANAGER_PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 type PagedBody<T> = {
   isSuccess: boolean;
