@@ -9,6 +9,7 @@ import type {
 const toListQueryParams = (params: TGetClientsParams = {}) => ({
   Page: params.page ?? 1,
   PageSize: params.pageSize ?? CLIENT_LOOKUP_PAGE_SIZE,
+  ...(params.search?.trim() ? { Search: params.search.trim() } : {}),
 });
 
 export const clientService = {

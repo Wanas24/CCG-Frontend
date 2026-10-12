@@ -42,4 +42,40 @@ export type TGetProjectsParams = TPagedQueryParams & {
   clientId?: number | "";
 };
 
+export type TProjectWriteBody = {
+  name: string;
+  number?: string | null;
+  officialName?: string | null;
+  clientId: number;
+  projectType: number;
+  status: number;
+  notes?: string | null;
+  taxIncluded: boolean;
+  hasDemolisionLicence: boolean;
+  hasCivilDefenseLicence: boolean;
+  country?: string | null;
+  city?: string | null;
+  district?: string | null;
+  street?: string | null;
+  buildingNumber?: string | null;
+  postalCode?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  landmark?: string | null;
+  locationNotes?: string | null;
+};
+
+export type TCreateProjectRequest = TProjectWriteBody;
+
+export type TUpdateProjectRequest = TProjectWriteBody & {
+  id: number;
+  isActive: boolean;
+};
+
 export type TGetProjectsResponse = TSimpleResult<TApiPagedResult<TProject>>;
+
+export type TCreateProjectResponse = TSimpleResult<number>;
+
+export type TUpdateProjectResponse = TSimpleResult;
+
+export type TDeleteProjectResponse = TSimpleResult;

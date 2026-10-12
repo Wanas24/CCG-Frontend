@@ -5,10 +5,13 @@ import { APP_ROUTES } from "@/modules/standalone/routes/paths";
 import { AppButton, AppSkeleton } from "@/shared/ANTD_UIComponents";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useGetProject } from "../api/hooks/useGetProject";
+import ProjectDeleteDialog from "../components/ProjectDeleteDialog";
 import ProjectWorkspaceHeader from "../components/ProjectWorkspaceHeader";
 import ProjectWorkspaceNav from "../components/ProjectWorkspaceNav";
+import { useDeleteProjectManager } from "../hooks/useDeleteProjectManager";
 import { useProjectsAccess } from "../hooks/useProjectsAccess";
 import { PROJECTS_ROUTES } from "../routes/paths";
+import type { TProjectWorkspaceOutletContext } from "../types/workspaceOutlet";
 import { parseProjectRouteId } from "../utils/parseProjectRouteId";
 
 const ProjectWorkspaceLayout = () => {
@@ -17,6 +20,7 @@ const ProjectWorkspaceLayout = () => {
   const { projectId: projectIdParam } = useParams();
   const projectId = parseProjectRouteId(projectIdParam);
   const { isLoading: accessLoading, canOpen } = useProjectsAccess();
+  const deleteManager = useDeleteProjectManager();
   const projectQuery = useGetProject(projectId, canOpen && projectId != null);
 
   if (accessLoading) {
@@ -118,15 +122,29 @@ const ProjectWorkspaceLayout = () => {
     );
   }
 
+  const outletContext: TProjectWorkspaceOutletContext = { project: matched };
+
   return (
     <div className="flex flex-col gap-4">
-      <ProjectWorkspaceHeader project={matched} />
+      <ProjectWorkspaceHeader
+        project={matched}
+        canDelete={deleteManager.canDelete}
+        onDelete={() => deleteManager.openDelete(matched)}
+      />
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <ProjectWorkspaceNav projectId={projectId} />
         <section className="min-h-64 rounded-2xl border border-(--Grey300) bg-(--app-surface) p-4 sm:p-5">
-          <Outlet />
+          <Outlet context={outletContext} />
         </section>
       </div>
+      <ProjectDeleteDialog
+        project={deleteManager.deletingProject}
+        loading={deleteManager.isDeleting}
+        onConfirm={() => {
+          void deleteManager.confirmDelete();
+        }}
+        onClose={deleteManager.closeDelete}
+      />
     </div>
   );
 };

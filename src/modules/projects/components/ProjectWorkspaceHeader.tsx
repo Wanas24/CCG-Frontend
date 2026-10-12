@@ -14,12 +14,18 @@ import {
 
 type Props = {
   project: TProject;
+  canDelete?: boolean;
+  onDelete?: () => void;
 };
 
 const tagClass =
   "rounded-full border border-(--Grey300) bg-(--Grey100) px-2 py-0.5 text-[10px] font-bold text-(--Grey600)";
 
-const ProjectWorkspaceHeader = ({ project }: Props) => {
+const ProjectWorkspaceHeader = ({
+  project,
+  canDelete = false,
+  onDelete,
+}: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isRtl } = useLocale();
@@ -29,14 +35,25 @@ const ProjectWorkspaceHeader = ({ project }: Props) => {
 
   return (
     <header className="rounded-2xl border border-(--Grey300) bg-(--app-surface) p-4 sm:p-5">
-      <AppButton
-        variant="secondary"
-        icon={<BackArrow size={16} />}
-        className="mb-4! w-fit!"
-        onClick={() => navigate(PROJECTS_ROUTES.root)}
-      >
-        {t("projects.workspace.back")}
-      </AppButton>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <AppButton
+          variant="secondary"
+          icon={<BackArrow size={16} />}
+          className="w-fit!"
+          onClick={() => navigate(PROJECTS_ROUTES.root)}
+        >
+          {t("projects.workspace.back")}
+        </AppButton>
+        {canDelete ? (
+          <AppButton
+            variant="delete"
+            className="w-fit!"
+            onClick={onDelete}
+          >
+            {t("projects.form.delete")}
+          </AppButton>
+        ) : null}
+      </div>
 
       <div className="min-w-0">
         <h1

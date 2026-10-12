@@ -5,8 +5,13 @@ import {
 } from "../../constants/projectList";
 import { projectEndpoints } from "../endPoints/project.endpoints";
 import type {
+  TCreateProjectRequest,
+  TCreateProjectResponse,
+  TDeleteProjectResponse,
   TGetProjectsParams,
   TGetProjectsResponse,
+  TUpdateProjectRequest,
+  TUpdateProjectResponse,
 } from "../../types/project";
 
 const toListQueryParams = (params: TGetProjectsParams = {}) => ({
@@ -37,5 +42,22 @@ export const projectService = {
   list: (params?: TGetProjectsParams) =>
     callEndpoint<TGetProjectsResponse>(projectEndpoints.list, {
       queryParams: toListQueryParams(params),
+    }),
+
+  create: (body: TCreateProjectRequest) =>
+    callEndpoint<TCreateProjectResponse, TCreateProjectRequest>(
+      projectEndpoints.create,
+      { body },
+    ),
+
+  update: (body: TUpdateProjectRequest) =>
+    callEndpoint<TUpdateProjectResponse, TUpdateProjectRequest>(
+      projectEndpoints.update,
+      { body },
+    ),
+
+  delete: (projectId: number) =>
+    callEndpoint<TDeleteProjectResponse>(projectEndpoints.delete, {
+      queryParams: { projectId },
     }),
 };

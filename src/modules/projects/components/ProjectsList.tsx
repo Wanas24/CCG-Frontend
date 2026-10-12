@@ -9,10 +9,8 @@ import {
 } from "@/shared/ANTD_UIComponents";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
-import { useGetClients } from "../api/hooks/useGetClients";
 import { useGetProjects } from "../api/hooks/useGetProjects";
 import {
-  CLIENT_LOOKUP_PAGE_SIZE,
   PROJECT_APPROVAL_OPTIONS,
   PROJECT_STATUS_OPTIONS,
   PROJECT_TYPE_OPTIONS,
@@ -24,6 +22,7 @@ import {
   projectStatusLabelKey,
   projectTypeLabelKey,
 } from "../utils/projectLabels";
+import ClientSelect from "./ClientSelect";
 import ProjectCard from "./ProjectCard";
 import ProjectsListSkeleton from "./ProjectsListSkeleton";
 
@@ -45,19 +44,11 @@ const ProjectsList = () => {
   const { data, isPending, isError, isFetching, refetch } = useGetProjects(
     listState.params,
   );
-  const clientsQuery = useGetClients({
-    page: 1,
-    pageSize: CLIENT_LOOKUP_PAGE_SIZE,
-  });
 
   const pageData = data?.isSuccess ? data.data : undefined;
   const rows = pageData?.data ?? [];
   const totalCount = pageData?.totalCount ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / listState.pageSize));
-
-  const clients = clientsQuery.data?.isSuccess
-    ? (clientsQuery.data.data?.data ?? [])
-    : [];
 
   const statusOptions = PROJECT_STATUS_OPTIONS.map((value) => ({
     value,
@@ -70,10 +61,6 @@ const ProjectsList = () => {
   const typeOptions = PROJECT_TYPE_OPTIONS.map((value) => ({
     value,
     label: t(projectTypeLabelKey(value) ?? "projects.filters.anyType"),
-  }));
-  const clientOptions = clients.map((client) => ({
-    value: client.id,
-    label: client.name || String(client.id),
   }));
 
   const showFilteredEmpty =
@@ -184,7 +171,7 @@ const ProjectsList = () => {
               }))
             }
           />
-          <AppDropDownSelect
+          <ClientSelect
             label={t("projects.filters.client")}
             value={
               listState.draft.clientId === ""
@@ -193,12 +180,10 @@ const ProjectsList = () => {
             }
             allowClear
             placeholder={t("projects.filters.anyClient")}
-            options={clientOptions}
-            loading={clientsQuery.isPending}
-            onChange={(value) =>
+            onChange={(clientId) =>
               listState.setDraft((current) => ({
                 ...current,
-                clientId: typeof value === "number" ? value : "",
+                clientId: clientId ?? "",
               }))
             }
           />
