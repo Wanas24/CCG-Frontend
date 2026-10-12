@@ -19,6 +19,7 @@ import {
 } from "../hooks/useAiSubscriptionListState";
 import type { TAiCompanyUserSubscriptionResponse } from "../types";
 import AiSubscriptionDrawer from "../components/AiSubscriptionDrawer";
+import AiSubscriptionPageSkeleton from "../components/AiSubscriptionPageSkeleton";
 import AiSubscriptionTable from "../components/AiSubscriptionTable";
 
 const AiSubscriptionManagementPage = () => {
@@ -49,17 +50,7 @@ const AiSubscriptionManagementPage = () => {
   };
 
   if (isPermissionsLoading) {
-    return (
-      <div className="p-6">
-        <AppFormPage title={t("ai.subscriptions.title")}>
-          <AppFormSection>
-            <p className={`${DesignTokens.typography.muted}`}>
-              {t("common.loading")}
-            </p>
-          </AppFormSection>
-        </AppFormPage>
-      </div>
-    );
+    return <AiSubscriptionPageSkeleton />;
   }
 
   if (!canGet) {
@@ -125,7 +116,7 @@ const AiSubscriptionManagementPage = () => {
           ) : (
             <AiSubscriptionTable
               rows={rows}
-              loading={isPending || isFetching}
+              loading={isPending}
               pagination={{
                 ...listState.pagination,
                 total: totalCount,

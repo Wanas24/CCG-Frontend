@@ -21,6 +21,7 @@ import {
   type ItemCategoryFormValues,
 } from "../schemas/itemCategoryFormSchema";
 import type { TItemCategory, TItemCategoryFile } from "../types/itemCategory";
+import { downloadRemoteFile } from "../utils/downloadRemoteFile";
 
 export type ItemCategoryFileAction = {
   fileId: number;
@@ -37,7 +38,7 @@ const emptyValues: ItemCategoryFormValues = {
 
 export const useItemCatalogManager = () => {
   const { t } = useTranslation();
-  const { hasPermission } = usePermissions();
+  const { hasPermission, isLoading: isPermissionsLoading } = usePermissions();
 
   const canGet = hasPermission(PermissionsList.ItemCategory.Get);
   const canCreate = hasPermission(PermissionsList.ItemCategory.Create);
@@ -215,18 +216,25 @@ export const useItemCatalogManager = () => {
     if (!canDownload || fileAction) return;
     setFileAction({ fileId: file.fileId, kind: "download" });
     try {
-      const resolved = await resolveFileUrl(file);
-      if (!resolved?.url) {
+      const response = await fileUrlMutation.mutateAsync(file.fileId);
+      if (!response.isSuccess || !response.data?.url) {
         toast.error(t("lists.itemCatalog.downloadError"));
         return;
       }
-      triggerAnchorDownload(resolved.url, resolved.fileName);
+
+      await downloadRemoteFile(
+        response.data.url,
+        response.data.fileName || file.fileName || "download",
+      );
+    } catch {
+      toast.error(t("lists.itemCatalog.downloadError"));
     } finally {
       setFileAction(null);
     }
   };
 
   return {
+    isPermissionsLoading,
     canGet,
     canCreate,
     canEdit,

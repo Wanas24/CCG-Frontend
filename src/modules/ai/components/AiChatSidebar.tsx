@@ -58,11 +58,27 @@ const AiChatSidebar = ({
         className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-3 py-3"
       >
         {isPending && (
-          <div className="flex flex-col gap-2" aria-busy="true">
-            <p className="m-0 text-sm text-(--Grey600)">
-              {t("ai.sidebar.loading")}
-            </p>
-            <AppSkeleton active paragraph={{ rows: 4 }} title={false} />
+          <div className="flex flex-col gap-3" aria-busy="true">
+            {Array.from({ length: 2 }).map((_, groupIndex) => (
+              <div key={groupIndex} className="flex flex-col gap-1">
+                <AppSkeleton.Input
+                  active
+                  className="!mb-1 !h-3 !w-16 !min-w-16"
+                />
+                {Array.from({ length: 3 }).map((_, rowIndex) => (
+                  <div
+                    key={rowIndex}
+                    className="rounded-lg px-2 py-2"
+                  >
+                    <AppSkeleton.Input
+                      active
+                      block
+                      className="!h-4 !w-full !min-w-0"
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         )}
 

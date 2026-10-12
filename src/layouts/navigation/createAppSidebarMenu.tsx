@@ -1,5 +1,6 @@
 import type { TFunction } from "i18next";
 import {
+  Bell,
   GitBranch,
   Home,
   ListTree,
@@ -9,6 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import { AI_ROUTES } from "@/modules/ai/routes/paths";
+import { ALERTS_ROUTES } from "@/modules/alerts/routes/paths";
 import { APPROVAL_ROUTES } from "@/modules/approval/routes/paths";
 import { approvalMenuPermissions } from "@/modules/approval/utils/approvalAccess";
 import { LISTS_ROUTES } from "@/modules/lists/routes/paths";
@@ -24,6 +26,12 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
     label: t("home.navLabel"),
     path: APP_ROUTES.home,
     icon: <Home size={18} />,
+  },
+  {
+    key: "alerts",
+    label: t("alerts.navLabel"),
+    path: ALERTS_ROUTES.alerts,
+    icon: <Bell size={18} />,
   },
   {
     key: "lists",

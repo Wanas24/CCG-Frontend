@@ -37,6 +37,11 @@ import {
 } from "../styles/userControlClasses";
 import ScrollLoadSentinel from "./ScrollLoadSentinel";
 import {
+  CatalogGroupsSkeleton,
+  EmployeeListSkeleton,
+  RoleCardsSkeleton,
+} from "./UserControlBoardSkeletons";
+import {
   type UserControlDragPayload,
   type UserControlDropTarget,
 } from "./userControlDrag";
@@ -104,7 +109,7 @@ const UserControlBoard = ({ userControl, drag }: Props) => {
         </div>
         <div className={panelBodyClass}>
           {userControl.boardEmployeesPending && !userControl.boardEmployeesFailed ? (
-            <AppSkeleton active paragraph={{ rows: 4 }} />
+            <EmployeeListSkeleton />
           ) : (
             <>
               {employees.length === 0 ? (
@@ -183,7 +188,7 @@ const UserControlBoard = ({ userControl, drag }: Props) => {
         <div className={panelBodyClass}>
           <ViewTransition>
             {userControl.boardRolesPending && !userControl.boardRolesFailed ? (
-              <AppSkeleton active paragraph={{ rows: 6 }} />
+              <RoleCardsSkeleton />
             ) : (
               <>
                 {roles.length === 0 ? (
@@ -247,7 +252,7 @@ const UserControlBoard = ({ userControl, drag }: Props) => {
         </div>
         <div className={clsx(panelBodyClass, "min-[1251px]:max-h-[400px]!")}>
           {userControl.catalogPending && !userControl.catalogFailed ? (
-            <AppSkeleton active paragraph={{ rows: 5 }} />
+            <CatalogGroupsSkeleton />
           ) : userControl.catalogGroups.length === 0 ? (
             <p className={emptyClass}>
               {listMessage(
