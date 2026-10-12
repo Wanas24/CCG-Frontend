@@ -19,7 +19,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { LayoutGrid, Network, RefreshCw, Table2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { AppButton, AppSkeleton } from "@/shared/ANTD_UIComponents";
+import { AppButton } from "@/shared/ANTD_UIComponents";
 import type { UserControlModel } from "../hooks/useUserControl";
 import { permissionLabel, personName } from "../utils/userControlDisplay";
 import {
@@ -27,7 +27,6 @@ import {
   faintClass,
   overOutlineClass,
 } from "../styles/userControlClasses";
-import UserControlStatisticsCard from "./UserControlStatisticsCard";
 import UserControlBoard from "./UserControlBoard";
 import CoverageMatrix from "./CoverageMatrix";
 import AccessMap from "./AccessMap";
@@ -91,13 +90,6 @@ const permissionLandsOnRole = (
   return group?.actions.some((action) => !current.has(action.id)) ?? false;
 };
 
-const statNumberSkeleton = (
-  <AppSkeleton.Input active size="small" className="!h-8 !w-16 !min-w-16" />
-);
-
-const statLineSkeleton = (
-  <AppSkeleton.Input active size="small" className="!h-4 !w-32 !min-w-32" />
-);
 
 const viewTabClass = (active: boolean) =>
   clsx(
@@ -250,84 +242,6 @@ const UserControlView = ({ userControl }: Props) => {
             {t("userControl.limitedView", { items: denied })}
           </div>
         ) : null}
-
-        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2 xl:grid-cols-4">
-          <UserControlStatisticsCard
-            title={t("userControl.stats.employees")}
-            value={
-              userControl.employeesPending
-                ? statNumberSkeleton
-                : String(userControl.employeesTotal)
-            }
-            content={
-              userControl.employeeStatsStatus === "loading"
-                ? statLineSkeleton
-                : userControl.employeeStatsStatus === "ready"
-                  ? t("userControl.stats.active", {
-                      count: userControl.activeEmployees ?? 0,
-                    })
-                  : "—"
-            }
-            glow="primary"
-          />
-          <UserControlStatisticsCard
-            title={t("userControl.stats.roles")}
-            value={
-              userControl.rolesPending ? statNumberSkeleton : String(userControl.rolesTotal)
-            }
-            content={
-              userControl.roleStatsStatus === "loading"
-                ? statLineSkeleton
-                : userControl.roleStatsStatus === "ready"
-                  ? t("userControl.stats.rolesSub", {
-                      company: userControl.companyRoles ?? 0,
-                      shared: userControl.sharedRoles ?? 0,
-                    })
-                  : "—"
-            }
-            glow="secondary"
-          />
-          <UserControlStatisticsCard
-            title={t("userControl.stats.permissions")}
-            value={
-              userControl.permissionStatsStatus === "loading"
-                ? statNumberSkeleton
-                : userControl.permissionStatsStatus === "ready"
-                  ? String(userControl.permissionTotal)
-                  : "—"
-            }
-            content={
-              userControl.groupsPending
-                ? statLineSkeleton
-                : t("userControl.stats.groups", {
-                    count: userControl.groupsTotal,
-                  })
-            }
-            glow="teal"
-          />
-          <UserControlStatisticsCard
-            title={t("userControl.stats.assignments")}
-            value={
-              userControl.employeeStatsStatus === "loading"
-                ? statNumberSkeleton
-                : userControl.employeeStatsStatus === "ready"
-                  ? String(userControl.assignments ?? 0)
-                  : "—"
-            }
-            content={
-              userControl.employeeStatsStatus === "loading"
-                ? statLineSkeleton
-                : userControl.employeeStatsStatus === "ready"
-                  ? (userControl.withoutRole ?? 0) > 0
-                    ? t("userControl.stats.withoutRole", {
-                        count: userControl.withoutRole ?? 0,
-                      })
-                    : t("userControl.stats.everyoneHasRole")
-                  : "—"
-            }
-            glow="amber"
-          />
-        </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="inline-flex gap-1 rounded-xl border border-(--Grey300) bg-(--app-surface) p-1">
