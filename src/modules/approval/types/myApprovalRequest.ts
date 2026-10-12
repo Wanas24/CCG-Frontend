@@ -113,6 +113,8 @@ export type TGetMyApprovalRequestsResponse = TSimpleResult<
 export type TGetMyApprovalRequestCountsResponse =
   TSimpleResult<TMyApprovalRequestCounts>;
 
+export type TCancelMyApprovalRequestResponse = TSimpleResult;
+
 export type TApprovalRequestDiffKind =
   | "same"
   | "changed"
