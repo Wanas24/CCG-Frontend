@@ -37,6 +37,17 @@ export const PermissionsList = {
     Get: "Employee.Get",
     RecruitEmployee: "Employee.RecruitEmployee",
   },
+  Project: {
+    Get: "Project.Get",
+    Export: "Project.Export",
+    Create: "Project.Create",
+    Edit: "Project.Edit",
+    Delete: "Project.Delete",
+    GetFiles: "Project.GetFiles",
+    Upload: "Project.Upload",
+    Download: "Project.Download",
+    DeleteFile: "Project.DeleteFile",
+  },
   ProjectEmployee: {
     GetActiveProjects: "ProjectEmployee.GetActiveProjects",
     SetProjects: "ProjectEmployee.SetProjects",
