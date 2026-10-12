@@ -11,6 +11,7 @@ import { useGetItemCategoryTypes } from "../api/hooks/useGetItemCategoryTypes";
 import { useItemCatalogListState } from "../hooks/useItemCatalogListState";
 import { useItemCatalogManager } from "../hooks/useItemCatalogManager";
 import ItemCatalogBoard from "./ItemCatalogBoard";
+import ItemCatalogContentSkeleton from "./ItemCatalogContentSkeleton";
 import ItemCatalogTypeLegend from "./ItemCatalogTypeLegend";
 import ItemCategoryDrawer from "./ItemCategoryDrawer";
 import {
@@ -89,11 +90,7 @@ const ItemCatalogList = ({ className }: Props) => {
     }
 
     if (isInitialLoading) {
-      return (
-        <p className={`m-0 ${DesignTokens.typography.muted}`}>
-          {t("common.loading")}
-        </p>
-      );
+      return <ItemCatalogContentSkeleton showLegend={false} />;
     }
 
     if (types.length === 0 && items.length === 0) {
@@ -165,11 +162,7 @@ const ItemCatalogList = ({ className }: Props) => {
 
   const renderResults = () => {
     if (types.length === 0 && isInitialLoading) {
-      return (
-        <p className={`m-0 ${DesignTokens.typography.muted}`}>
-          {t("common.loading")}
-        </p>
-      );
+      return <ItemCatalogContentSkeleton />;
     }
 
     return (
@@ -187,6 +180,14 @@ const ItemCatalogList = ({ className }: Props) => {
       </>
     );
   };
+
+  if (manager.isPermissionsLoading) {
+    return (
+      <div className={["min-w-0", className].filter(Boolean).join(" ")}>
+        <ItemCatalogContentSkeleton />
+      </div>
+    );
+  }
 
   if (!manager.canGet) {
     return (

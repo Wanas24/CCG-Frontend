@@ -97,17 +97,18 @@ export const lightColorTokens: ThemeColorTokens = {
 export const darkColorTokens: ThemeColorTokens = {
   ...sharedBrand,
 
-  Primary100: "#222c55",
+  Primary100: "#1c2748",
+  Primary400: "#8b9aff",
 
   Grey100: "#0e1528",
   Grey200: "#16213c",
-  Grey300: "#223056",
-  Grey400: "#2c3c69",
-  Grey500: "#5d6a94",
-  Grey600: "#8d9ac5",
-  Grey700: "#8d9ac5",
-  Grey800: "#e8ecff",
-  Grey900: "#e8ecff",
+  Grey300: "#2a3a5c",
+  Grey400: "#3d4f75",
+  Grey500: "#a8b4d6",
+  Grey600: "#c5cde8",
+  Grey700: "#d5dcf2",
+  Grey800: "#eef1ff",
+  Grey900: "#f5f7ff",
 
   statusR100: "#271e35",
 
@@ -119,6 +120,6 @@ export const darkColorTokens: ThemeColorTokens = {
 
   "app-bg": "#0a0f1e",
   "app-surface": "#111a30",
-  "app-text": "#e8ecff",
+  "app-text": "#f5f7ff",
 };
 

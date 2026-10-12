@@ -85,10 +85,31 @@ const NotificationsPanel = ({
 
       <div className="min-h-0 flex-1 overflow-y-auto p-1">
         {isLoading ? (
-          <div className="flex flex-col gap-2 p-2">
-            <AppSkeleton active paragraph={{ rows: 2 }} title={false} />
-            <AppSkeleton active paragraph={{ rows: 2 }} title={false} />
-            <AppSkeleton active paragraph={{ rows: 2 }} title={false} />
+          <div className="flex flex-col divide-y divide-(--Grey300)" aria-busy="true">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="flex items-start gap-2 px-3 py-2">
+                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                  <AppSkeleton.Input
+                    active
+                    className="!h-4 !w-40 !min-w-28"
+                  />
+                  <AppSkeleton.Input
+                    active
+                    block
+                    className="!h-3 !w-full !min-w-0"
+                  />
+                  <AppSkeleton.Input
+                    active
+                    className="!h-3 !w-24 !min-w-20"
+                  />
+                </div>
+                <AppSkeleton.Button
+                  active
+                  size="small"
+                  className="!size-7 !min-w-7"
+                />
+              </div>
+            ))}
           </div>
         ) : null}
 

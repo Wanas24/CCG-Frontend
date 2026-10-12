@@ -2,6 +2,7 @@ import { queryClient } from "@/lib/queryClient";
 import { availableCompaniesQueryKey } from "@/modules/authentication/api/hooks/availableCompaniesQueryKey";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { clearAiQueries } from "@/modules/ai/api/queryKeys/aiQueryKeys";
+import { clearAlertQueries } from "@/modules/alerts/api/queryKeys/alertQueryKeys";
 import { clearItemCategoryQueries } from "@/modules/lists/itemCatalog/api/queryKeys/itemCategoryQueryKeys";
 import { clearMeasurementQueries } from "@/modules/lists/units/api/queryKeys/measurementQueryKeys";
 import { userMeQueryKey } from "@/modules/user/api/hooks/useGetMe";
@@ -35,6 +36,7 @@ export const refreshAfterCompanySwitch = async () => {
       refreshPermissions(),
       clearAiQueries(),
       clearListsQueries(),
+      clearAlertQueries(),
     ]);
   } else {
     await Promise.all([
@@ -46,6 +48,7 @@ export const refreshAfterCompanySwitch = async () => {
       refreshPermissions(),
       clearAiQueries(),
       clearListsQueries(),
+      clearAlertQueries(),
     ]);
   }
 

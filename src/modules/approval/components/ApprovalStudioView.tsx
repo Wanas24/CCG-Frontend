@@ -4,13 +4,14 @@ import { GitBranch, LayoutGrid, Plus, RefreshCw } from "lucide-react";
 import { Switch } from "antd";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
-import { AppButton, AppInput, AppSkeleton } from "@/shared/ANTD_UIComponents";
+import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
 import type { ApprovalStudioApi } from "../hooks/useApprovalStudio";
 import ApprovalBuilderDrawer from "./ApprovalBuilderDrawer";
 import ApprovalCoverageMap from "./ApprovalCoverageMap";
 import ApprovalDecideDialog from "./ApprovalDecideDialog";
 import ApprovalEntitySidebar from "./ApprovalEntitySidebar";
 import ApprovalRequestsDrawer from "./ApprovalRequestsDrawer";
+import ApprovalStudioSkeleton from "./ApprovalStudioSkeleton";
 import ApprovalWorkflowCard from "./ApprovalWorkflowCard";
 
 type Props = {
