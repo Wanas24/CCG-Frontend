@@ -4,3 +4,14 @@ export const projectQueryRootKey = ["project"] as const;
 
 export const projectsListQueryKey = (params: TGetProjectsParams) =>
   [...projectQueryRootKey, "list", params] as const;
+
+export const projectDetailQueryKey = (projectId: number) =>
+  [
+    ...projectQueryRootKey,
+    "detail",
+    {
+      id: projectId,
+      page: 1,
+      pageSize: 1,
+    },
+  ] as const;

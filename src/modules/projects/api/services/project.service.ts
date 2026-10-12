@@ -14,6 +14,7 @@ const toListQueryParams = (params: TGetProjectsParams = {}) => ({
   PageSize: params.pageSize ?? PROJECTS_PAGE_SIZE,
   SortBy: params.sortBy ?? PROJECT_SORT_BY,
   SortDescending: params.sortDescending ?? true,
+  ...(params.id !== undefined ? { Id: params.id } : {}),
   ...(params.search?.trim() ? { Search: params.search.trim() } : {}),
   ...(params.status !== undefined && params.status !== ""
     ? { Status: params.status }

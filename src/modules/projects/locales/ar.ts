@@ -71,6 +71,32 @@ const projects = {
     yes: "نشط",
     no: "غير نشط",
   },
+  workspace: {
+    title: "مساحة المشروع",
+    navLabel: "أقسام المشروع",
+    back: "كل المشاريع",
+    loading: "جارٍ تحميل المشروع…",
+    loadError: "تعذر تحميل هذا المشروع.",
+    notFound: "لم يتم العثور على هذا المشروع.",
+    invalidId: "رابط المشروع غير صالح.",
+    soon: "قريباً",
+    sections: {
+      overview: "نظرة عامة",
+      team: "الفريق",
+      files: "الملفات",
+      alerts: "التنبيهات",
+      approvals: "الموافقات",
+      boq: "جدول الكميات",
+      invoices: "الفواتير",
+      items: "العناصر",
+      contracts: "العقود",
+    },
+    placeholder: {
+      ready:
+        "سيتوفر قسم {{section}} في تحديث لاحق. لا يمكن إجراء أي تغيير هنا بعد.",
+      soon: "قسم {{section}} مخطّط لهذه المساحة وغير متاح بعد.",
+    },
+  },
 } as const;
 
 export default projects;

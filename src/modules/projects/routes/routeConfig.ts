@@ -22,6 +22,37 @@ const projectsRouteConfig: AppRouteObject[] = [
               return { Component };
             },
           },
+          {
+            path: PROJECTS_ROUTES.detail,
+            label: "projects.workspace.title",
+            showInMenu: false,
+            lazy: async () => {
+              const { default: Component } = await import(
+                "../layouts/ProjectWorkspaceLayout"
+              );
+              return { Component };
+            },
+            children: [
+              {
+                index: true,
+                lazy: async () => {
+                  const { default: Component } = await import(
+                    "../pages/ProjectWorkspaceIndexRedirect"
+                  );
+                  return { Component };
+                },
+              },
+              {
+                path: ":section",
+                lazy: async () => {
+                  const { default: Component } = await import(
+                    "../pages/ProjectWorkspaceSectionPage"
+                  );
+                  return { Component };
+                },
+              },
+            ],
+          },
         ],
       },
     ],

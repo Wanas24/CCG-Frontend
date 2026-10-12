@@ -34,6 +34,7 @@ export type TProject = {
 };
 
 export type TGetProjectsParams = TPagedQueryParams & {
+  id?: number;
   status?: number | "";
   approvalStatus?: number | "";
   projectType?: number | "";

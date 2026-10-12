@@ -1,6 +1,8 @@
 import clsx from "clsx";
+import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
+import { projectWorkspacePath } from "../routes/paths";
 import type { TProject } from "../types/project";
 import {
   projectApprovalLabelKey,
@@ -30,7 +32,10 @@ const ProjectCard = ({ project }: Props) => {
         : "border-(--statusR200) text-(--statusR200)";
 
   return (
-    <article className="flex min-h-44 min-w-0 flex-col gap-3 rounded-2xl border border-(--Grey300) bg-(--app-surface) p-4 text-start transition hover:border-(--Grey400)">
+    <Link
+      to={projectWorkspacePath(project.id)}
+      className="flex min-h-44 min-w-0 flex-col gap-3 rounded-2xl border border-(--Grey300) bg-(--app-surface) p-4 text-start text-inherit no-underline transition hover:border-(--Primary400) hover:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--Primary400)"
+    >
       <div className="min-w-0">
         <h3
           className={clsx(
@@ -71,15 +76,12 @@ const ProjectCard = ({ project }: Props) => {
       </div>
 
       <p
-        className={clsx(
-          "mt-auto mb-0 text-xs",
-          DesignTokens.typography.muted,
-        )}
+        className={clsx("mt-auto mb-0 text-xs", DesignTokens.typography.muted)}
         dir="auto"
       >
         {site || t("projects.noSite")}
       </p>
-    </article>
+    </Link>
   );
 };
 

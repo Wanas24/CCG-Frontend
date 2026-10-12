@@ -71,6 +71,32 @@ const projects = {
     yes: "Active",
     no: "Inactive",
   },
+  workspace: {
+    title: "Project workspace",
+    navLabel: "Project sections",
+    back: "All projects",
+    loading: "Loading project…",
+    loadError: "Couldn't load this project.",
+    notFound: "This project was not found.",
+    invalidId: "This project link is invalid.",
+    soon: "Soon",
+    sections: {
+      overview: "Overview",
+      team: "Team",
+      files: "Files",
+      alerts: "Alerts",
+      approvals: "Approvals",
+      boq: "BOQ",
+      invoices: "Invoices",
+      items: "Items",
+      contracts: "Contracts",
+    },
+    placeholder: {
+      ready:
+        "{{section}} will be available in a later update. Nothing can be changed here yet.",
+      soon: "{{section}} is planned for this workspace and is not available yet.",
+    },
+  },
 } as const;
 
 export default projects;
