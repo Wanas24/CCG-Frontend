@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import {
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useUpdateProject } from "../api/hooks/useUpdateProject";
-import { invalidateProjectQueries } from "../api/queryKeys/projectQueryKeys";
+import { invalidateAfterProjectUpdate } from "../api/queryKeys/projectQueryKeys";
 import {
   projectFormSchema,
   type ProjectFormValues,
@@ -28,6 +28,8 @@ export const useProjectOverviewManager = (project: TProject) => {
   const updateMutation = useUpdateProject();
 
   const [editing, setEditing] = useState(false);
+  const editingRef = useRef(editing);
+
   const [clientLabel, setClientLabel] = useState<string | undefined>(
     project.clientName ?? undefined,
   );
@@ -36,6 +38,16 @@ export const useProjectOverviewManager = (project: TProject) => {
     resolver: zodResolver(projectFormSchema),
     defaultValues: projectToFormValues(project),
   });
+
+  useEffect(() => {
+    editingRef.current = editing;
+  }, [editing]);
+
+  useEffect(() => {
+    if (editingRef.current) return;
+    form.reset(projectToFormValues(project));
+    setClientLabel(project.clientName ?? undefined);
+  }, [form, project]);
 
   const startEdit = () => {
     if (!canEdit) return;
@@ -67,7 +79,7 @@ export const useProjectOverviewManager = (project: TProject) => {
       toast.success(response.message || t("projects.form.updateSuccess"));
       form.reset(values);
       setEditing(false);
-      await invalidateProjectQueries();
+      await invalidateAfterProjectUpdate(project.id);
     } catch (error) {
       const result = getSimpleResultFromAxiosError(error);
       applyApiFieldErrors(form.setError, result?.data);

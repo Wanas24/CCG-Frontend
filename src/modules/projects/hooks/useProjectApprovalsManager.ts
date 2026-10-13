@@ -10,8 +10,8 @@ import {
   approvalActiveEntityRequestQueryKey,
   approvalEntityRequestsQueryKey,
   approvalPendingRequestsQueryKey,
-  approvalQueryRootKey,
 } from "@/modules/approval/api/queryKeys/approvalWorkflowQueryKeys";
+import { myApprovalRequestsRootKey } from "@/modules/approval/api/queryKeys/myApprovalRequestsQueryKeys";
 import {
   ApprovalDecision,
   type TApprovalDecision,
@@ -138,14 +138,14 @@ export const useProjectApprovalsManager = (project: TProject) => {
             listParams.entityId,
             listParams.take,
           ),
-          refetchType: "all",
+          refetchType: "active",
         }),
         queryClient.invalidateQueries({
           queryKey: approvalActiveEntityRequestQueryKey(
             listParams.entityType,
             listParams.entityId,
           ),
-          refetchType: "all",
+          refetchType: "active",
         }),
       );
     }
@@ -155,13 +155,13 @@ export const useProjectApprovalsManager = (project: TProject) => {
         queryKey: approvalPendingRequestsQueryKey,
         refetchType: "all",
       }),
+      queryClient.invalidateQueries({
+        queryKey: myApprovalRequestsRootKey,
+        refetchType: "active",
+      }),
     );
 
     await Promise.all(tasks);
-    await queryClient.invalidateQueries({
-      queryKey: approvalQueryRootKey,
-      refetchType: "active",
-    });
   };
 
   const openDecide = (

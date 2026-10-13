@@ -11,7 +11,7 @@ import {
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useCreateProject } from "../api/hooks/useCreateProject";
-import { invalidateProjectQueries } from "../api/queryKeys/projectQueryKeys";
+import { invalidateAfterProjectCreate } from "../api/queryKeys/projectQueryKeys";
 import { PROJECT_WORKSPACE_DEFAULT_SECTION } from "../constants/workspaceSections";
 import { projectWorkspacePath } from "../routes/paths";
 import {
@@ -71,7 +71,7 @@ export const useCreateProjectManager = () => {
           : Number(response.data);
 
       toast.success(response.message || t("projects.form.createSuccess"));
-      await invalidateProjectQueries();
+      await invalidateAfterProjectCreate();
       setDrawerOpen(false);
       form.reset(emptyProjectFormValues());
       setClientLabel(undefined);

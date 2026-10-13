@@ -1,5 +1,8 @@
 import { queryClient } from "@/lib/queryClient";
-import { projectEmployeeQueryRootKey } from "@/modules/userControl/api/queryKeys/projectEmployeeQueryKeys";
+import {
+  activeProjectsQueryRootKey,
+  projectEmployeeDirectoryQueryKey,
+} from "@/modules/userControl/api/queryKeys/projectEmployeeQueryKeys";
 
 export const projectResponsibleEngineerQueryRootKey = [
   "projectResponsibleEngineer",
@@ -21,12 +24,18 @@ export const invalidateProjectResponsibleEngineers = async (
 };
 
 export const invalidateProjectAssignedUsers = async (projectId: number) => {
-  await queryClient.invalidateQueries({
-    queryKey: projectAssignedUsersQueryKey(projectId),
-    refetchType: "all",
-  });
-  await queryClient.invalidateQueries({
-    queryKey: projectEmployeeQueryRootKey,
-    refetchType: "all",
-  });
+  await Promise.all([
+    queryClient.invalidateQueries({
+      queryKey: projectAssignedUsersQueryKey(projectId),
+      refetchType: "all",
+    }),
+    queryClient.invalidateQueries({
+      queryKey: projectEmployeeDirectoryQueryKey,
+      refetchType: "all",
+    }),
+    queryClient.invalidateQueries({
+      queryKey: activeProjectsQueryRootKey,
+      refetchType: "all",
+    }),
+  ]);
 };

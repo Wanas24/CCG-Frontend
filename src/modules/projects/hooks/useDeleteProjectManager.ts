@@ -5,10 +5,7 @@ import { useTranslation } from "react-i18next";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useDeleteProject } from "../api/hooks/useDeleteProject";
-import {
-  invalidateProjectQueries,
-  removeProjectDetailQuery,
-} from "../api/queryKeys/projectQueryKeys";
+import { invalidateAfterProjectDelete } from "../api/queryKeys/projectQueryKeys";
 import { PROJECTS_ROUTES } from "../routes/paths";
 import type { TProject } from "../types/project";
 
@@ -41,8 +38,7 @@ export const useDeleteProjectManager = () => {
 
       toast.success(response.message || t("projects.form.deleteSuccess"));
       setDeletingProject(null);
-      removeProjectDetailQuery(projectId);
-      await invalidateProjectQueries();
+      await invalidateAfterProjectDelete(projectId);
       navigate(PROJECTS_ROUTES.root);
     } catch {
       return;

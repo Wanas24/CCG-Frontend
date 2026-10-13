@@ -14,7 +14,7 @@ import {
   userRolesQueryKey,
 } from "../queryKeys/applicationRoleQueryKeys";
 import { employeeQueryRootKey } from "../queryKeys/employeeQueryKeys";
-import { projectEmployeeQueryRootKey } from "../queryKeys/projectEmployeeQueryKeys";
+import { projectEmployeeDirectoryQueryKey } from "../queryKeys/projectEmployeeQueryKeys";
 import { readAllPages, USER_CONTROL_PAGE_SIZE } from "./userControlPaging";
 import { isForbiddenError } from "../../utils/readApiMessage";
 import type {
@@ -157,7 +157,7 @@ export const useUserControlData = ({
     enabled: canQuery,
   });
   const projectDirectoryQuery = useQuery({
-    queryKey: [...projectEmployeeQueryRootKey, "directory"],
+    queryKey: projectEmployeeDirectoryQueryKey,
     queryFn: () =>
       readAllPages((page) =>
         projectEmployeeService.projects({
