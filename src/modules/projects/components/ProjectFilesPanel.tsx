@@ -1,18 +1,17 @@
-import { Download, Eye, FileText, FolderOpen, Trash2 } from "lucide-react";
+import { Download, Eye, FileText, FolderOpen, Trash2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import {
   AppButton,
   AppInput,
   AppSkeleton,
+  AppTextArea,
   AppUpload,
 } from "@/shared/ANTD_UIComponents";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useProjectFilesManager } from "../hooks/useProjectFilesManager";
-import {
-  formatProjectFileSize,
-} from "../utils/projectFileDownload";
+import { formatProjectFileSize } from "../utils/projectFileDownload";
 import ProjectFileDeleteDialog from "./ProjectFileDeleteDialog";
 
 type Props = {
@@ -58,29 +57,103 @@ const ProjectFilesPanel = ({ projectId }: Props) => {
 
       {manager.canUpload ? (
         <div className="flex flex-col gap-3 rounded-2xl border border-(--Grey300) bg-(--Grey100) p-3 sm:p-4">
-          <AppInput
-            label={t("projects.files.description")}
-            value={manager.description}
-            disabled={manager.isUploading}
-            placeholder={t("projects.files.descriptionPlaceholder")}
-            onChange={(event) => manager.setDescription(event.target.value)}
-          />
           <AppUpload
             multiple
             showUploadList={false}
             disabled={manager.isUploading}
             beforeUpload={(file) => {
-              manager.queueUpload(file);
+              manager.addPendingFiles([file as File]);
               return false;
             }}
-          >
-            <AppButton loading={manager.isUploading} className="w-fit!">
-              {t("projects.files.upload")}
-            </AppButton>
-          </AppUpload>
+          />
           <p className={`m-0 text-xs ${DesignTokens.typography.muted}`}>
             {t("projects.files.uploadHint")}
           </p>
+
+          {manager.pendingUploads.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              {manager.pendingUploads.map((item) => (
+                <div
+                  key={item.key}
+                  className="flex flex-col gap-3 rounded-xl border border-(--Grey300) bg-(--app-surface) p-3"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p
+                        className="m-0 truncate text-sm font-medium text-(--app-text)"
+                        dir="auto"
+                      >
+                        {item.file.name}
+                      </p>
+                      <p className="m-0 text-[11px] text-(--Grey500)">
+                        {formatProjectFileSize(item.file.size) ||
+                          t("projects.files.pendingFile")}
+                      </p>
+                    </div>
+                    <AppButton
+                      variant="default"
+                      padding="none"
+                      className="size-8! text-(--Grey600)! hover:text-(--app-text)!"
+                      disabled={manager.isUploading}
+                      icon={<X size={16} />}
+                      aria-label={t("projects.files.removePending")}
+                      onClick={() => manager.removePendingUpload(item.key)}
+                    />
+                  </div>
+                  <AppInput
+                    label={t("projects.files.name")}
+                    required
+                    value={item.name}
+                    disabled={manager.isUploading}
+                    placeholder={t("projects.files.namePlaceholder")}
+                    errorMsg={
+                      item.name.trim()
+                        ? undefined
+                        : t("projects.files.nameRequired")
+                    }
+                    onChange={(event) =>
+                      manager.updatePendingUpload(item.key, {
+                        name: event.target.value,
+                      })
+                    }
+                  />
+                  <AppTextArea
+                    label={t("projects.files.description")}
+                    value={item.description}
+                    disabled={manager.isUploading}
+                    rows={2}
+                    placeholder={t("projects.files.descriptionPlaceholder")}
+                    onChange={(event) =>
+                      manager.updatePendingUpload(item.key, {
+                        description: event.target.value,
+                      })
+                    }
+                  />
+                </div>
+              ))}
+
+              <div className="flex flex-wrap gap-2">
+                <AppButton
+                  className="w-fit!"
+                  loading={manager.isUploading}
+                  disabled={!manager.canSubmitUpload}
+                  onClick={() => {
+                    void manager.submitUpload();
+                  }}
+                >
+                  {t("projects.files.upload")}
+                </AppButton>
+                <AppButton
+                  variant="secondary"
+                  className="w-fit!"
+                  disabled={manager.isUploading}
+                  onClick={manager.clearPendingUploads}
+                >
+                  {t("projects.files.clearPending")}
+                </AppButton>
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
@@ -16,6 +16,20 @@ export type ProjectFileAction = {
   kind: "view" | "download";
 };
 
+export type TPendingProjectUpload = {
+  key: string;
+  file: File;
+  name: string;
+  description: string;
+};
+
+let pendingUploadKey = 0;
+
+const nextPendingKey = () => {
+  pendingUploadKey += 1;
+  return `pending-upload-${pendingUploadKey}`;
+};
+
 export const useProjectFilesManager = (projectId: number) => {
   const { t } = useTranslation();
   const { hasPermission } = usePermissions();
@@ -30,52 +44,79 @@ export const useProjectFilesManager = (projectId: number) => {
   const downloadMutation = useDownloadProjectFile();
   const deleteMutation = useDeleteProjectFile();
 
-  const [description, setDescription] = useState("");
+  const [pendingUploads, setPendingUploads] = useState<TPendingProjectUpload[]>(
+    [],
+  );
   const [deletingFile, setDeletingFile] = useState<TProjectFile | null>(null);
   const [fileAction, setFileAction] = useState<ProjectFileAction | null>(null);
-  const pendingUploadsRef = useRef<File[]>([]);
-  const uploadFlushTimerRef = useRef<number | null>(null);
 
   const files =
     filesQuery.data?.isSuccess && Array.isArray(filesQuery.data.data)
       ? filesQuery.data.data
       : [];
 
-  const flushUploads = async () => {
-    if (!canUpload || uploadMutation.isPending) return;
-    const batch = pendingUploadsRef.current;
-    pendingUploadsRef.current = [];
-    if (batch.length === 0) return;
+  const canSubmitUpload =
+    canUpload &&
+    !uploadMutation.isPending &&
+    pendingUploads.length > 0 &&
+    pendingUploads.every((item) => item.name.trim().length > 0);
 
-    const descriptions = batch.map(() => description.trim());
+  const addPendingFiles = (selected: File[]) => {
+    if (!canUpload || uploadMutation.isPending || selected.length === 0) return;
+
+    setPendingUploads((current) => [
+      ...current,
+      ...selected.map((file) => ({
+        key: nextPendingKey(),
+        file,
+        name: file.name,
+        description: "",
+      })),
+    ]);
+  };
+
+  const updatePendingUpload = (
+    key: string,
+    patch: Partial<Pick<TPendingProjectUpload, "name" | "description">>,
+  ) => {
+    setPendingUploads((current) =>
+      current.map((item) =>
+        item.key === key ? { ...item, ...patch } : item,
+      ),
+    );
+  };
+
+  const removePendingUpload = (key: string) => {
+    if (uploadMutation.isPending) return;
+    setPendingUploads((current) => current.filter((item) => item.key !== key));
+  };
+
+  const clearPendingUploads = () => {
+    if (uploadMutation.isPending) return;
+    setPendingUploads([]);
+  };
+
+  const submitUpload = async () => {
+    if (!canSubmitUpload) return;
+
+    const batch = pendingUploads;
     try {
       const response = await uploadMutation.mutateAsync({
         projectId,
-        files: batch,
-        descriptions,
+        files: batch.map((item) => item.file),
+        names: batch.map((item) => item.name.trim()),
+        descriptions: batch.map((item) => item.description.trim()),
       });
       if (!response.isSuccess) {
         toast.error(response.message || t("projects.files.uploadFailed"));
         return;
       }
       toast.success(response.message || t("projects.files.uploadSuccess"));
-      setDescription("");
+      setPendingUploads([]);
       await invalidateProjectFiles(projectId);
     } catch {
       toast.error(t("projects.files.uploadFailed"));
     }
-  };
-
-  const queueUpload = (file: File) => {
-    if (!canUpload || uploadMutation.isPending) return;
-    pendingUploadsRef.current.push(file);
-    if (uploadFlushTimerRef.current !== null) {
-      window.clearTimeout(uploadFlushTimerRef.current);
-    }
-    uploadFlushTimerRef.current = window.setTimeout(() => {
-      uploadFlushTimerRef.current = null;
-      void flushUploads();
-    }, 0);
   };
 
   const resolveFileUrl = async (file: TProjectFile) => {
@@ -164,13 +205,17 @@ export const useProjectFilesManager = (projectId: number) => {
     canDeleteFile,
     files,
     filesQuery,
-    description,
-    setDescription,
+    pendingUploads,
+    canSubmitUpload,
     deletingFile,
     fileAction,
     isUploading: uploadMutation.isPending,
     isDeleting: deleteMutation.isPending,
-    queueUpload,
+    addPendingFiles,
+    updatePendingUpload,
+    removePendingUpload,
+    clearPendingUploads,
+    submitUpload,
     viewFile,
     downloadFile,
     openDelete,

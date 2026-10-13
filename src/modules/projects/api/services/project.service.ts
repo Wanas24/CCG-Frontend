@@ -161,11 +161,13 @@ export const projectService = {
   uploadFiles: ({
     projectId,
     files,
-    descriptions = [],
+    names,
+    descriptions,
   }: TUploadProjectFilesRequest) => {
     const body = new FormData();
     files.forEach((file, index) => {
       body.append("Files", file);
+      body.append("Names", names[index] ?? "");
       body.append("Descriptions", descriptions[index] ?? "");
     });
 

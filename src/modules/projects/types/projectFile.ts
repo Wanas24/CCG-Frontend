@@ -26,5 +26,6 @@ export type TDownloadProjectFileResponse = TSimpleResult<TProjectFileDownload>;
 export type TUploadProjectFilesRequest = {
   projectId: number;
   files: File[];
-  descriptions?: string[];
+  names: string[];
+  descriptions: string[];
 };
