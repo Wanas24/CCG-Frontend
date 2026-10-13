@@ -329,6 +329,40 @@ const projects = {
     loadError: "تعذر تحميل تنبيهات المشروع.",
     openAllAlerts: "فتح كل التنبيهات",
   },
+  approvals: {
+    subtitle: "طلبات الموافقة لهذا المشروع.",
+    listHint: "عرض الطلبات لـ {{entityType}} · المعرف {{entityId}}",
+    actionableTitle: "بانتظار قرار",
+    actionableEmpty: "لا توجد طلبات معلّقة لهذا المشروع.",
+    historyTitle: "السجل",
+    emptyTitle: "لا توجد طلبات موافقة للمشروع",
+    emptyDescription:
+      "عند الحاجة إلى موافقة على تغيير في هذا المشروع سيظهر الطلب هنا.",
+    loadError: "تعذر تحميل طلبات موافقة المشروع.",
+    noAccessTitle: "لا صلاحية لعرض موافقات المشروع",
+    noAccessDescription:
+      "تحتاج إلى صلاحية عرض طلبات موافقة الكيان لهذا المشروع.",
+    entityTypeMissingTitle: "نوع كيان المشروع غير موجود",
+    entityTypeMissingDescription:
+      "قائمة أنواع كيانات الموافقة لا تتضمن المشروع، لذا تعذر تحميل الطلبات لهذه المساحة.",
+    activeTag: "نشط",
+    approve: "موافقة",
+    decline: "رفض",
+    cancel: "إلغاء",
+    refresh: "تحديث",
+    comment: "تعليق (اختياري)",
+    commentPlaceholder: "أضف ملاحظة مع هذا القرار",
+    decideTitleApprove: "الموافقة على الطلب",
+    decideTitleDecline: "رفض الطلب",
+    decideApproveHint: "هذه موافقة قسرية نيابة عن المعتمدين المعيّنين.",
+    decideDeclineHint: "هذا رفض قسري نيابة عن المعتمدين المعيّنين.",
+    decisionApproved: "تمت الموافقة على الطلب.",
+    decisionDeclined: "تم رفض الطلب.",
+    decisionFailed: "تعذر تطبيق هذا القرار.",
+    openMyRequests: "فتح طلباتي",
+    openApprovalStudio: "فتح استوديو الموافقات",
+    openTeamEngineers: "فتح مهندسي الفريق",
+  },
 } as const;
 
 export default projects;

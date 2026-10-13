@@ -331,6 +331,42 @@ const projects = {
     loadError: "Couldn't load project alerts.",
     openAllAlerts: "Open all alerts",
   },
+  approvals: {
+    subtitle: "Approval requests for this project.",
+    listHint: "Showing requests for {{entityType}} · ID {{entityId}}",
+    actionableTitle: "Needs a decision",
+    actionableEmpty: "No pending requests for this project.",
+    historyTitle: "History",
+    emptyTitle: "No project approval requests",
+    emptyDescription:
+      "When a change on this project needs approval, it will appear here.",
+    loadError: "Couldn't load project approval requests.",
+    noAccessTitle: "No access to project approvals",
+    noAccessDescription:
+      "You need permission to view entity approval requests for this project.",
+    entityTypeMissingTitle: "Project entity type not found",
+    entityTypeMissingDescription:
+      "The approval entity-types list does not include Project, so requests cannot be loaded for this workspace.",
+    activeTag: "Active",
+    approve: "Approve",
+    decline: "Decline",
+    cancel: "Cancel",
+    refresh: "Refresh",
+    comment: "Comment (optional)",
+    commentPlaceholder: "Add a note with this decision",
+    decideTitleApprove: "Approve request",
+    decideTitleDecline: "Decline request",
+    decideApproveHint:
+      "This force-approves on behalf of the assigned approvers.",
+    decideDeclineHint:
+      "This force-declines on behalf of the assigned approvers.",
+    decisionApproved: "Request approved.",
+    decisionDeclined: "Request declined.",
+    decisionFailed: "Couldn't apply this decision.",
+    openMyRequests: "Open my requests",
+    openApprovalStudio: "Open approval studio",
+    openTeamEngineers: "Open team engineers",
+  },
 } as const;
 
 export default projects;
