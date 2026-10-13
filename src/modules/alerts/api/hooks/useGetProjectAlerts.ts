@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import type { TAlert } from "../../types";
 import { extractAlertPage } from "../../utils/extractAlertPage";
@@ -7,7 +8,7 @@ import { normalizeAlert } from "../../utils/normalizeAlert";
 import { projectAlertsQueryKey } from "../queryKeys/alertQueryKeys";
 import { alertService } from "../services/alert.service";
 
-const PAGE_SIZE = 100;
+const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 const MAX_PAGES = 50;
 
 const fetchProjectAlerts = async (projectId: number): Promise<TAlert[]> => {
