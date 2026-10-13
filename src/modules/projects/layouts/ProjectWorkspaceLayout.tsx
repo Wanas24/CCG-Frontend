@@ -21,7 +21,12 @@ const ProjectWorkspaceLayout = () => {
   const projectId = parseProjectRouteId(projectIdParam);
   const { isLoading: accessLoading, canOpen } = useProjectsAccess();
   const deleteManager = useDeleteProjectManager();
-  const projectQuery = useGetProject(projectId, canOpen && projectId != null);
+  const projectQuery = useGetProject(
+    projectId,
+    canOpen &&
+      projectId != null &&
+      deleteManager.cleanupProjectId !== projectId,
+  );
 
   if (accessLoading) {
     return (

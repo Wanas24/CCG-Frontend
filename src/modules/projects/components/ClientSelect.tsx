@@ -34,8 +34,12 @@ const ClientSelect = ({
 }: Props) => {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [debouncedSearch] = useDebounce(search.trim(), 300);
-  const clientsQuery = useGetClientsInfinite(debouncedSearch, !disabled);
+  const clientsQuery = useGetClientsInfinite(
+    debouncedSearch,
+    !disabled && dropdownOpen,
+  );
 
   const clients = useMemo(() => {
     const pages = clientsQuery.data?.pages ?? [];
@@ -78,6 +82,7 @@ const ClientSelect = ({
       loading={clientsQuery.isPending || clientsQuery.isFetchingNextPage}
       onSearch={setSearch}
       onDropdownVisibleChange={(visible) => {
+        setDropdownOpen(visible);
         if (!visible) setSearch("");
       }}
       onPopupScroll={(event) => {

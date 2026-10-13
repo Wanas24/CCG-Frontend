@@ -71,10 +71,10 @@ export const useCreateProjectManager = () => {
           : Number(response.data);
 
       toast.success(response.message || t("projects.form.createSuccess"));
-      await invalidateAfterProjectCreate();
       setDrawerOpen(false);
       form.reset(emptyProjectFormValues());
       setClientLabel(undefined);
+      await invalidateAfterProjectCreate();
 
       if (Number.isFinite(createdId) && createdId > 0) {
         navigate(

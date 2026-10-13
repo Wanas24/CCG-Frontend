@@ -18,5 +18,6 @@ export const useGetProjects = (
     queryKey: projectsListQueryKey(params),
     queryFn: () => projectService.list(params),
     enabled: enabled && isAuthenticated && companyId !== null,
+    refetchOnMount: true,
   });
 };

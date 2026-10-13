@@ -45,7 +45,10 @@ export const invalidateProjectDetail = async (projectId: number) => {
 };
 
 export const invalidateAfterProjectCreate = async () => {
-  await invalidateProjectListQueries();
+  await queryClient.invalidateQueries({
+    queryKey: projectsListQueryRootKey,
+    refetchType: "none",
+  });
 };
 
 export const invalidateAfterProjectUpdate = async (projectId: number) => {

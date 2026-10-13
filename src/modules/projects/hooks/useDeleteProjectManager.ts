@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,7 @@ export const useDeleteProjectManager = () => {
   const canDelete = hasPermission(PermissionsList.Project.Delete);
   const deleteMutation = useDeleteProject();
   const [deletingProject, setDeletingProject] = useState<TProject | null>(null);
+  const [cleanupProjectId, setCleanupProjectId] = useState<number | null>(null);
 
   const openDelete = (project: TProject) => {
     if (!canDelete) return;
@@ -23,12 +24,19 @@ export const useDeleteProjectManager = () => {
   };
 
   const closeDelete = () => {
-    if (deleteMutation.isPending) return;
+    if (deleteMutation.isPending || cleanupProjectId != null) return;
     setDeletingProject(null);
   };
 
   const confirmDelete = async () => {
-    if (!canDelete || !deletingProject || deleteMutation.isPending) return;
+    if (
+      !canDelete ||
+      !deletingProject ||
+      deleteMutation.isPending ||
+      cleanupProjectId != null
+    ) {
+      return;
+    }
 
     const projectId = deletingProject.id;
 
@@ -38,17 +46,33 @@ export const useDeleteProjectManager = () => {
 
       toast.success(response.message || t("projects.form.deleteSuccess"));
       setDeletingProject(null);
-      await invalidateAfterProjectDelete(projectId);
-      navigate(PROJECTS_ROUTES.root);
+      setCleanupProjectId(projectId);
     } catch {
       return;
     }
   };
 
+  useEffect(() => {
+    if (cleanupProjectId == null) return;
+
+    let cancelled = false;
+
+    void (async () => {
+      navigate(PROJECTS_ROUTES.root);
+      await invalidateAfterProjectDelete(cleanupProjectId);
+      if (!cancelled) setCleanupProjectId(null);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cleanupProjectId, navigate]);
+
   return {
     canDelete,
     deletingProject,
-    isDeleting: deleteMutation.isPending,
+    cleanupProjectId,
+    isDeleting: deleteMutation.isPending || cleanupProjectId != null,
     openDelete,
     closeDelete,
     confirmDelete,
