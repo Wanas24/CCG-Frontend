@@ -28,3 +28,11 @@ export type {
   TUploadProjectFilesRequest,
   TUploadProjectFilesResponse,
 } from "./projectFile";
+
+export type {
+  TCreateProjectResponsibleEngineerRequest,
+  TDecideProjectResponsibleEngineerRequest,
+  TGetProjectResponsibleEngineersResponse,
+  TProjectResponsibleEngineer,
+  TUpdateProjectResponsibleEngineerRequest,
+} from "./projectResponsibleEngineer";

@@ -5,6 +5,7 @@ import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
 import ProjectFilesPanel from "../components/ProjectFilesPanel";
 import ProjectOverviewPanel from "../components/ProjectOverviewPanel";
+import ProjectTeamPanel from "../components/ProjectTeamPanel";
 import {
   isProjectWorkspaceReadySection,
   isProjectWorkspaceSection,
@@ -39,6 +40,10 @@ const ProjectWorkspaceSectionPage = () => {
 
   if (section === "files") {
     return <ProjectFilesPanel key={projectId} projectId={projectId} />;
+  }
+
+  if (section === "team") {
+    return <ProjectTeamPanel key={project.id} project={project} />;
   }
 
   const ready = isProjectWorkspaceReadySection(section);
