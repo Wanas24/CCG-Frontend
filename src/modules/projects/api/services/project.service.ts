@@ -25,6 +25,13 @@ import type {
   TUpdateProjectRequest,
   TUpdateProjectResponse,
 } from "../../types/project";
+import type {
+  TDeleteProjectFileResponse,
+  TDownloadProjectFileResponse,
+  TGetProjectFilesResponse,
+  TUploadProjectFilesRequest,
+  TUploadProjectFilesResponse,
+} from "../../types/projectFile";
 
 const toListQueryParams = (params: TGetProjectsParams = {}) => ({
   Page: params.page ?? 1,
@@ -145,4 +152,36 @@ export const projectService = {
       };
     }
   },
+
+  files: (projectId: number) =>
+    callEndpoint<TGetProjectFilesResponse>(projectEndpoints.files, {
+      pathParams: { id: projectId },
+    }),
+
+  uploadFiles: ({
+    projectId,
+    files,
+    descriptions = [],
+  }: TUploadProjectFilesRequest) => {
+    const body = new FormData();
+    files.forEach((file, index) => {
+      body.append("Files", file);
+      body.append("Descriptions", descriptions[index] ?? "");
+    });
+
+    return callEndpoint<TUploadProjectFilesResponse, FormData>(
+      projectEndpoints.uploadFile,
+      { queryParams: { id: projectId }, body },
+    );
+  },
+
+  downloadFile: (fileId: number) =>
+    callEndpoint<TDownloadProjectFileResponse>(projectEndpoints.downloadFile, {
+      pathParams: { fileId },
+    }),
+
+  deleteFile: (fileId: number) =>
+    callEndpoint<TDeleteProjectFileResponse>(projectEndpoints.deleteFile, {
+      pathParams: { fileId },
+    }),
 };

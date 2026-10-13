@@ -3,6 +3,7 @@ import { Navigate, useOutletContext, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
+import ProjectFilesPanel from "../components/ProjectFilesPanel";
 import ProjectOverviewPanel from "../components/ProjectOverviewPanel";
 import {
   isProjectWorkspaceReadySection,
@@ -34,6 +35,10 @@ const ProjectWorkspaceSectionPage = () => {
 
   if (section === "overview") {
     return <ProjectOverviewPanel key={project.id} project={project} />;
+  }
+
+  if (section === "files") {
+    return <ProjectFilesPanel key={projectId} projectId={projectId} />;
   }
 
   const ready = isProjectWorkspaceReadySection(section);

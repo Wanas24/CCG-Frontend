@@ -18,3 +18,13 @@ export type {
 } from "./client";
 
 export type { TProjectWorkspaceOutletContext } from "./workspaceOutlet";
+
+export type {
+  TDeleteProjectFileResponse,
+  TDownloadProjectFileResponse,
+  TGetProjectFilesResponse,
+  TProjectFile,
+  TProjectFileDownload,
+  TUploadProjectFilesRequest,
+  TUploadProjectFilesResponse,
+} from "./projectFile";

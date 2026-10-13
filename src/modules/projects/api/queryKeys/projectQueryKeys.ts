@@ -17,6 +17,9 @@ export const projectDetailQueryKey = (projectId: number) =>
     },
   ] as const;
 
+export const projectFilesQueryKey = (projectId: number) =>
+  [...projectQueryRootKey, "files", projectId] as const;
+
 export const removeProjectDetailQuery = (projectId: number) => {
   queryClient.removeQueries({ queryKey: projectDetailQueryKey(projectId) });
 };
@@ -24,6 +27,13 @@ export const removeProjectDetailQuery = (projectId: number) => {
 export const invalidateProjectQueries = async () => {
   await queryClient.invalidateQueries({
     queryKey: projectQueryRootKey,
+    refetchType: "all",
+  });
+};
+
+export const invalidateProjectFiles = async (projectId: number) => {
+  await queryClient.invalidateQueries({
+    queryKey: projectFilesQueryKey(projectId),
     refetchType: "all",
   });
 };

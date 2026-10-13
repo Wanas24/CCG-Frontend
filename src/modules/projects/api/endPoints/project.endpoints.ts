@@ -34,4 +34,30 @@ export const projectEndpoints = {
     permissions: [PermissionsList.Project.Export],
     skipToast: true,
   }),
+  files: createEndpoint({
+    method: "GET",
+    path: `/Project/:id/files`,
+    auth: "required",
+    permissions: [PermissionsList.Project.GetFiles],
+    skipToast: true,
+  }),
+  uploadFile: createEndpoint({
+    method: "POST",
+    path: `/Project/upload-file`,
+    auth: "required",
+    permissions: [PermissionsList.Project.Upload],
+  }),
+  downloadFile: createEndpoint({
+    method: "GET",
+    path: `/Project/download-file/:fileId`,
+    auth: "required",
+    permissions: [PermissionsList.Project.Download],
+    skipToast: true,
+  }),
+  deleteFile: createEndpoint({
+    method: "DELETE",
+    path: `/Project/delete-file/:fileId`,
+    auth: "required",
+    permissions: [PermissionsList.Project.DeleteFile],
+  }),
 };
