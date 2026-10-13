@@ -322,6 +322,15 @@ const projects = {
       generalAccountant: "General accountant",
     },
   },
+  alerts: {
+    subtitle: "Reminders linked to this project.",
+    create: "Create alert",
+    listTitle: "Project alerts",
+    emptyTitle: "No project alerts yet",
+    emptyDescription: "Create a reminder for this project to notify people.",
+    loadError: "Couldn't load project alerts.",
+    openAllAlerts: "Open all alerts",
+  },
 } as const;
 
 export default projects;

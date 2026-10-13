@@ -9,6 +9,9 @@ export const alertQueryRootKey = ["alert"] as const;
 export const myAlertsQueryKey = (params: TGetMyAlertsParams = {}) =>
   ["alert", "mine", params] as const;
 
+export const projectAlertsQueryKey = (projectId: number) =>
+  ["alert", "mine", "project", projectId] as const;
+
 export const alertEmployeesQueryKey = (
   params: TGetAlertEmployeesParams = {},
 ) => ["alert", "employees", params] as const;

@@ -39,8 +39,15 @@ export type TAlertEmployee = {
   isManager?: boolean;
 };
 
+export const AlertEntityType = {
+  Project: 1,
+} as const;
+
+export type TAlertEntityType =
+  (typeof AlertEntityType)[keyof typeof AlertEntityType];
+
 export type TAlertEntityContext = {
-  entityType?: string | number;
+  entityType?: TAlertEntityType | string | number;
   entityId?: number;
   projectId?: number;
 };
@@ -54,9 +61,9 @@ export type TCreateGeneralAlertRequest = {
 };
 
 export type TCreateAlertRequest = TCreateGeneralAlertRequest & {
-  ProjectId?: number;
-  EntityId?: number;
-  EntityType?: string | number;
+  projectId?: number;
+  entityId?: number;
+  entityType?: string | number;
 };
 
 export type TGetMyAlertsParams = TPagedQueryParams & {

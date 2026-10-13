@@ -320,6 +320,15 @@ const projects = {
       generalAccountant: "محاسب عام",
     },
   },
+  alerts: {
+    subtitle: "تذكيرات مرتبطة بهذا المشروع.",
+    create: "إنشاء تنبيه",
+    listTitle: "تنبيهات المشروع",
+    emptyTitle: "لا توجد تنبيهات للمشروع بعد",
+    emptyDescription: "أنشئ تذكيراً لهذا المشروع لإشعار الأشخاص.",
+    loadError: "تعذر تحميل تنبيهات المشروع.",
+    openAllAlerts: "فتح كل التنبيهات",
+  },
 } as const;
 
 export default projects;
