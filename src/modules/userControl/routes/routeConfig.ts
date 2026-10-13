@@ -19,6 +19,17 @@ const userControlRouteConfig: AppRouteObject[] = [
               return { Component };
             },
           },
+          {
+            path: USER_CONTROL_ROUTES.usersManager,
+            label: "userControl.usersManager.navLabel",
+            showInMenu: false,
+            lazy: async () => {
+              const { default: Component } = await import(
+                "../pages/UsersManagerPage"
+              );
+              return { Component };
+            },
+          },
         ],
       },
     ],

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import { triggerAnchorDownload } from "@/lib/files/triggerAnchorDownload";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useCreateItemCategory } from "../api/hooks/useCreateItemCategory";
@@ -20,6 +21,7 @@ import {
   type ItemCategoryFormValues,
 } from "../schemas/itemCategoryFormSchema";
 import type { TItemCategory, TItemCategoryFile } from "../types/itemCategory";
+import { downloadRemoteFile } from "../utils/downloadRemoteFile";
 
 export type ItemCategoryFileAction = {
   fileId: number;
@@ -34,22 +36,9 @@ const emptyValues: ItemCategoryFormValues = {
   notes: "",
 };
 
-const triggerAnchorDownload = (url: string, fileName?: string) => {
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.target = "_blank";
-  anchor.rel = "noopener";
-  if (fileName) {
-    anchor.download = fileName;
-  }
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-};
-
 export const useItemCatalogManager = () => {
   const { t } = useTranslation();
-  const { hasPermission } = usePermissions();
+  const { hasPermission, isLoading: isPermissionsLoading } = usePermissions();
 
   const canGet = hasPermission(PermissionsList.ItemCategory.Get);
   const canCreate = hasPermission(PermissionsList.ItemCategory.Create);
@@ -227,18 +216,25 @@ export const useItemCatalogManager = () => {
     if (!canDownload || fileAction) return;
     setFileAction({ fileId: file.fileId, kind: "download" });
     try {
-      const resolved = await resolveFileUrl(file);
-      if (!resolved?.url) {
+      const response = await fileUrlMutation.mutateAsync(file.fileId);
+      if (!response.isSuccess || !response.data?.url) {
         toast.error(t("lists.itemCatalog.downloadError"));
         return;
       }
-      triggerAnchorDownload(resolved.url, resolved.fileName);
+
+      await downloadRemoteFile(
+        response.data.url,
+        response.data.fileName || file.fileName || "download",
+      );
+    } catch {
+      toast.error(t("lists.itemCatalog.downloadError"));
     } finally {
       setFileAction(null);
     }
   };
 
   return {
+    isPermissionsLoading,
     canGet,
     canCreate,
     canEdit,

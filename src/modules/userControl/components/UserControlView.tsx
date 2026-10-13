@@ -28,7 +28,6 @@ import {
   overOutlineClass,
 } from "../styles/userControlClasses";
 import UserControlStatisticsCard from "./UserControlStatisticsCard";
-import InviteEmployeeSection from "./InviteEmployeeSection";
 import UserControlBoard from "./UserControlBoard";
 import CoverageMatrix from "./CoverageMatrix";
 import AccessMap from "./AccessMap";
@@ -189,14 +188,6 @@ const UserControlView = ({ userControl }: Props) => {
       void userControl.assignRole(target.userId, payload.id);
       return;
     }
-    if (
-      payload.type === "role" &&
-      target.target === "invite" &&
-      userControl.canSetUserRoles
-    ) {
-      userControl.toggleInviteRole(payload.id, true);
-      return;
-    }
     if (payload.type === "user" && target.target === "role") {
       void userControl.assignRole(payload.id, target.roleId);
       return;
@@ -337,8 +328,6 @@ const UserControlView = ({ userControl }: Props) => {
             glow="amber"
           />
         </div>
-
-        <InviteEmployeeSection userControl={userControl} drag={drag} />
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="inline-flex gap-1 rounded-xl border border-(--Grey300) bg-(--app-surface) p-1">

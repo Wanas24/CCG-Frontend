@@ -8,11 +8,10 @@ export type UserControlDragPayload =
 export type UserControlDropTarget =
   | { target: "employee"; userId: string }
   | { target: "role"; roleId: string; isShared: boolean }
-  | { target: "invite" }
   | { target: "unassign" };
 
 const dragTypes = new Set(["role", "user", "perm", "group", "rolechip"]);
-const dropTargets = new Set(["employee", "role", "invite", "unassign"]);
+const dropTargets = new Set(["employee", "role", "unassign"]);
 
 export const isUserControlDragPayload = (value: unknown): value is UserControlDragPayload => {
   if (!value || typeof value !== "object" || !("type" in value)) return false;
