@@ -82,6 +82,7 @@ const projects = {
     soon: "Soon",
     sections: {
       overview: "Overview",
+      "responsible-engineers": "Responsible Engineers",
       team: "Team",
       files: "Files",
       alerts: "Alerts",
@@ -250,8 +251,8 @@ const projects = {
     cancel: "Cancel",
   },
   team: {
-    subtitle:
-      "Manage responsible engineers and who can open this project.",
+    subtitle: "Manage who can open this project.",
+    engineersSubtitle: "Manage responsible engineers for this project.",
     engineersTitle: "Responsible engineers",
     assignmentsTitle: "Who can open this project",
     assignmentsHint:
@@ -372,7 +373,7 @@ const projects = {
     decisionFailed: "Couldn't apply this decision.",
     openMyRequests: "Open my requests",
     openApprovalStudio: "Open approval studio",
-    openTeamEngineers: "Open team engineers",
+    openTeamEngineers: "Open responsible engineers",
   },
 } as const;
 

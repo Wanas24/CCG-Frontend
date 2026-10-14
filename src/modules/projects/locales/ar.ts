@@ -82,6 +82,7 @@ const projects = {
     soon: "قريباً",
     sections: {
       overview: "نظرة عامة",
+      "responsible-engineers": "المهندسون المسؤولون",
       team: "الفريق",
       files: "الملفات",
       alerts: "التنبيهات",
@@ -250,7 +251,8 @@ const projects = {
     cancel: "إلغاء",
   },
   team: {
-    subtitle: "إدارة المهندسين المسؤولين ومن يمكنه فتح هذا المشروع.",
+    subtitle: "إدارة من يمكنه فتح هذا المشروع.",
+    engineersSubtitle: "إدارة المهندسين المسؤولين لهذا المشروع.",
     engineersTitle: "المهندسون المسؤولون",
     assignmentsTitle: "من يمكنه فتح هذا المشروع",
     assignmentsHint:
@@ -368,7 +370,7 @@ const projects = {
     decisionFailed: "تعذر تطبيق هذا القرار.",
     openMyRequests: "فتح طلباتي",
     openApprovalStudio: "فتح استوديو الموافقات",
-    openTeamEngineers: "فتح مهندسي الفريق",
+    openTeamEngineers: "فتح المهندسين المسؤولين",
   },
 } as const;
 

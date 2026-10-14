@@ -1,5 +1,6 @@
 export const PROJECT_WORKSPACE_SECTIONS = [
   "overview",
+  "responsible-engineers",
   "team",
   "files",
   "alerts",
@@ -18,6 +19,7 @@ export const PROJECT_WORKSPACE_DEFAULT_SECTION: TProjectWorkspaceSection =
 
 export const PROJECT_WORKSPACE_READY_SECTIONS = [
   "overview",
+  "responsible-engineers",
   "team",
   "files",
   "alerts",

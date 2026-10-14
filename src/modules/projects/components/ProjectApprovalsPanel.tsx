@@ -198,7 +198,9 @@ const ProjectApprovalsPanel = ({ project }: Props) => {
             variant="secondary"
             className="w-fit!"
             onClick={() => {
-              void navigate(projectWorkspacePath(project.id, "team"));
+              void navigate(
+                projectWorkspacePath(project.id, "responsible-engineers"),
+              );
             }}
           >
             {t("projects.approvals.openTeamEngineers")}

@@ -7,6 +7,7 @@ import ProjectAlertsPanel from "../components/ProjectAlertsPanel";
 import ProjectApprovalsPanel from "../components/ProjectApprovalsPanel";
 import ProjectFilesPanel from "../components/ProjectFilesPanel";
 import ProjectOverviewPanel from "../components/ProjectOverviewPanel";
+import ProjectResponsibleEngineersPanel from "../components/ProjectResponsibleEngineersPanel";
 import ProjectTeamPanel from "../components/ProjectTeamPanel";
 import {
   isProjectWorkspaceReadySection,
@@ -42,6 +43,12 @@ const ProjectWorkspaceSectionPage = () => {
 
   if (section === "files") {
     return <ProjectFilesPanel key={projectId} projectId={projectId} />;
+  }
+
+  if (section === "responsible-engineers") {
+    return (
+      <ProjectResponsibleEngineersPanel key={project.id} project={project} />
+    );
   }
 
   if (section === "team") {
