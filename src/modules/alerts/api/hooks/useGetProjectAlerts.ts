@@ -3,37 +3,29 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import type { TAlert } from "../../types";
 import { extractAlertPage } from "../../utils/extractAlertPage";
-import { isAlertForProject } from "../../utils/isAlertForProject";
 import { normalizeAlert } from "../../utils/normalizeAlert";
 import { projectAlertsQueryKey } from "../queryKeys/alertQueryKeys";
 import { alertService } from "../services/alert.service";
 
 const PAGE_SIZE = DEFAULT_PAGE_SIZE;
-const MAX_PAGES = 50;
+
+const projectAlertsParams = (projectId: number) =>
+  ({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    liveOnly: false,
+    projectId,
+  }) as const;
 
 const fetchProjectAlerts = async (projectId: number): Promise<TAlert[]> => {
-  const alerts: TAlert[] = [];
-  let page = 1;
-  let totalPages = 1;
+  const response = await alertService.mine(projectAlertsParams(projectId));
 
-  while (page <= totalPages && page <= MAX_PAGES) {
-    const response = await alertService.mine({
-      page,
-      pageSize: PAGE_SIZE,
-      liveOnly: false,
-    });
-
-    if (!response.isSuccess) {
-      throw new Error(response.message || "alerts load failed");
-    }
-
-    const { rows, totalCount } = extractAlertPage(response);
-    alerts.push(...rows.map(normalizeAlert));
-    totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE) || 1);
-    page += 1;
+  if (!response.isSuccess) {
+    throw new Error(response.message || "alerts load failed");
   }
 
-  return alerts.filter((alert) => isAlertForProject(alert, projectId));
+  const { rows } = extractAlertPage(response);
+  return rows.map(normalizeAlert);
 };
 
 export const useGetProjectAlerts = (
@@ -49,8 +41,10 @@ export const useGetProjectAlerts = (
     isAuthenticated &&
     companyId !== null;
 
+  const listParams = projectAlertsParams(projectId ?? 0);
+
   return useQuery<TAlert[]>({
-    queryKey: projectAlertsQueryKey(projectId ?? 0),
+    queryKey: projectAlertsQueryKey(projectId ?? 0, listParams),
     queryFn: () => fetchProjectAlerts(projectId as number),
     enabled: canQuery,
   });

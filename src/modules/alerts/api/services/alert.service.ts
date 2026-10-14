@@ -21,6 +21,7 @@ const toMineQueryParams = (params: TGetMyAlertsParams = {}) => {
     Page: page,
     PageSize: pageSize,
     LiveOnly: params.liveOnly ?? false,
+    ...(params.projectId != null ? { ProjectId: params.projectId } : {}),
     ...(params.search ? { Search: params.search } : {}),
     ...(params.sortBy ? { SortBy: params.sortBy } : {}),
     ...(params.sortDescending !== undefined

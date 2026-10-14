@@ -1,4 +1,5 @@
 import { queryClient } from "@/lib/queryClient";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import type {
   TGetAlertEmployeesParams,
   TGetMyAlertsParams,
@@ -9,8 +10,21 @@ export const alertQueryRootKey = ["alert"] as const;
 export const myAlertsQueryKey = (params: TGetMyAlertsParams = {}) =>
   ["alert", "mine", params] as const;
 
-export const projectAlertsQueryKey = (projectId: number) =>
-  ["alert", "mine", "project", projectId] as const;
+export const projectAlertsQueryKey = (
+  projectId: number,
+  params: Pick<TGetMyAlertsParams, "page" | "pageSize" | "liveOnly"> = {},
+) =>
+  [
+    "alert",
+    "mine",
+    "project",
+    {
+      projectId,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? DEFAULT_PAGE_SIZE,
+      liveOnly: params.liveOnly ?? false,
+    },
+  ] as const;
 
 export const alertEmployeesQueryKey = (
   params: TGetAlertEmployeesParams = {},

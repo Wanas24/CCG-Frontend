@@ -70,6 +70,7 @@ export type TGetMyAlertsParams = TPagedQueryParams & {
   liveOnly?: boolean;
   isDone?: boolean;
   isCanceled?: boolean;
+  projectId?: number;
 };
 
 export type TGetAlertEmployeesParams = TPagedQueryParams & {
