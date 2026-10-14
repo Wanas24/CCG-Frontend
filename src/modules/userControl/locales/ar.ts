@@ -279,6 +279,7 @@ const userControl = {
       download: "تعذر تنزيل الملف.",
       removeProject: "تعذر إزالة ذلك الشخص.",
       load: "تعذر تحميل الأشخاص.",
+      statsLoad: "تعذر تحميل إحصائيات الأشخاص.",
     },
   },
 } as const;

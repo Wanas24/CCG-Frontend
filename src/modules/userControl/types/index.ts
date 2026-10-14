@@ -31,6 +31,8 @@ export { ApplicationRoleVisibility } from "./applicationRole";
 
 export type {
   TEmployee,
+  TEmployeeStatistics,
+  TGetEmployeeStatisticsResponse,
   TGetEmployeesParams,
   TGetEmployeesResponse,
   TRecruitEmployeeRequest,

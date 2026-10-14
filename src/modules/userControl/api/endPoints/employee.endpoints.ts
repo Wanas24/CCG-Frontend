@@ -9,6 +9,13 @@ export const employeeEndpoints = {
     permissions: [PermissionsList.Employee.Get],
     skipToast: true,
   }),
+  statistics: createEndpoint({
+    method: "GET",
+    path: `/Employee/statistics`,
+    auth: "required",
+    permissions: [PermissionsList.Employee.Get],
+    skipToast: true,
+  }),
   recruit: createEndpoint({
     method: "POST",
     path: `/Employee/Recruitment`,

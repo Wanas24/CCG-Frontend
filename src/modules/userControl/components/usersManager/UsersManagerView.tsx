@@ -116,38 +116,51 @@ const UsersManagerView = ({ manager }: Props) => {
         </AppButton>
       </header>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {(
-          [
-            ["people", manager.stats.people],
-            ["managers", manager.stats.managers],
-            ["blocked", manager.stats.blocked],
-            ["fired", manager.stats.fired],
-          ] as const
-        ).map(([key, value]) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => manager.selectStat(key)}
-            className={clsx(
-              "rounded-2xl border bg-(--app-surface) px-4 py-3.5 text-start",
-              manager.filter === (key === "people" ? "all" : key)
-                ? "border-(--Primary400)"
-                : "border-(--Grey300)",
-            )}
-          >
-            <small
+      {manager.isStatsLoading ? (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <AppSkeleton.Node active className="h-[88px]! w-full!" />
+          <AppSkeleton.Node active className="h-[88px]! w-full!" />
+          <AppSkeleton.Node active className="h-[88px]! w-full!" />
+          <AppSkeleton.Node active className="h-[88px]! w-full!" />
+        </div>
+      ) : manager.statsError ? (
+        <p className="rounded-xl border border-(--statusR200) bg-(--statusR100) p-4 text-sm text-(--statusR200)">
+          {manager.statsError}
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {(
+            [
+              ["people", manager.stats?.people ?? 0],
+              ["managers", manager.stats?.managers ?? 0],
+              ["blocked", manager.stats?.blocked ?? 0],
+              ["fired", manager.stats?.fired ?? 0],
+            ] as const
+          ).map(([key, value]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => manager.selectStat(key)}
               className={clsx(
-                "text-[11px] font-bold uppercase tracking-wide",
-                DesignTokens.typography.muted,
+                "rounded-2xl border bg-(--app-surface) px-4 py-3.5 text-start",
+                manager.filter === (key === "people" ? "all" : key)
+                  ? "border-(--Primary400)"
+                  : "border-(--Grey300)",
               )}
             >
-              {t(`userControl.usersManager.stats.${key}`)}
-            </small>
-            <b className="mt-1 block text-2xl font-extrabold">{value}</b>
-          </button>
-        ))}
-      </div>
+              <small
+                className={clsx(
+                  "text-[11px] font-bold uppercase tracking-wide",
+                  DesignTokens.typography.muted,
+                )}
+              >
+                {t(`userControl.usersManager.stats.${key}`)}
+              </small>
+              <b className="mt-1 block text-2xl font-extrabold">{value}</b>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 items-start gap-3.5 xl:grid-cols-[18.75rem_minmax(0,1fr)_22.5rem]">
         <aside className="rounded-2xl border border-(--Grey300) bg-(--app-surface)">
