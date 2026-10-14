@@ -1,4 +1,5 @@
 import { callEndpoint } from "@/lib/api/callEndpoint";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { aiEndpoints } from "../endPoints/ai.endpoints";
 import type {
   TGetAiChatsResponse,
@@ -8,7 +9,6 @@ import type {
   TSendAiChatResponse,
 } from "../../types";
 
-const DEFAULT_MESSAGES_PAGE_SIZE = 10;
 const MAX_MESSAGES_PAGE_SIZE = 100;
 
 const buildAiChatFormData = ({
@@ -47,7 +47,7 @@ export const aiService = {
   ) => {
     const page = params?.page ?? 1;
     const pageSize = Math.min(
-      params?.pageSize ?? DEFAULT_MESSAGES_PAGE_SIZE,
+      params?.pageSize ?? DEFAULT_PAGE_SIZE,
       MAX_MESSAGES_PAGE_SIZE,
     );
 

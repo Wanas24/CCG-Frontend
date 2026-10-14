@@ -279,6 +279,13 @@ const approval = {
     timeline: {
       by: "by",
     },
+    cancel: {
+      action: "Cancel request",
+      title: "Cancel this approval request?",
+      hint: "The request will stop waiting for approvers. This can't be undone from here.",
+      keep: "Keep request",
+      confirm: "Cancel request",
+    },
   },
 } as const;
 

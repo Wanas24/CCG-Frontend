@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { itemCategoriesQueryKey } from "../queryKeys/itemCategoryQueryKeys";
 import { itemCategoryService } from "../services/itemCategory.service";
@@ -18,6 +18,5 @@ export const useGetItemCategories = (
     queryKey: itemCategoriesQueryKey(params),
     queryFn: () => itemCategoryService.list(params),
     enabled: enabled && isAuthenticated && companyId !== null,
-    placeholderData: keepPreviousData,
   });
 };

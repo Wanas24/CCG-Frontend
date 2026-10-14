@@ -29,7 +29,7 @@ const AiSubscriptionManagementPage = () => {
   const canUpdate = hasPermission(PermissionsList.Ai.AiSubscriptionUpdate);
 
   const listState = useAiSubscriptionListState();
-  const { data, isPending, isError, isFetching, refetch } =
+  const { data, isError, isFetching, refetch } =
     useGetAiSubscriptions(listState.params, canGet);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -116,7 +116,7 @@ const AiSubscriptionManagementPage = () => {
           ) : (
             <AiSubscriptionTable
               rows={rows}
-              loading={isPending}
+              loading={isFetching}
               pagination={{
                 ...listState.pagination,
                 total: totalCount,

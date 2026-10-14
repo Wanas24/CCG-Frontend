@@ -1,4 +1,5 @@
 import { callEndpoint } from "@/lib/api/callEndpoint";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { alertEndpoints } from "../endPoints/alert.endpoints";
 import type {
   TAlertActionResponse,
@@ -10,7 +11,6 @@ import type {
   TGetMyAlertsResponse,
 } from "../../types";
 
-const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 100;
 
 const toMineQueryParams = (params: TGetMyAlertsParams = {}) => {

@@ -8,6 +8,7 @@ import {
   AppInput,
 } from "@/shared/ANTD_UIComponents";
 import type { MyApprovalRequestsApi } from "../../hooks/useMyApprovalRequests";
+import MyApprovalRequestCancelDialog from "./MyApprovalRequestCancelDialog";
 import MyApprovalRequestDetail from "./MyApprovalRequestDetail";
 import MyApprovalRequestDetailSkeleton from "./MyApprovalRequestDetailSkeleton";
 import MyApprovalRequestList from "./MyApprovalRequestList";
@@ -102,6 +103,8 @@ const MyApprovalRequestsView = ({ studio }: Props) => {
           <MyApprovalRequestDetail studio={studio} />
         )}
       </div>
+
+      <MyApprovalRequestCancelDialog studio={studio} />
     </div>
   );
 };

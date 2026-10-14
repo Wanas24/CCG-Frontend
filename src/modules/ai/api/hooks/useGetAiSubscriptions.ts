@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { aiSubscriptionService } from "../services/aiSubscription.service";
 import { aiSubscriptionsQueryKey } from "../queryKeys/aiQueryKeys";
@@ -18,5 +18,6 @@ export const useGetAiSubscriptions = (
     queryKey: aiSubscriptionsQueryKey(params),
     queryFn: () => aiSubscriptionService.getAiSubscriptions(params),
     enabled: enabled && isAuthenticated && companyId !== null,
+    placeholderData: keepPreviousData,
   });
 };

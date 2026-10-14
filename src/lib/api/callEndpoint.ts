@@ -36,3 +36,27 @@ export const callEndpoint = async <TResponse, TBody = unknown>(
 
   return data;
 };
+
+export const callBlobEndpoint = async <TBody = unknown>(
+  endpoint: TCreateEndpointProps,
+  options: RequestOptions<TBody> = {},
+): Promise<{ data: Blob; contentType: string }> => {
+  const url = buildPath(endpoint.path, options.pathParams);
+
+  const response = await apiClient.request<Blob>({
+    url,
+    method: endpoint.method,
+    params: options.queryParams,
+    data: options.body,
+    headers: options.headers,
+    signal: options.signal,
+    skipToast: endpoint.skipToast,
+    responseType: "blob",
+  });
+
+  const contentTypeHeader = response.headers["content-type"];
+  const contentType =
+    typeof contentTypeHeader === "string" ? contentTypeHeader : "";
+
+  return { data: response.data, contentType };
+};

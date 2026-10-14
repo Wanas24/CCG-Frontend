@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Switch } from "antd";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { useLocale } from "@/i18n/useLocale";
+import { AppButton } from "@/shared/ANTD_UIComponents";
 import type { MyApprovalRequestsApi } from "../../hooks/useMyApprovalRequests";
 import {
   MyApprovalRequestAction,
@@ -107,11 +108,20 @@ const MyApprovalRequestDetail = ({ studio }: Props) => {
             {formatApprovalDateTime(item.requestedAtUtc, locale)}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <MyApprovalRequestBadges
             actionType={item.actionType}
             status={item.status}
           />
+          {studio.canCancelSelected ? (
+            <AppButton
+              danger
+              disabled={studio.isCancelling}
+              onClick={studio.requestCancel}
+            >
+              {t("approval.myRequests.cancel.action")}
+            </AppButton>
+          ) : null}
         </div>
       </div>
 

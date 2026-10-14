@@ -3,11 +3,16 @@ import { useDebounce } from "use-debounce";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useGetEmployees } from "@/modules/userControl/api/hooks/useGetEmployees";
+import { useCancelMyApprovalRequest } from "../api/hooks/useCancelMyApprovalRequest";
 import { useGetApprovalEntityTypes } from "../api/hooks/useGetApprovalEntityTypes";
 import { useGetMyApprovalRequestCounts } from "../api/hooks/useGetMyApprovalRequestCounts";
 import { useGetMyApprovalRequests } from "../api/hooks/useGetMyApprovalRequests";
 import { MY_APPROVAL_REQUESTS_PAGE_SIZE } from "../constants/myApprovalRequests";
-import type { TMyApprovalRequestStatus } from "../types/myApprovalRequest";
+import {
+  MyApprovalRequestStatus,
+  type TMyApprovalRequestStatus,
+} from "../types/myApprovalRequest";
+import { resolveMyApprovalStatusCode } from "../utils/myApprovalRequestMaps";
 
 export const useMyApprovalRequests = () => {
   const { hasPermission } = usePermissions();
@@ -18,8 +23,10 @@ export const useMyApprovalRequests = () => {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showSame, setShowSame] = useState(false);
+  const [cancelRequestId, setCancelRequestId] = useState<string | null>(null);
   const [pagination, setPagination] = useState({ page: 1, searchKey: "" });
   const [debouncedSearch] = useDebounce(search.trim(), 300);
+  const cancelMutation = useCancelMyApprovalRequest();
 
   const page =
     pagination.searchKey === debouncedSearch ? pagination.page : 1;
@@ -177,6 +184,33 @@ export const useMyApprovalRequests = () => {
     void entityTypesQuery.refetch();
   };
 
+  const canCancelSelected =
+    selectedRequest != null &&
+    resolveMyApprovalStatusCode(selectedRequest.status) ===
+      MyApprovalRequestStatus.Pending;
+
+  const requestCancel = () => {
+    if (!selectedRequest || !canCancelSelected) return;
+    setCancelRequestId(selectedRequest.requestId);
+  };
+
+  const closeCancelConfirm = () => {
+    if (cancelMutation.isPending) return;
+    setCancelRequestId(null);
+  };
+
+  const confirmCancel = async () => {
+    if (!cancelRequestId) return false;
+    try {
+      const response = await cancelMutation.mutateAsync(cancelRequestId);
+      if (!response.isSuccess) return false;
+      setCancelRequestId(null);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   return {
     page,
     setPage,
@@ -197,6 +231,12 @@ export const useMyApprovalRequests = () => {
     entityTypes,
     selectedRequest,
     resolvePersonName,
+    canCancelSelected,
+    cancelConfirmOpen: Boolean(cancelRequestId),
+    requestCancel,
+    closeCancelConfirm,
+    confirmCancel,
+    isCancelling: cancelMutation.isPending,
     isCountsInitialLoading,
     isListFetching,
     isFetching,

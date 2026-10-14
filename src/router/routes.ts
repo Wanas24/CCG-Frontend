@@ -8,6 +8,7 @@ import userControlRouteConfig from "@/modules/userControl/routes/routeConfig";
 import approvalRouteConfig from "@/modules/approval/routes/routeConfig";
 import listsRouteConfig from "@/modules/lists/routes/routeConfig";
 import alertsRouteConfig from "@/modules/alerts/routes/routeConfig";
+import reportLayoutRouteConfig from "@/modules/reportLayout/routes/routeConfig";
 import NotFound from "@/modules/standalone/pages/NotFound";
 import RootLayout from "@/layouts/RootLayout";
 import type { AppRouteObject } from "./types";
@@ -25,6 +26,7 @@ const routes: AppRouteObject[] = [
       ...approvalRouteConfig,
       ...listsRouteConfig,
       ...alertsRouteConfig,
+      ...reportLayoutRouteConfig,
       {
         path: "*",
         Component: NotFound,

@@ -10,7 +10,7 @@ export const useItemCatalogListState = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [unitId, setUnitId] = useState<number | undefined>(undefined);
   const [type, setType] = useState<number | undefined>(undefined);
-  const { page, pageSize, onChange, resetPage } = useAppTablePagination(20);
+  const { page, pageSize, onChange, resetPage } = useAppTablePagination();
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

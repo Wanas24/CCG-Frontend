@@ -18,7 +18,7 @@ export const useAiSubscriptionListState = () => {
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isManager, setIsManager] = useState<TriState>("all");
-  const { page, pageSize, onChange, resetPage } = useAppTablePagination(20);
+  const { page, pageSize, onChange, resetPage } = useAppTablePagination();
 
   useEffect(() => {
     const timer = window.setTimeout(() => {

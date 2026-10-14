@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { applicationRoleService } from "@/modules/userControl/api/services/applicationRole.service";
 import { employeeService } from "@/modules/userControl/api/services/employee.service";
 import { applicationRoleQueryKey } from "@/modules/userControl/api/queryKeys/applicationRoleQueryKeys";
@@ -40,7 +41,7 @@ export const useApprovalDirectoryLabels = ({
       queryFn: async () => {
         const response = await employeeService.list({
           search: employeeId,
-          pageSize: 10,
+          pageSize: DEFAULT_PAGE_SIZE,
         });
         if (!response.isSuccess || !response.data?.data) return null;
         return (

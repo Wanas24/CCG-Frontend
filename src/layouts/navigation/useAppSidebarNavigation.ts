@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
+import { reportLayoutAccessPermissions } from "@/modules/reportLayout/utils/reportLayoutAccess";
 import { userControlAccessPermissions } from "@/modules/userControl/utils/userControlAccess";
 import { createAppSidebarMenu } from "./createAppSidebarMenu";
 
@@ -11,7 +12,13 @@ export const useAppSidebarNavigation = () => {
   const grantedPermissions = useMemo(() => {
     const names = permissions.map((permission) => permission.name);
     if (!isAdmin && !isManager) return names;
-    return [...new Set([...names, ...userControlAccessPermissions])];
+    return [
+      ...new Set([
+        ...names,
+        ...userControlAccessPermissions,
+        ...reportLayoutAccessPermissions,
+      ]),
+    ];
   }, [isAdmin, isManager, permissions]);
 
   const menuConfig = useMemo(() => createAppSidebarMenu(t), [t]);

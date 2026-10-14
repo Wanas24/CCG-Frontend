@@ -35,6 +35,11 @@ export const DesignTokens = {
   Card: {
     bodyPadding: 12,
   },
+  Segmented: {
+    controlPaddingHorizontal: 16,
+    controlPaddingHorizontalSM: 12,
+    controlHeight: 40,
+  },
 } as const;
 
 export type DesignTokensType = typeof DesignTokens;
