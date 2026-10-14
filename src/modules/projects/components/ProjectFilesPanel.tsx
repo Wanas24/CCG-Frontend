@@ -10,6 +10,7 @@ import {
 } from "@/shared/ANTD_UIComponents";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
+import FilePreviewDialog from "@/shared/components/FilePreviewDialog";
 import { useProjectFilesManager } from "../hooks/useProjectFilesManager";
 import { formatProjectFileSize } from "../utils/projectFileDownload";
 import ProjectFileDeleteDialog from "./ProjectFileDeleteDialog";
@@ -277,6 +278,30 @@ const ProjectFilesPanel = ({ projectId }: Props) => {
           void manager.confirmDelete();
         }}
         onClose={manager.closeDelete}
+      />
+
+      <FilePreviewDialog
+        open={Boolean(manager.previewFile)}
+        fileName={manager.previewFile?.fileName ?? ""}
+        sourceUrl={manager.previewSourceUrl}
+        mimeHint={manager.previewFile?.fileType}
+        resolvingSource={manager.previewResolving}
+        canDownload={manager.canDownload}
+        downloading={
+          manager.previewFile != null &&
+          manager.fileAction?.fileId === manager.previewFile.fileId &&
+          manager.fileAction.kind === "download"
+        }
+        onDownload={
+          manager.canDownload
+            ? () => {
+                const file = manager.previewFile;
+                if (!file) return;
+                void manager.downloadFile(file);
+              }
+            : undefined
+        }
+        onClose={manager.closePreview}
       />
     </div>
   );

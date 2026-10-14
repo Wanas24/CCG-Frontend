@@ -4,6 +4,7 @@ import { Lock, Package, SearchX } from "lucide-react";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
+import FilePreviewDialog from "@/shared/components/FilePreviewDialog";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { useGetMeasurements } from "../../units/api/hooks/useGetMeasurements";
 import { useGetItemCategories } from "../api/hooks/useGetItemCategories";
@@ -315,6 +316,30 @@ const ItemCatalogList = ({ className }: Props) => {
           void manager.confirmDeleteFile();
         }}
         onClose={manager.closeDeleteFile}
+      />
+
+      <FilePreviewDialog
+        open={Boolean(manager.previewFile)}
+        fileName={manager.previewFile?.fileName ?? ""}
+        sourceUrl={manager.previewSourceUrl}
+        mimeHint={manager.previewFile?.fileType}
+        resolvingSource={manager.previewResolving}
+        canDownload={manager.canDownload}
+        downloading={
+          manager.previewFile != null &&
+          manager.fileAction?.fileId === manager.previewFile.fileId &&
+          manager.fileAction.kind === "download"
+        }
+        onDownload={
+          manager.canDownload
+            ? () => {
+                const file = manager.previewFile;
+                if (!file) return;
+                void manager.downloadFile(file);
+              }
+            : undefined
+        }
+        onClose={manager.closePreview}
       />
     </div>
   );

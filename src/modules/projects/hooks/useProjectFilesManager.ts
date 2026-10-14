@@ -49,6 +49,9 @@ export const useProjectFilesManager = (projectId: number) => {
   );
   const [deletingFile, setDeletingFile] = useState<TProjectFile | null>(null);
   const [fileAction, setFileAction] = useState<ProjectFileAction | null>(null);
+  const [previewFile, setPreviewFile] = useState<TProjectFile | null>(null);
+  const [previewSourceUrl, setPreviewSourceUrl] = useState<string | null>(null);
+  const [previewResolving, setPreviewResolving] = useState(false);
 
   const files =
     filesQuery.data?.isSuccess && Array.isArray(filesQuery.data.data)
@@ -135,18 +138,34 @@ export const useProjectFilesManager = (projectId: number) => {
     };
   };
 
+  const closePreview = () => {
+    setPreviewFile(null);
+    setPreviewSourceUrl(null);
+    setPreviewResolving(false);
+  };
+
   const viewFile = async (file: TProjectFile) => {
     if (fileAction) return;
     setFileAction({ fileId: file.fileId, kind: "view" });
+    setPreviewFile(file);
+    setPreviewSourceUrl(null);
+    setPreviewResolving(true);
     try {
       const resolved = await resolveFileUrl(file);
       if (!resolved?.url) {
         toast.error(t("projects.files.downloadFailed"));
+        closePreview();
         return;
       }
-      window.open(resolved.url, "_blank", "noopener,noreferrer");
+      setPreviewFile({
+        ...file,
+        fileName: resolved.fileName || file.fileName,
+      });
+      setPreviewSourceUrl(resolved.url);
+      setPreviewResolving(false);
     } catch {
       toast.error(t("projects.files.downloadFailed"));
+      closePreview();
     } finally {
       setFileAction(null);
     }
@@ -209,6 +228,9 @@ export const useProjectFilesManager = (projectId: number) => {
     canSubmitUpload,
     deletingFile,
     fileAction,
+    previewFile,
+    previewSourceUrl,
+    previewResolving,
     isUploading: uploadMutation.isPending,
     isDeleting: deleteMutation.isPending,
     addPendingFiles,
@@ -217,6 +239,7 @@ export const useProjectFilesManager = (projectId: number) => {
     clearPendingUploads,
     submitUpload,
     viewFile,
+    closePreview,
     downloadFile,
     openDelete,
     closeDelete,
