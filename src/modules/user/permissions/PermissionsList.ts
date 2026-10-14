@@ -52,6 +52,13 @@ export const PermissionsList = {
     GetActiveProjects: "ProjectEmployee.GetActiveProjects",
     SetProjects: "ProjectEmployee.SetProjects",
   },
+  ProjectResponsibleEngineer: {
+    GetByProject: "ProjectResponsibleEngineer.GetByProject",
+    Create: "ProjectResponsibleEngineer.Create",
+    Edit: "ProjectResponsibleEngineer.Edit",
+    Delete: "ProjectResponsibleEngineer.Delete",
+    Export: "ProjectResponsibleEngineer.Export",
+  },
   Measurement: {
     Create: "Measurement.Create",
     Edit: "Measurement.Edit",

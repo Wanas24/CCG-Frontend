@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { UIEvent } from "react";
+import { Users } from "lucide-react";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import {
   AppButton,
@@ -7,6 +8,7 @@ import {
   AppInput,
   AppSkeleton,
 } from "@/shared/ANTD_UIComponents";
+import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import {
   ENGINEER_POSITION_OPTIONS,
@@ -29,6 +31,16 @@ const nearListBottom = (event: UIEvent<HTMLDivElement>) => {
 const ProjectResponsibleEngineersPanel = ({ project }: Props) => {
   const { t } = useTranslation();
   const manager = useProjectResponsibleEngineersManager(project);
+
+  if (!manager.canGetEngineers) {
+    return (
+      <AppEmptyState
+        icon={<Users size={DesignTokens.media.iconMd} />}
+        title={t("projects.workspace.sections.responsible-engineers")}
+        description={t("projects.team.engineersNoAccess")}
+      />
+    );
+  }
 
   const positionOptions = ENGINEER_POSITION_OPTIONS.map((value) => ({
     value,
@@ -57,86 +69,102 @@ const ProjectResponsibleEngineersPanel = ({ project }: Props) => {
       </div>
 
       <section className="flex flex-col gap-3 rounded-2xl border border-(--Grey300) bg-(--Grey100) p-3 sm:p-4">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {manager.canGetEmployees ? (
-            <AppDropDownSelect
-              label={t("projects.team.linkedEmployee")}
-              value={manager.engineerForm.employeeId || undefined}
-              options={employeeOptions}
-              showSearch
-              filterOption={false}
-              loading={manager.employeesQuery.isPending}
-              onSearch={manager.setEmployeeSearch}
-              onPopupScroll={(event) => {
-                if (
-                  nearListBottom(event) &&
-                  manager.employeesQuery.hasNextPage
-                ) {
-                  void manager.employeesQuery.fetchNextPage();
-                }
-              }}
-              onChange={(value) =>
-                manager.selectEmployeeForEngineer(
-                  typeof value === "string" ? value : "",
-                )
-              }
-            />
-          ) : null}
-          <AppInput
-            label={t("projects.team.engineerName")}
-            required
-            value={manager.engineerForm.employeeName}
-            placeholder={t("projects.team.engineerNamePlaceholder")}
-            onChange={(event) =>
-              manager.setEngineerForm((current) => ({
-                ...current,
-                employeeName: event.target.value,
-              }))
-            }
-          />
-          <div className="sm:col-span-2">
-            <AppDropDownSelect
-              label={t("projects.team.position")}
-              required
-              value={manager.engineerForm.position}
-              options={positionOptions}
-              showSearch
-              optionFilterProp="label"
-              onChange={(value) => {
-                if (typeof value === "number") {
+        {manager.showForm ? (
+          <>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {manager.canGetEmployees ? (
+                <AppDropDownSelect
+                  label={t("projects.team.linkedEmployee")}
+                  value={manager.engineerForm.employeeId || undefined}
+                  options={employeeOptions}
+                  showSearch
+                  filterOption={false}
+                  loading={manager.employeesQuery.isPending}
+                  onSearch={manager.setEmployeeSearch}
+                  onPopupScroll={(event) => {
+                    if (
+                      nearListBottom(event) &&
+                      manager.employeesQuery.hasNextPage
+                    ) {
+                      void manager.employeesQuery.fetchNextPage();
+                    }
+                  }}
+                  onChange={(value) =>
+                    manager.selectEmployeeForEngineer(
+                      typeof value === "string" ? value : "",
+                    )
+                  }
+                />
+              ) : null}
+              <AppInput
+                label={t("projects.team.engineerName")}
+                required
+                value={manager.engineerForm.employeeName}
+                placeholder={t("projects.team.engineerNamePlaceholder")}
+                onChange={(event) =>
                   manager.setEngineerForm((current) => ({
                     ...current,
-                    position: value,
-                  }));
+                    employeeName: event.target.value,
+                  }))
                 }
-              }}
-            />
-          </div>
-        </div>
+              />
+              <div className="sm:col-span-2">
+                <AppDropDownSelect
+                  label={t("projects.team.position")}
+                  required
+                  value={manager.engineerForm.position}
+                  options={positionOptions}
+                  showSearch
+                  optionFilterProp="label"
+                  onChange={(value) => {
+                    if (typeof value === "number") {
+                      manager.setEngineerForm((current) => ({
+                        ...current,
+                        position: value,
+                      }));
+                    }
+                  }}
+                />
+              </div>
+            </div>
 
-        <div className="flex flex-wrap gap-2">
-          <AppButton
-            className="w-fit!"
-            loading={manager.isSavingEngineer}
-            onClick={() => {
-              void manager.submitEngineer();
-            }}
-          >
-            {manager.editingEngineer
-              ? t("projects.team.updateEngineer")
-              : t("projects.team.addEngineer")}
-          </AppButton>
-          {manager.editingEngineer ? (
-            <AppButton
-              variant="secondary"
-              className="w-fit!"
-              disabled={manager.isSavingEngineer}
-              onClick={manager.resetEngineerForm}
-            >
-              {t("projects.team.cancel")}
-            </AppButton>
-          ) : null}
-        </div>
+            <div className="flex flex-wrap gap-2">
+              {manager.editingEngineer ? (
+                manager.canEdit ? (
+                  <AppButton
+                    className="w-fit!"
+                    loading={manager.isSavingEngineer}
+                    onClick={() => {
+                      void manager.submitEngineer();
+                    }}
+                  >
+                    {t("projects.team.updateEngineer")}
+                  </AppButton>
+                ) : null
+              ) : manager.canCreate ? (
+                <AppButton
+                  className="w-fit!"
+                  loading={manager.isSavingEngineer}
+                  onClick={() => {
+                    void manager.submitEngineer();
+                  }}
+                >
+                  {t("projects.team.addEngineer")}
+                </AppButton>
+              ) : null}
+              {manager.editingEngineer ? (
+                <AppButton
+                  variant="secondary"
+                  className="w-fit!"
+                  disabled={manager.isSavingEngineer}
+                  onClick={manager.resetEngineerForm}
+                >
+                  {t("projects.team.cancel")}
+                </AppButton>
+              ) : null}
+            </div>
+          </>
+        ) : null}
 
         {manager.engineersQuery.isError ||
         (manager.engineersQuery.data &&
@@ -233,20 +261,24 @@ const ProjectResponsibleEngineersPanel = ({ project }: Props) => {
                         </AppButton>
                       </>
                     ) : null}
-                    <AppButton
-                      variant="secondary"
-                      className="w-fit!"
-                      onClick={() => manager.startEditEngineer(engineer)}
-                    >
-                      {t("projects.team.edit")}
-                    </AppButton>
-                    <AppButton
-                      variant="delete"
-                      className="w-fit!"
-                      onClick={() => manager.openDeleteEngineer(engineer)}
-                    >
-                      {t("projects.team.remove")}
-                    </AppButton>
+                    {manager.canEdit ? (
+                      <AppButton
+                        variant="secondary"
+                        className="w-fit!"
+                        onClick={() => manager.startEditEngineer(engineer)}
+                      >
+                        {t("projects.team.edit")}
+                      </AppButton>
+                    ) : null}
+                    {manager.canDelete ? (
+                      <AppButton
+                        variant="delete"
+                        className="w-fit!"
+                        onClick={() => manager.openDeleteEngineer(engineer)}
+                      >
+                        {t("projects.team.remove")}
+                      </AppButton>
+                    ) : null}
                   </div>
                 </div>
               );
@@ -255,14 +287,16 @@ const ProjectResponsibleEngineersPanel = ({ project }: Props) => {
         )}
       </section>
 
-      <ProjectEngineerDeleteDialog
-        engineer={manager.deletingEngineer}
-        loading={manager.isDeletingEngineer}
-        onConfirm={() => {
-          void manager.confirmDeleteEngineer();
-        }}
-        onClose={manager.closeDeleteEngineer}
-      />
+      {manager.canDelete ? (
+        <ProjectEngineerDeleteDialog
+          engineer={manager.deletingEngineer}
+          loading={manager.isDeletingEngineer}
+          onConfirm={() => {
+            void manager.confirmDeleteEngineer();
+          }}
+          onClose={manager.closeDeleteEngineer}
+        />
+      ) : null}
     </div>
   );
 };

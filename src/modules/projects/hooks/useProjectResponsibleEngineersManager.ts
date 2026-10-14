@@ -38,9 +38,26 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
   const { t } = useTranslation();
   const { hasPermission } = usePermissions();
 
+  const canGetEngineers = hasPermission(
+    PermissionsList.ProjectResponsibleEngineer.GetByProject,
+  );
+  const canCreate = hasPermission(
+    PermissionsList.ProjectResponsibleEngineer.Create,
+  );
+  const canEdit = hasPermission(PermissionsList.ProjectResponsibleEngineer.Edit);
+  const canDelete = hasPermission(
+    PermissionsList.ProjectResponsibleEngineer.Delete,
+  );
+  const canExport = hasPermission(
+    PermissionsList.ProjectResponsibleEngineer.Export,
+  );
   const canGetEmployees = hasPermission(PermissionsList.Employee.Get);
+  const canManageForm = canCreate || canEdit;
 
-  const engineersQuery = useGetProjectResponsibleEngineers(project.id, true);
+  const engineersQuery = useGetProjectResponsibleEngineers(
+    project.id,
+    canGetEngineers,
+  );
   const createMutation = useCreateProjectResponsibleEngineer();
   const updateMutation = useUpdateProjectResponsibleEngineer();
   const deleteMutation = useDeleteProjectResponsibleEngineer();
@@ -63,15 +80,16 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
       search: debouncedEmployeeSearch || undefined,
       isFired: false,
     },
-    canGetEmployees,
+    canGetEmployees && canManageForm && canGetEngineers,
   );
 
   const engineers = useMemo(() => {
+    if (!canGetEngineers) return [];
     const data = engineersQuery.data?.isSuccess
       ? engineersQuery.data.data
       : undefined;
     return Array.isArray(data) ? data : [];
-  }, [engineersQuery.data]);
+  }, [canGetEngineers, engineersQuery.data]);
 
   const employees = useMemo(() => {
     const pages = employeesQuery.data?.pages ?? [];
@@ -89,6 +107,7 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
   };
 
   const startEditEngineer = (engineer: TProjectResponsibleEngineer) => {
+    if (!canEdit) return;
     setEditingEngineer(engineer);
     setEngineerForm({
       employeeId: engineer.employeeId ?? "",
@@ -98,6 +117,7 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
   };
 
   const selectEmployeeForEngineer = (employeeId: string) => {
+    if (!canManageForm) return;
     const person = employees.find((item) => item.id === employeeId);
     setEngineerForm((current) => ({
       ...current,
@@ -107,14 +127,16 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
   };
 
   const submitEngineer = async () => {
-    if (
-      createMutation.isPending ||
-      updateMutation.isPending ||
-      !engineerForm.employeeName.trim()
-    ) {
-      if (!engineerForm.employeeName.trim()) {
-        toast.error(t("projects.team.engineerNameRequired"));
-      }
+    if (createMutation.isPending || updateMutation.isPending) return;
+
+    if (editingEngineer) {
+      if (!canEdit) return;
+    } else if (!canCreate) {
+      return;
+    }
+
+    if (!engineerForm.employeeName.trim()) {
+      toast.error(t("projects.team.engineerNameRequired"));
       return;
     }
 
@@ -152,6 +174,7 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
   };
 
   const openDeleteEngineer = (engineer: TProjectResponsibleEngineer) => {
+    if (!canDelete) return;
     setDeletingEngineer(engineer);
   };
 
@@ -161,7 +184,7 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
   };
 
   const confirmDeleteEngineer = async () => {
-    if (!deletingEngineer || deleteMutation.isPending) return;
+    if (!canDelete || !deletingEngineer || deleteMutation.isPending) return;
     try {
       const response = await deleteMutation.mutateAsync(deletingEngineer.id);
       if (!response.isSuccess) {
@@ -183,7 +206,9 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
     engineer: TProjectResponsibleEngineer,
     decision: TEngineerApprovalDecision,
   ) => {
-    if (!engineer.canApprove || decideMutation.isPending) return;
+    if (!canGetEngineers || !engineer.canApprove || decideMutation.isPending) {
+      return;
+    }
     setDecidingId(engineer.id);
     try {
       const response = await decideMutation.mutateAsync({
@@ -208,8 +233,19 @@ export const useProjectResponsibleEngineersManager = (project: TProject) => {
     }
   };
 
+  const showCreateForm = canCreate && !editingEngineer;
+  const showEditForm = canEdit && Boolean(editingEngineer);
+  const showForm = showCreateForm || showEditForm;
+
   return {
+    canGetEngineers,
+    canCreate,
+    canEdit,
+    canDelete,
+    canExport,
     canGetEmployees,
+    canManageForm,
+    showForm,
     engineers,
     engineersQuery,
     employees,

@@ -254,6 +254,8 @@ const projects = {
     subtitle: "Manage who can open this project.",
     engineersSubtitle: "Manage responsible engineers for this project.",
     engineersTitle: "Responsible engineers",
+    engineersNoAccess:
+      "You don't have permission to view responsible engineers.",
     assignmentsTitle: "Who can open this project",
     assignmentsHint:
       "Ticking a person adds this project to their access list and keeps their other projects.",
