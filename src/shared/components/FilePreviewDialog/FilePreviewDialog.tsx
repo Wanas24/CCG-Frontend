@@ -133,62 +133,74 @@ const FilePreviewBody = ({
 
   const busy = resolvingSource || loadingPreview;
 
+  if (busy) {
+    return (
+      <div className="flex min-h-56 flex-col items-center justify-center gap-3 py-6 text-center">
+        <AppSkeleton.Input active className="!h-40 !w-full !max-w-md !min-w-0" />
+        <p className={`m-0 text-sm ${DesignTokens.typography.muted}`}>
+          {t("filePreview.loading")}
+        </p>
+      </div>
+    );
+  }
+
+  if (showUnsupported) {
+    return (
+      <div className="flex min-h-56 w-full flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-(--Grey300) bg-(--Grey100)/70 px-4 py-10 text-center sm:px-8 sm:py-12">
+        <div className="flex size-14 items-center justify-center rounded-2xl border border-(--Grey300) bg-(--app-surface) text-(--Grey500)">
+          <FileWarning size={DesignTokens.media.iconMd} />
+        </div>
+        <div className="flex w-full max-w-md flex-col items-center gap-2">
+          <h3 className={`m-0 ${DesignTokens.typography.headingSm}`}>
+            {t("filePreview.unavailableTitle")}
+          </h3>
+          <p
+            className={`m-0 text-sm leading-relaxed ${DesignTokens.typography.muted}`}
+          >
+            {loadFailed
+              ? t("filePreview.loadFailed")
+              : t("filePreview.unavailableDescription")}
+          </p>
+          {fileName ? (
+            <p
+              className="m-0 mt-1 max-w-full truncate rounded-lg border border-(--Grey300) bg-(--app-surface) px-3 py-1.5 text-sm font-medium text-(--app-text)"
+              dir="auto"
+              title={fileName}
+            >
+              {fileName}
+            </p>
+          ) : null}
+        </div>
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+          {canDownload && onDownload ? (
+            <AppButton
+              className="w-fit!"
+              loading={downloading}
+              onClick={onDownload}
+            >
+              {t("filePreview.download")}
+            </AppButton>
+          ) : null}
+          {sourceUrl ? (
+            <AppButton
+              variant="secondary"
+              className="w-fit!"
+              onClick={openExternally}
+            >
+              {t("filePreview.openExternally")}
+            </AppButton>
+          ) : null}
+          <AppButton variant="tertiary" className="w-fit!" onClick={onClose}>
+            {t("filePreview.close")}
+          </AppButton>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-40 flex-col gap-3">
-      {busy ? (
-        <div className="flex flex-col gap-2">
-          <AppSkeleton.Input active className="!h-48 !w-full !min-w-0" />
-          <p className={`m-0 text-sm ${DesignTokens.typography.muted}`}>
-            {t("filePreview.loading")}
-          </p>
-        </div>
-      ) : showUnsupported ? (
-        <div className="flex flex-col items-start gap-3 rounded-xl border border-(--Grey300) bg-(--Grey100) p-4">
-          <div className="flex items-start gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-(--Primary100) text-(--Primary400)">
-              <FileWarning size={DesignTokens.media.iconMd} />
-            </div>
-            <div className="min-w-0">
-              <p className="m-0 text-sm font-semibold text-(--app-text)">
-                {t("filePreview.unavailableTitle")}
-              </p>
-              <p className={`m-0 mt-1 text-sm ${DesignTokens.typography.muted}`}>
-                {loadFailed
-                  ? t("filePreview.loadFailed")
-                  : t("filePreview.unavailableDescription")}
-              </p>
-              {fileName ? (
-                <p
-                  className="m-0 mt-2 truncate text-sm font-medium text-(--app-text)"
-                  dir="auto"
-                >
-                  {fileName}
-                </p>
-              ) : null}
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {canDownload && onDownload ? (
-              <AppButton
-                className="w-fit!"
-                loading={downloading}
-                onClick={onDownload}
-              >
-                {t("filePreview.download")}
-              </AppButton>
-            ) : null}
-            {sourceUrl ? (
-              <AppButton
-                variant="secondary"
-                className="w-fit!"
-                onClick={openExternally}
-              >
-                {t("filePreview.openExternally")}
-              </AppButton>
-            ) : null}
-          </div>
-        </div>
-      ) : previewSource && kind === "image" ? (
+      {previewSource && kind === "image" ? (
         <div className="flex min-h-40 items-center justify-center">
           <img
             src={previewSource.url}
@@ -204,13 +216,13 @@ const FilePreviewBody = ({
           className="h-[min(60vh,560px)] w-full rounded-xl border border-(--Grey300) bg-(--app-surface)"
         />
       ) : (
-        <p className={`m-0 text-sm ${DesignTokens.typography.muted}`}>
+        <p className={`m-0 text-center text-sm ${DesignTokens.typography.muted}`}>
           {t("filePreview.loadFailed")}
         </p>
       )}
 
       <div className="flex flex-wrap justify-end gap-2 border-t border-(--Grey300) pt-3">
-        {canDownload && onDownload && !showUnsupported ? (
+        {canDownload && onDownload ? (
           <AppButton
             variant="secondary"
             className="w-fit!"
