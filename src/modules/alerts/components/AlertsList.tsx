@@ -6,6 +6,7 @@ import { AppButton } from "@/shared/ANTD_UIComponents";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { useGetMyAlerts } from "../api/hooks/useGetMyAlerts";
 import { useAlertsListState } from "../hooks/useAlertsListState";
@@ -206,7 +207,7 @@ const AlertsList = () => {
         </div>
       </section>
 
-      {totalCount > (listState.params.pageSize ?? 100) ? (
+      {totalCount > (listState.params.pageSize ?? DEFAULT_PAGE_SIZE) ? (
         <p className={`mt-3 mb-0 text-xs ${DesignTokens.typography.muted}`}>
           {t("alerts.board.truncatedHint", {
             shown: rawRows.length,

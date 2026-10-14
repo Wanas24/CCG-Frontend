@@ -1,19 +1,15 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { applicationRoleService } from "../services/applicationRole.service";
-import { employeeService } from "../services/employee.service";
 import { projectEmployeeService } from "../services/projectEmployee.service";
 import { useGetApplicationRolePermissions } from "./useGetApplicationRolePermissions";
 import { useGetApplicationRoles } from "./useGetApplicationRoles";
 import { useGetEmployees } from "./useGetEmployees";
-import { useGetActiveProjects } from "./useGetActiveProjects";
 import {
   applicationRoleQueryKey,
-  applicationRoleQueryRootKey,
   userRolesQueryKey,
 } from "../queryKeys/applicationRoleQueryKeys";
-import { employeeQueryRootKey } from "../queryKeys/employeeQueryKeys";
 import { projectEmployeeDirectoryQueryKey } from "../queryKeys/projectEmployeeQueryKeys";
 import { readAllPages, USER_CONTROL_PAGE_SIZE } from "./userControlPaging";
 import { isForbiddenError } from "../../utils/readApiMessage";
@@ -41,6 +37,9 @@ export type UserControlListFilters = {
   roleVisibility?: TApplicationRoleVisibility;
   permissionSearch: string;
   drawerPermissionSearch: string;
+  fetchProjects?: boolean;
+  fetchAllRoleDetails?: boolean;
+  activeRoleDetailId?: string | null;
 };
 
 type PagedBody<T> = {
@@ -73,16 +72,6 @@ const readTotal = <T>(pages: PagedBody<T>[] | undefined) => {
   return page?.data?.totalCount ?? 0;
 };
 
-const listStatus = (query: PagedListQuery) =>
-  query.isPending
-    ? ("loading" as const)
-    : isListFailed(query)
-      ? ("error" as const)
-      : ("ready" as const);
-
-const countFrom = <T>(items: T[] | undefined, count: (rows: T[]) => number) =>
-  items ? count(items) : null;
-
 const byId = <T extends { id: string | number }>(items: T[]) => {
   const map = new Map<T["id"], T>();
   items.forEach((item) => map.set(item.id, item));
@@ -95,6 +84,9 @@ export const useUserControlData = ({
   roleVisibility,
   permissionSearch,
   drawerPermissionSearch,
+  fetchProjects = false,
+  fetchAllRoleDetails = false,
+  activeRoleDetailId = null,
 }: UserControlListFilters) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const companyId = useAuthStore((state) => state.user?.companyId ?? null);
@@ -108,7 +100,6 @@ export const useUserControlData = ({
   const employeesQuery = useGetEmployees();
   const rolesQuery = useGetApplicationRoles();
   const permissionsQuery = useGetApplicationRolePermissions();
-  const projectsQuery = useGetActiveProjects();
   const employeeSearchQuery = useGetEmployees(
     { search: employeeSearch },
     employeeSearchActive,
@@ -129,44 +120,33 @@ export const useUserControlData = ({
     drawerSearchActive,
   );
 
-  const employeeDirectoryQuery = useQuery({
-    queryKey: [...employeeQueryRootKey, "directory"],
-    queryFn: () =>
-      readAllPages((page) =>
-        employeeService.list({ page, pageSize: USER_CONTROL_PAGE_SIZE }),
-      ),
-    enabled: canQuery,
-  });
-  const roleDirectoryQuery = useQuery({
-    queryKey: [...applicationRoleQueryRootKey, "directory"],
-    queryFn: () =>
-      readAllPages((page) =>
-        applicationRoleService.list({ page, pageSize: USER_CONTROL_PAGE_SIZE }),
-      ),
-    enabled: canQuery,
-  });
-  const permissionDirectoryQuery = useQuery({
-    queryKey: [...applicationRoleQueryRootKey, "permission-directory"],
-    queryFn: () =>
-      readAllPages((page) =>
-        applicationRoleService.getPermissions({
-          page,
-          pageSize: USER_CONTROL_PAGE_SIZE,
-        }),
-      ),
-    enabled: canQuery,
-  });
-  const projectDirectoryQuery = useQuery({
-    queryKey: projectEmployeeDirectoryQueryKey,
-    queryFn: () =>
-      readAllPages((page) =>
-        projectEmployeeService.projects({
-          page,
-          pageSize: USER_CONTROL_PAGE_SIZE,
-        }),
-      ),
-    enabled: canQuery,
-  });
+  const {
+    hasNextPage: permissionsHasNextPage,
+    isFetchingNextPage: permissionsFetchingNextPage,
+    isPending: permissionsPending,
+    dataUpdatedAt: permissionsDataUpdatedAt,
+    fetchNextPage: fetchNextPermissionsPage,
+  } = permissionsQuery;
+
+  useEffect(() => {
+    if (!canQuery || permissionSearchActive) return;
+    if (
+      !permissionsHasNextPage ||
+      permissionsFetchingNextPage ||
+      permissionsPending
+    ) {
+      return;
+    }
+    void fetchNextPermissionsPage();
+  }, [
+    canQuery,
+    fetchNextPermissionsPage,
+    permissionSearchActive,
+    permissionsDataUpdatedAt,
+    permissionsFetchingNextPage,
+    permissionsHasNextPage,
+    permissionsPending,
+  ]);
 
   const employees = useMemo(
     () => readPages(employeesQuery.data?.pages),
@@ -179,10 +159,6 @@ export const useUserControlData = ({
   const groups = useMemo(
     () => readPages(permissionsQuery.data?.pages),
     [permissionsQuery.data?.pages],
-  );
-  const projects = useMemo(
-    () => readPages(projectsQuery.data?.pages),
-    [projectsQuery.data?.pages],
   );
   const searchedEmployees = useMemo(
     () => readPages(employeeSearchQuery.data?.pages),
@@ -208,39 +184,18 @@ export const useUserControlData = ({
 
   const employeesTotal = readTotal(employeesQuery.data?.pages);
   const rolesTotal = readTotal(rolesQuery.data?.pages);
-  const groupsTotal = permissionDirectoryQuery.data
-    ? permissionDirectoryQuery.data.length
-    : readTotal(permissionsQuery.data?.pages);
-  const permissionTotal = permissionDirectoryQuery.data
-    ? permissionDirectoryQuery.data.reduce(
-        (total, group) => total + group.actions.length,
-        0,
-      )
-    : groups.reduce((total, group) => total + group.actions.length, 0);
-
-  const activeEmployees = countFrom(
-    employeeDirectoryQuery.data,
-    (rows) =>
-      rows.filter((employee) => employee.isActive && !employee.isFired).length,
+  const catalogQueryForTotal = permissionSearchActive
+    ? permissionSearchQuery
+    : permissionsQuery;
+  const groupsTotal = readTotal(catalogQueryForTotal.data?.pages);
+  const permissionTotal = groups.reduce(
+    (total, group) => total + group.actions.length,
+    0,
   );
-  const assignments = countFrom(employeeDirectoryQuery.data, (rows) =>
-    rows.reduce((total, employee) => total + employee.rolesCount, 0),
-  );
-  const withoutRole = countFrom(
-    employeeDirectoryQuery.data,
-    (rows) =>
-      rows.filter(
-        (employee) => !employee.isManager && employee.rolesCount === 0,
-      ).length,
-  );
-  const sharedRoles = countFrom(
-    roleDirectoryQuery.data,
-    (rows) => rows.filter((role) => role.isShared).length,
-  );
-  const companyRoles = countFrom(
-    roleDirectoryQuery.data,
-    (rows) => rows.filter((role) => !role.isShared).length,
-  );
+  const permissionsCatalogComplete =
+    permissionsQuery.isSuccess &&
+    Boolean(permissionsQuery.data?.pages[0]?.isSuccess) &&
+    !permissionsQuery.hasNextPage;
 
   const loadMore = (query: {
     hasNextPage: boolean;
@@ -256,6 +211,18 @@ export const useUserControlData = ({
     Boolean(employeesQuery.data?.pages[0]?.isSuccess);
   const rolesReady =
     rolesQuery.isSuccess && Boolean(rolesQuery.data?.pages[0]?.isSuccess);
+
+  const projectDirectoryQuery = useQuery({
+    queryKey: projectEmployeeDirectoryQueryKey,
+    queryFn: () =>
+      readAllPages((page) =>
+        projectEmployeeService.projects({
+          page,
+          pageSize: USER_CONTROL_PAGE_SIZE,
+        }),
+      ),
+    enabled: canQuery && fetchProjects && listsReady,
+  });
 
   const people = useMemo(() => {
     const map = new Map<string, TEmployee>();
@@ -283,7 +250,10 @@ export const useUserControlData = ({
     queries: knownRoles.map((role) => ({
       queryKey: applicationRoleQueryKey(role.id),
       queryFn: () => applicationRoleService.get(role.id),
-      enabled: canQuery && rolesReady,
+      enabled:
+        canQuery &&
+        rolesReady &&
+        (fetchAllRoleDetails || role.id === activeRoleDetailId),
     })),
   });
 
@@ -291,7 +261,6 @@ export const useUserControlData = ({
     const assigned = new Map<string, Set<string>>();
     const status = new Map<string, UserRoleStatus>();
     const catalog = new Map<string, TApplicationRole>();
-    roleDirectoryQuery.data?.forEach((role) => catalog.set(role.id, role));
     knownRoles.forEach((role) => catalog.set(role.id, role));
 
     people.forEach((employee, index) => {
@@ -326,7 +295,7 @@ export const useUserControlData = ({
       userRoleStatus: status,
       roleCatalog: catalog,
     };
-  }, [knownRoles, people, roleDirectoryQuery.data, userRoleQueries]);
+  }, [knownRoles, people, userRoleQueries]);
 
   const { rolePerms, permissionsReady, rolePermissionStatus } = useMemo(() => {
     const map = new Map<string, Set<number>>();
@@ -334,6 +303,12 @@ export const useUserControlData = ({
     const status = new Map<string, RolePermissionStatus>();
     knownRoles.forEach((role, index) => {
       const query = roleDetailQueries[index];
+      const shouldLoad =
+        fetchAllRoleDetails || role.id === activeRoleDetailId;
+      if (!shouldLoad) {
+        status.set(role.id, "loading");
+        return;
+      }
       if (!query || query.isPending) {
         status.set(role.id, "loading");
         return;
@@ -358,7 +333,12 @@ export const useUserControlData = ({
       permissionsReady: ready,
       rolePermissionStatus: status,
     };
-  }, [knownRoles, roleDetailQueries]);
+  }, [
+    activeRoleDetailId,
+    fetchAllRoleDetails,
+    knownRoles,
+    roleDetailQueries,
+  ]);
 
   const userProjects = useMemo(() => {
     const map = new Map<string, { id: number; name: string }[]>();
@@ -375,12 +355,11 @@ export const useUserControlData = ({
   const employeeCatalog = useMemo(() => byId(people), [people]);
   const projectCatalog = useMemo(() => {
     const map = new Map<number, TProjectWithUsers>();
-    projects.forEach((project) => map.set(project.id, project));
     projectDirectoryQuery.data?.forEach((project) =>
       map.set(project.id, project),
     );
     return map;
-  }, [projectDirectoryQuery.data, projects]);
+  }, [projectDirectoryQuery.data]);
 
   const userRolesForbidden = userRoleQueries.some(
     (query) => query.isError && isForbiddenError(query.error),
@@ -397,7 +376,11 @@ export const useUserControlData = ({
     if (permissionsQuery.isError && isForbiddenError(permissionsQuery.error)) {
       resources.push("permissions");
     }
-    if (projectsQuery.isError && isForbiddenError(projectsQuery.error)) {
+    if (
+      fetchProjects &&
+      projectDirectoryQuery.isError &&
+      isForbiddenError(projectDirectoryQuery.error)
+    ) {
       resources.push("projects");
     }
     if (userRolesForbidden) resources.push("assignments");
@@ -405,10 +388,11 @@ export const useUserControlData = ({
   }, [
     employeesQuery.error,
     employeesQuery.isError,
+    fetchProjects,
     permissionsQuery.error,
     permissionsQuery.isError,
-    projectsQuery.error,
-    projectsQuery.isError,
+    projectDirectoryQuery.error,
+    projectDirectoryQuery.isError,
     rolesQuery.error,
     rolesQuery.isError,
     userRolesForbidden,
@@ -433,33 +417,31 @@ export const useUserControlData = ({
       },
       {
         key: "projects",
-        error: projectsQuery.error,
-        updatedAt: projectsQuery.errorUpdatedAt,
+        error: fetchProjects ? projectDirectoryQuery.error : null,
+        updatedAt: fetchProjects ? projectDirectoryQuery.errorUpdatedAt : 0,
       },
     ],
     [
       employeesQuery.error,
       employeesQuery.errorUpdatedAt,
+      fetchProjects,
       rolesQuery.error,
       rolesQuery.errorUpdatedAt,
       permissionsQuery.error,
       permissionsQuery.errorUpdatedAt,
-      projectsQuery.error,
-      projectsQuery.errorUpdatedAt,
+      projectDirectoryQuery.error,
+      projectDirectoryQuery.errorUpdatedAt,
     ],
   );
 
-  const lists = [employeesQuery, rolesQuery, permissionsQuery, projectsQuery];
+  const lists = [employeesQuery, rolesQuery, permissionsQuery];
   const allFailed = lists.every(
     (query) => query.isFetched && isListFailed(query),
   );
   const isInitialLoading = lists.some((query) => query.isPending);
   const isFetching =
     lists.some((query) => query.isFetching && !query.isFetchingNextPage) ||
-    employeeDirectoryQuery.isFetching ||
-    roleDirectoryQuery.isFetching ||
-    permissionDirectoryQuery.isFetching ||
-    projectDirectoryQuery.isFetching;
+    (fetchProjects && projectDirectoryQuery.isFetching);
   const userRolesReady =
     people.length === 0
       ? listsReady
@@ -497,6 +479,14 @@ export const useUserControlData = ({
     ? drawerPermissionQuery
     : permissionsQuery;
 
+  const projectStatus = !fetchProjects
+    ? ("loading" as const)
+    : projectDirectoryQuery.isPending
+      ? ("loading" as const)
+      : projectDirectoryQuery.isError
+        ? ("error" as const)
+        : ("ready" as const);
+
   return {
     employees,
     employeesTotal,
@@ -525,11 +515,13 @@ export const useUserControlData = ({
     groups,
     groupsTotal,
     permissionTotal,
-    permissionStatsStatus: permissionDirectoryQuery.isPending
+    permissionStatsStatus: permissionsQuery.isPending
       ? ("loading" as const)
-      : permissionDirectoryQuery.isSuccess
-        ? ("ready" as const)
-        : ("error" as const),
+      : isListFailed(permissionsQuery)
+        ? ("error" as const)
+        : permissionsCatalogComplete
+          ? ("ready" as const)
+          : ("loading" as const),
     groupsPending: permissionsQuery.isPending,
     groupsHasNext: permissionsQuery.hasNextPage,
     groupsLoadingMore: permissionsQuery.isFetchingNextPage,
@@ -544,16 +536,12 @@ export const useUserControlData = ({
     drawerGroupsHasNext: drawerGroupsQuery.hasNextPage,
     drawerGroupsLoadingMore: drawerGroupsQuery.isFetchingNextPage,
     loadMoreDrawerGroups: () => loadMore(drawerGroupsQuery),
-    projects,
-    projectsHasNext: projectsQuery.hasNextPage,
-    projectsLoadingMore: projectsQuery.isFetchingNextPage,
-    loadMoreProjects: () => loadMore(projectsQuery),
-    projectsStatus: listStatus(projectsQuery),
-    projectAccessStatus: projectDirectoryQuery.isPending
-      ? ("loading" as const)
-      : projectDirectoryQuery.isError
-        ? ("error" as const)
-        : ("ready" as const),
+    projects: [] as TProjectWithUsers[],
+    projectsHasNext: false,
+    projectsLoadingMore: false,
+    loadMoreProjects: () => undefined,
+    projectsStatus: projectStatus,
+    projectAccessStatus: projectStatus,
     userRoles,
     userRoleStatus,
     roleCatalog,
@@ -566,21 +554,13 @@ export const useUserControlData = ({
     userRolesReady,
     userRolesKey,
     rolePermsKey,
-    activeEmployees,
-    sharedRoles,
-    companyRoles,
-    assignments,
-    withoutRole,
-    employeeStatsStatus: employeeDirectoryQuery.isPending
-      ? ("loading" as const)
-      : employeeDirectoryQuery.isSuccess
-        ? ("ready" as const)
-        : ("error" as const),
-    roleStatsStatus: roleDirectoryQuery.isPending
-      ? ("loading" as const)
-      : roleDirectoryQuery.isSuccess
-        ? ("ready" as const)
-        : ("error" as const),
+    activeEmployees: null,
+    sharedRoles: null,
+    companyRoles: null,
+    assignments: null,
+    withoutRole: null,
+    employeeStatsStatus: "ready" as const,
+    roleStatsStatus: "ready" as const,
     denied,
     allFailed,
     isInitialLoading,

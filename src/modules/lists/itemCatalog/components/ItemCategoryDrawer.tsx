@@ -22,8 +22,8 @@ import type {
   TItemCategoryFile,
   TItemCategoryType,
 } from "../types/itemCategory";
-import type { TMeasurement } from "../../units/types/measurement";
 import ItemCatalogFilesSkeleton from "./ItemCatalogFilesSkeleton";
+import MeasurementSelect from "./MeasurementSelect";
 
 type Props = {
   open: boolean;
@@ -31,7 +31,6 @@ type Props = {
   editingItem: TItemCategory | null;
   activeItemId: number | null;
   types: TItemCategoryType[];
-  units: TMeasurement[];
   canEdit: boolean;
   canCreate: boolean;
   canDelete: boolean;
@@ -68,7 +67,6 @@ const ItemCategoryDrawer = ({
   editingItem,
   activeItemId,
   types,
-  units,
   canEdit,
   canCreate,
   canDelete,
@@ -206,19 +204,19 @@ const ItemCategoryDrawer = ({
           name="unitId"
           control={form.control}
           render={({ field, fieldState }) => (
-            <AppDropDownSelect
+            <MeasurementSelect
               required
               disabled={!canSave}
+              enabled={open && canSave}
               label={t("lists.itemCatalog.unitLabel")}
               placeholder={t("lists.itemCatalog.unitPlaceholder")}
               value={field.value || undefined}
-              onChange={(value) => field.onChange(Number(value))}
-              options={units.map((unit) => ({
-                value: unit.id,
-                label: unit.unit,
-              }))}
-              showSearch
-              optionFilterProp="label"
+              selectedLabel={
+                editingItem != null && editingItem.unitId === field.value
+                  ? editingItem.unit
+                  : null
+              }
+              onChange={(unitId) => field.onChange(unitId ?? 0)}
               errorMsg={translateError(fieldState.error?.message)}
             />
           )}

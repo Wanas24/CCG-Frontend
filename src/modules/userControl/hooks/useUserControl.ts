@@ -19,6 +19,8 @@ import { isForbiddenError, readApiMessage } from "../utils/readApiMessage";
 import { personName, setsEqual, withUserRole } from "../utils/userControlDisplay";
 import { useUserControlRoleForm } from "./useUserControlRoleForm";
 
+export type UserControlViewMode = "board" | "matrix" | "map";
+
 export const useUserControl = () => {
   const { t } = useTranslation();
 
@@ -28,11 +30,36 @@ export const useUserControl = () => {
   const [permissionSearch, setPermissionSearch] = useState("");
   const [drawer, setDrawer] = useState<UserControlDrawerState | null>(null);
   const [confirmState, setConfirmState] = useState<ConfirmState>(null);
+  const [view, setView] = useState<UserControlViewMode>("board");
+  const [projectsEnabled, setProjectsEnabled] = useState(false);
+  const [roleDetailsForInteraction, setRoleDetailsForInteraction] =
+    useState(false);
 
   const [debouncedEmployeeSearch] = useDebounce(employeeSearch.trim(), 300);
   const [debouncedRoleSearch] = useDebounce(roleSearch.trim(), 300);
   const [debouncedPermissionSearch] = useDebounce(permissionSearch.trim(), 300);
   const [debouncedDrawerPermissionSearch] = useDebounce((drawer?.query ?? "").trim(), 300);
+
+  useEffect(() => {
+    if (view !== "board") return;
+
+    let idleId: number | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    const enable = () => setProjectsEnabled(true);
+
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(enable, { timeout: 2000 });
+    } else {
+      timeoutId = setTimeout(enable, 400);
+    }
+
+    return () => {
+      if (idleId !== undefined && "cancelIdleCallback" in window) {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    };
+  }, [view]);
 
   const data = useUserControlData({
     employeeSearch: debouncedEmployeeSearch,
@@ -45,6 +72,10 @@ export const useUserControl = () => {
           : undefined,
     permissionSearch: debouncedPermissionSearch,
     drawerPermissionSearch: debouncedDrawerPermissionSearch,
+    fetchProjects: view === "board" && projectsEnabled,
+    fetchAllRoleDetails:
+      view === "matrix" || view === "map" || roleDetailsForInteraction,
+    activeRoleDetailId: drawer?.roleId ?? null,
   });
   const { queryErrors, ...listData } = data;
 
@@ -398,6 +429,9 @@ export const useUserControl = () => {
     canAssign,
     canUnassign,
     canSetUserRoles,
+    view,
+    setView,
+    prefetchRoleDetails: () => setRoleDetailsForInteraction(true),
     employeeSearch,
     setEmployeeSearch,
     roleSearch,
