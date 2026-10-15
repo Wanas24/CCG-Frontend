@@ -3,6 +3,7 @@ export type {
   TClient,
   TCreateClientRequest,
   TCreateClientResponse,
+  TDeleteClientResponse,
   TEditClientCommand,
   TGetClientsParams,
   TGetClientsResponse,

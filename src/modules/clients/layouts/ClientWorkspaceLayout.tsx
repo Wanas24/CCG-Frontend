@@ -8,9 +8,11 @@ import {
   selectClientFromListResponse,
   useGetClientById,
 } from "../api/hooks/useGetClientById";
+import ClientDeleteDialog from "../components/ClientDeleteDialog";
 import ClientWorkspaceHeader from "../components/ClientWorkspaceHeader";
 import ClientWorkspaceNav from "../components/ClientWorkspaceNav";
 import { useClientsAccess } from "../hooks/useClientsAccess";
+import { useDeleteClientManager } from "../hooks/useDeleteClientManager";
 import { CLIENTS_ROUTES } from "../routes/paths";
 import type { TClientWorkspaceOutletContext } from "../types/workspaceOutlet";
 import { parseClientRouteId } from "../utils/parseClientRouteId";
@@ -21,7 +23,13 @@ const ClientWorkspaceLayout = () => {
   const { clientId: clientIdParam } = useParams();
   const clientId = parseClientRouteId(clientIdParam);
   const { isLoading: accessLoading, canOpen } = useClientsAccess();
-  const clientQuery = useGetClientById(clientId, canOpen && clientId != null);
+  const deleteManager = useDeleteClientManager();
+  const clientQuery = useGetClientById(
+    clientId,
+    canOpen &&
+      clientId != null &&
+      deleteManager.cleanupClientId !== clientId,
+  );
 
   if (accessLoading) {
     return (
@@ -119,13 +127,25 @@ const ClientWorkspaceLayout = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <ClientWorkspaceHeader client={matched} />
+      <ClientWorkspaceHeader
+        client={matched}
+        canDelete={deleteManager.canDelete}
+        onDelete={() => deleteManager.openDelete(matched)}
+      />
       <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <ClientWorkspaceNav clientId={clientId} />
         <section className="min-h-64 rounded-2xl border border-(--Grey300) bg-(--app-surface) p-4 sm:p-5">
           <Outlet context={outletContext} />
         </section>
       </div>
+      <ClientDeleteDialog
+        client={deleteManager.deletingClient}
+        loading={deleteManager.isDeleting}
+        onConfirm={() => {
+          void deleteManager.confirmDelete();
+        }}
+        onClose={deleteManager.closeDelete}
+      />
     </div>
   );
 };

@@ -60,3 +60,5 @@ export type TEditClientCommand = {
 export type TUpdateClientRequest = TEditClientCommand;
 
 export type TUpdateClientResponse = TSimpleResult;
+
+export type TDeleteClientResponse = TSimpleResult;

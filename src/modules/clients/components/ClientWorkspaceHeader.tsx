@@ -10,9 +10,15 @@ import type { TClient } from "../types/client";
 
 type Props = {
   client: TClient;
+  canDelete?: boolean;
+  onDelete?: () => void;
 };
 
-const ClientWorkspaceHeader = ({ client }: Props) => {
+const ClientWorkspaceHeader = ({
+  client,
+  canDelete = false,
+  onDelete,
+}: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isRtl } = useLocale();
@@ -29,6 +35,11 @@ const ClientWorkspaceHeader = ({ client }: Props) => {
         >
           {t("clients.workspace.back")}
         </AppButton>
+        {canDelete ? (
+          <AppButton variant="delete" className="w-fit!" onClick={onDelete}>
+            {t("clients.form.delete")}
+          </AppButton>
+        ) : null}
       </div>
 
       <div className="min-w-0">

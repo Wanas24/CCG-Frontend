@@ -19,6 +19,21 @@ export const clientsInfiniteQueryKey = (search: string) =>
 export const clientDetailQueryKey = (id: number) =>
   [...clientQueryRootKey, "detail", id] as const;
 
+export const removeClientDetailQuery = (clientId: number) => {
+  queryClient.removeQueries({ queryKey: clientDetailQueryKey(clientId) });
+};
+
+export const invalidateClientListQueries = async () => {
+  await queryClient.invalidateQueries({
+    queryKey: clientsListQueryRootKey,
+    refetchType: "all",
+  });
+  await queryClient.invalidateQueries({
+    queryKey: [...clientQueryRootKey, "infinite"],
+    refetchType: "all",
+  });
+};
+
 export const invalidateAfterClientCreate = async () => {
   await queryClient.invalidateQueries({
     queryKey: clientQueryRootKey,
@@ -31,4 +46,9 @@ export const invalidateAfterClientUpdate = async () => {
     queryKey: clientQueryRootKey,
     refetchType: "all",
   });
+};
+
+export const invalidateAfterClientDelete = async (clientId: number) => {
+  removeClientDetailQuery(clientId);
+  await invalidateClientListQueries();
 };

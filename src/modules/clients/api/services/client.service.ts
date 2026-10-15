@@ -4,6 +4,7 @@ import { clientEndpoints } from "../endPoints/client.endpoints";
 import type {
   TCreateClientRequest,
   TCreateClientResponse,
+  TDeleteClientResponse,
   TGetClientsParams,
   TGetClientsResponse,
   TUpdateClientRequest,
@@ -36,4 +37,9 @@ export const clientService = {
       clientEndpoints.update,
       { body },
     ),
+
+  delete: (clientId: number) =>
+    callEndpoint<TDeleteClientResponse>(clientEndpoints.delete, {
+      queryParams: { clientId },
+    }),
 };
