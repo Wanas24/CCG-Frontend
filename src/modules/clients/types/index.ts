@@ -1,6 +1,7 @@
 export type {
   TAddClientCommand,
   TClient,
+  TClientExportResult,
   TCreateClientRequest,
   TCreateClientResponse,
   TDeleteClientResponse,

@@ -62,3 +62,7 @@ export type TUpdateClientRequest = TEditClientCommand;
 export type TUpdateClientResponse = TSimpleResult;
 
 export type TDeleteClientResponse = TSimpleResult;
+
+export type TClientExportResult =
+  | { ok: true; blob: Blob; fileName: string }
+  | { ok: false; message: string };

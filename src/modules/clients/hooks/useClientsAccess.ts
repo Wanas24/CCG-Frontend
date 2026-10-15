@@ -17,6 +17,8 @@ export const useClientsAccess = () => {
   const canEdit = !isLoading && hasPermission(PermissionsList.Client.Edit);
   const canDelete =
     !isLoading && hasPermission(PermissionsList.Client.Delete);
+  const canExport =
+    !isLoading && hasPermission(PermissionsList.Client.Export);
 
-  return { isLoading, canOpen, canCreate, canEdit, canDelete };
+  return { isLoading, canOpen, canCreate, canEdit, canDelete, canExport };
 };

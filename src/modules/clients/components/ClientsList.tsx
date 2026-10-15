@@ -1,5 +1,5 @@
 import { Pagination } from "antd";
-import { Search, SearchX, Users } from "lucide-react";
+import { Download, Search, SearchX, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { AppButton, AppInput } from "@/shared/ANTD_UIComponents";
@@ -7,12 +7,15 @@ import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import { useGetClients } from "../api/hooks/useGetClients";
 import { useClientsListState } from "../hooks/useClientsListState";
+import { useExportClientsManager } from "../hooks/useExportClientsManager";
 import ClientCard from "./ClientCard";
+import ClientExportDialog from "./ClientExportDialog";
 import ClientsListSkeleton from "./ClientsListSkeleton";
 
 const ClientsList = () => {
   const { t } = useTranslation();
   const listState = useClientsListState();
+  const exportManager = useExportClientsManager(listState.params);
   const { data, isPending, isError, isFetching, refetch } = useGetClients(
     listState.params,
   );
@@ -59,6 +62,16 @@ const ClientsList = () => {
           >
             {t("clients.clear")}
           </AppButton>
+          {exportManager.canExport ? (
+            <AppButton
+              variant="secondary"
+              className="w-fit!"
+              icon={<Download size={16} />}
+              onClick={exportManager.openExport}
+            >
+              {t("clients.export.action")}
+            </AppButton>
+          ) : null}
         </div>
       </div>
 
@@ -138,6 +151,34 @@ const ClientsList = () => {
           ) : null}
         </>
       )}
+
+      {exportManager.canExport ? (
+        <ClientExportDialog
+          open={exportManager.open}
+          loading={exportManager.isExporting}
+          layoutsLoading={exportManager.layoutsLoading}
+          layoutsError={exportManager.layoutsError}
+          lastUsedLoading={exportManager.lastUsedLoading}
+          format={exportManager.format}
+          layoutId={exportManager.layoutId}
+          title={exportManager.title}
+          columns={exportManager.columns}
+          layouts={exportManager.layouts}
+          lastUsedName={exportManager.lastUsedName}
+          selectedLayout={exportManager.selectedLayout}
+          onFormatChange={exportManager.setFormat}
+          onLayoutChange={exportManager.setLayoutId}
+          onTitleChange={exportManager.setTitle}
+          onToggleColumn={exportManager.toggleColumn}
+          onSelectAllColumns={exportManager.selectAllColumns}
+          onSelectEssentialColumns={exportManager.selectEssentialColumns}
+          onClearColumns={exportManager.clearColumns}
+          onSubmit={() => {
+            void exportManager.submitExport();
+          }}
+          onClose={exportManager.closeExport}
+        />
+      ) : null}
     </div>
   );
 };
