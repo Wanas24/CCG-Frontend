@@ -16,7 +16,17 @@ export const clientsInfiniteQueryKey = (search: string) =>
     { search, pageSize: CLIENTS_PAGE_SIZE },
   ] as const;
 
+export const clientDetailQueryKey = (id: number) =>
+  [...clientQueryRootKey, "detail", id] as const;
+
 export const invalidateAfterClientCreate = async () => {
+  await queryClient.invalidateQueries({
+    queryKey: clientQueryRootKey,
+    refetchType: "all",
+  });
+};
+
+export const invalidateAfterClientUpdate = async () => {
   await queryClient.invalidateQueries({
     queryKey: clientQueryRootKey,
     refetchType: "all",

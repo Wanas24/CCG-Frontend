@@ -22,6 +22,37 @@ const clientsRouteConfig: AppRouteObject[] = [
               return { Component };
             },
           },
+          {
+            path: CLIENTS_ROUTES.detail,
+            label: "clients.workspace.title",
+            showInMenu: false,
+            lazy: async () => {
+              const { default: Component } = await import(
+                "../layouts/ClientWorkspaceLayout"
+              );
+              return { Component };
+            },
+            children: [
+              {
+                index: true,
+                lazy: async () => {
+                  const { default: Component } = await import(
+                    "../pages/ClientWorkspaceIndexRedirect"
+                  );
+                  return { Component };
+                },
+              },
+              {
+                path: ":section",
+                lazy: async () => {
+                  const { default: Component } = await import(
+                    "../pages/ClientWorkspaceSectionPage"
+                  );
+                  return { Component };
+                },
+              },
+            ],
+          },
         ],
       },
     ],

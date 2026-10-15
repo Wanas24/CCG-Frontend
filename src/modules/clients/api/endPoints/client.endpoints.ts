@@ -21,6 +21,7 @@ export const clientEndpoints = {
     path: `/Client`,
     auth: "required",
     permissions: [PermissionsList.Client.Edit],
+    skipToast: true,
   }),
   delete: createEndpoint({
     method: "DELETE",

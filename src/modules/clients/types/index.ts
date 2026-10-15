@@ -3,6 +3,11 @@ export type {
   TClient,
   TCreateClientRequest,
   TCreateClientResponse,
+  TEditClientCommand,
   TGetClientsParams,
   TGetClientsResponse,
+  TUpdateClientRequest,
+  TUpdateClientResponse,
 } from "./client";
+
+export type { TClientWorkspaceOutletContext } from "./workspaceOutlet";

@@ -19,11 +19,36 @@ const clients = {
   filters: {
     search: "Search",
   },
+  workspace: {
+    title: "Client workspace",
+    navLabel: "Client sections",
+    back: "All clients",
+    loading: "Loading client…",
+    loadError: "Couldn't load this client.",
+    notFound: "This client was not found.",
+    invalidId: "This client link is invalid.",
+    soon: "Soon",
+    projectsCount: "{{count}} projects",
+    sections: {
+      overview: "Overview",
+    },
+  },
   form: {
     create: "Create client",
     createTitle: "Create client",
-    createSubtitle: "Add a new client. Name is required; other fields are optional.",
+    createSubtitle:
+      "Add a new client. Name is required; other fields are optional.",
     createSuccess: "Client added successfully.",
+    edit: "Edit",
+    editTitle: "Edit client",
+    editSubtitle:
+      "Update client details. Name is required; other fields are optional.",
+    editSuccess: "Client updated successfully.",
+    readOnlyHint: "Client details. Choose Edit to make changes.",
+    readOnlyNoPermission: "Client details (read-only).",
+    save: "Save",
+    loadDetailsError: "Couldn't load client details.",
+    notFound: "Client not found.",
     validationError: "One or more validation errors occurred.",
     cancel: "Cancel",
     name: "Name",
