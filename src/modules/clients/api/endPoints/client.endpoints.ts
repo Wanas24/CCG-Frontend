@@ -14,6 +14,7 @@ export const clientEndpoints = {
     path: `/Client`,
     auth: "required",
     permissions: [PermissionsList.Client.Create],
+    skipToast: true,
   }),
   update: createEndpoint({
     method: "PUT",

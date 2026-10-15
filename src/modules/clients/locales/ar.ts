@@ -19,6 +19,32 @@ const clients = {
   filters: {
     search: "بحث",
   },
+  form: {
+    create: "إنشاء عميل",
+    createTitle: "إنشاء عميل",
+    createSubtitle: "أضف عميلاً جديدًا. الاسم مطلوب؛ بقية الحقول اختيارية.",
+    createSuccess: "تمت إضافة العميل بنجاح.",
+    validationError: "حدث خطأ واحد أو أكثر في التحقق من البيانات.",
+    cancel: "إلغاء",
+    name: "الاسم",
+    namePlaceholder: "اسم العميل",
+    notes: "ملاحظات",
+    notesPlaceholder: "ملاحظات اختيارية",
+    email: "البريد الإلكتروني",
+    emailPlaceholder: "name@example.com",
+    phone: "الهاتف",
+    phonePlaceholder: "رقم الهاتف",
+    address: "العنوان",
+    addressPlaceholder: "عنوان الشارع",
+    city: "المدينة",
+    cityPlaceholder: "المدينة",
+    country: "الدولة",
+    countryPlaceholder: "الدولة",
+    contactPerson: "شخص التواصل",
+    contactPersonPlaceholder: "شخص التواصل",
+    taxNumber: "الرقم الضريبي",
+    taxNumberPlaceholder: "الرقم الضريبي",
+  },
 } as const;
 
 export default clients;

@@ -1,3 +1,4 @@
+import { queryClient } from "@/lib/queryClient";
 import { CLIENTS_PAGE_SIZE } from "../../constants/clientList";
 import type { TGetClientsParams } from "../../types";
 
@@ -14,3 +15,10 @@ export const clientsInfiniteQueryKey = (search: string) =>
     "infinite",
     { search, pageSize: CLIENTS_PAGE_SIZE },
   ] as const;
+
+export const invalidateAfterClientCreate = async () => {
+  await queryClient.invalidateQueries({
+    queryKey: clientQueryRootKey,
+    refetchType: "all",
+  });
+};

@@ -2,6 +2,8 @@ import { callEndpoint } from "@/lib/api/callEndpoint";
 import { CLIENTS_PAGE_SIZE } from "../../constants/clientList";
 import { clientEndpoints } from "../endPoints/client.endpoints";
 import type {
+  TCreateClientRequest,
+  TCreateClientResponse,
   TGetClientsParams,
   TGetClientsResponse,
 } from "../../types/client";
@@ -17,4 +19,10 @@ export const clientService = {
     callEndpoint<TGetClientsResponse>(clientEndpoints.list, {
       queryParams: toListQueryParams(params),
     }),
+
+  create: (body: TCreateClientRequest) =>
+    callEndpoint<TCreateClientResponse, TCreateClientRequest>(
+      clientEndpoints.create,
+      { body },
+    ),
 };

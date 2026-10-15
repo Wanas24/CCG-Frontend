@@ -1,9 +1,10 @@
 import { useMemo } from "react";
+import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { canAccessClients } from "../utils/clientAccess";
 
 export const useClientsAccess = () => {
-  const { permissions, isLoading } = usePermissions();
+  const { permissions, hasPermission, isLoading } = usePermissions();
 
   const canOpen = useMemo(() => {
     if (isLoading) return false;
@@ -11,5 +12,8 @@ export const useClientsAccess = () => {
     return canAccessClients({ granted });
   }, [isLoading, permissions]);
 
-  return { isLoading, canOpen };
+  const canCreate =
+    !isLoading && hasPermission(PermissionsList.Client.Create);
+
+  return { isLoading, canOpen, canCreate };
 };

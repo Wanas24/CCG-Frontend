@@ -13,3 +13,19 @@ export type TGetClientsParams = {
 };
 
 export type TGetClientsResponse = TSimpleResult<TApiPagedResult<TClient>>;
+
+export type TAddClientCommand = {
+  name: string | null;
+  notes: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  contactPerson: string | null;
+  taxNumber: string | null;
+};
+
+export type TCreateClientRequest = TAddClientCommand;
+
+export type TCreateClientResponse = TSimpleResult<number>;

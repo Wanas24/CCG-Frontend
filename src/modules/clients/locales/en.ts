@@ -19,6 +19,32 @@ const clients = {
   filters: {
     search: "Search",
   },
+  form: {
+    create: "Create client",
+    createTitle: "Create client",
+    createSubtitle: "Add a new client. Name is required; other fields are optional.",
+    createSuccess: "Client added successfully.",
+    validationError: "One or more validation errors occurred.",
+    cancel: "Cancel",
+    name: "Name",
+    namePlaceholder: "Client name",
+    notes: "Notes",
+    notesPlaceholder: "Optional notes",
+    email: "Email",
+    emailPlaceholder: "name@example.com",
+    phone: "Phone",
+    phonePlaceholder: "Phone number",
+    address: "Address",
+    addressPlaceholder: "Street address",
+    city: "City",
+    cityPlaceholder: "City",
+    country: "Country",
+    countryPlaceholder: "Country",
+    contactPerson: "Contact person",
+    contactPersonPlaceholder: "Contact person",
+    taxNumber: "Tax number",
+    taxNumberPlaceholder: "Tax number",
+  },
 } as const;
 
 export default clients;
