@@ -1,6 +1,7 @@
 import type { TFunction } from "i18next";
 import {
   Bell,
+  Building2,
   FileText,
   FolderKanban,
   GitBranch,
@@ -16,6 +17,8 @@ import { ALERTS_ROUTES } from "@/modules/alerts/routes/paths";
 import { APPROVAL_ROUTES } from "@/modules/approval/routes/paths";
 import { approvalMenuPermissions } from "@/modules/approval/utils/approvalAccess";
 import { LISTS_ROUTES } from "@/modules/lists/routes/paths";
+import { CLIENTS_ROUTES } from "@/modules/clients/routes/paths";
+import { clientsMenuPermissions } from "@/modules/clients/utils/clientAccess";
 import { PROJECTS_ROUTES } from "@/modules/projects/routes/paths";
 import { projectsMenuPermissions } from "@/modules/projects/utils/projectAccess";
 import { REPORT_LAYOUT_ROUTES } from "@/modules/reportLayout/routes/paths";
@@ -45,6 +48,13 @@ export const createAppSidebarMenu = (t: TFunction): MenuItemConfig[] => [
     path: PROJECTS_ROUTES.root,
     icon: <FolderKanban size={18} />,
     permissions: [...projectsMenuPermissions],
+  },
+  {
+    key: "clients",
+    label: t("clients.navLabel"),
+    path: CLIENTS_ROUTES.root,
+    icon: <Building2 size={18} />,
+    permissions: [...clientsMenuPermissions],
   },
   {
     key: "lists",

@@ -9,6 +9,7 @@ import approvalRouteConfig from "@/modules/approval/routes/routeConfig";
 import listsRouteConfig from "@/modules/lists/routes/routeConfig";
 import alertsRouteConfig from "@/modules/alerts/routes/routeConfig";
 import projectsRouteConfig from "@/modules/projects/routes/routeConfig";
+import clientsRouteConfig from "@/modules/clients/routes/routeConfig";
 import reportLayoutRouteConfig from "@/modules/reportLayout/routes/routeConfig";
 import NotFound from "@/modules/standalone/pages/NotFound";
 import RootLayout from "@/layouts/RootLayout";
@@ -28,6 +29,7 @@ const routes: AppRouteObject[] = [
       ...listsRouteConfig,
       ...alertsRouteConfig,
       ...projectsRouteConfig,
+      ...clientsRouteConfig,
       ...reportLayoutRouteConfig,
       {
         path: "*",
