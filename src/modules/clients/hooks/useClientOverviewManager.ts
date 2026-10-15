@@ -73,7 +73,7 @@ export const useClientOverviewManager = (client: TClient) => {
       toast.success(response.message || t("clients.form.editSuccess"));
       form.reset(values);
       setEditing(false);
-      await invalidateAfterClientUpdate();
+      await invalidateAfterClientUpdate(client.id);
     } catch (error) {
       notifyClientFormApiError(error, form.setError, t);
     }

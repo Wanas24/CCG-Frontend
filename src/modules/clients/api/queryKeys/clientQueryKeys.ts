@@ -55,11 +55,21 @@ export const invalidateAfterClientCreate = async () => {
   });
 };
 
-export const invalidateAfterClientUpdate = async () => {
-  await queryClient.invalidateQueries({
-    queryKey: clientQueryRootKey,
-    refetchType: "all",
-  });
+export const invalidateAfterClientUpdate = async (clientId: number) => {
+  await Promise.all([
+    queryClient.invalidateQueries({
+      queryKey: clientsListQueryRootKey,
+      refetchType: "none",
+    }),
+    queryClient.invalidateQueries({
+      queryKey: [...clientQueryRootKey, "infinite"],
+      refetchType: "none",
+    }),
+    queryClient.invalidateQueries({
+      queryKey: clientDetailQueryKey(clientId),
+      refetchType: "active",
+    }),
+  ]);
 };
 
 export const invalidateAfterClientDelete = async (clientId: number) => {

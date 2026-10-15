@@ -53,8 +53,14 @@ export const invalidateAfterProjectCreate = async () => {
 
 export const invalidateAfterProjectUpdate = async (projectId: number) => {
   await Promise.all([
-    invalidateProjectListQueries(),
-    invalidateProjectDetail(projectId),
+    queryClient.invalidateQueries({
+      queryKey: projectsListQueryRootKey,
+      refetchType: "none",
+    }),
+    queryClient.invalidateQueries({
+      queryKey: projectDetailQueryKey(projectId),
+      refetchType: "active",
+    }),
   ]);
 };
 

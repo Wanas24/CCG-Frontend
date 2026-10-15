@@ -22,5 +22,6 @@ export const useGetClients = (
     queryKey: clientsListQueryKey(params),
     queryFn: () => clientService.list(params),
     enabled: enabled && isAuthenticated && companyId !== null,
+    refetchOnMount: true,
   });
 };
