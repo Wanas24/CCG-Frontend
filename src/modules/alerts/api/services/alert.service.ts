@@ -22,6 +22,10 @@ const toMineQueryParams = (params: TGetMyAlertsParams = {}) => {
     PageSize: pageSize,
     LiveOnly: params.liveOnly ?? false,
     ...(params.projectId != null ? { ProjectId: params.projectId } : {}),
+    ...(params.entityId != null ? { EntityId: params.entityId } : {}),
+    ...(params.entityType != null && params.entityType !== ""
+      ? { EntityType: params.entityType }
+      : {}),
     ...(params.search ? { Search: params.search } : {}),
     ...(params.sortBy ? { SortBy: params.sortBy } : {}),
     ...(params.sortDescending !== undefined

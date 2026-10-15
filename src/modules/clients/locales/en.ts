@@ -32,7 +32,17 @@ const clients = {
     sections: {
       overview: "Overview",
       files: "Files",
+      alerts: "Alerts",
     },
+  },
+  alerts: {
+    subtitle: "Reminders linked to this client.",
+    create: "Create alert",
+    listTitle: "Client alerts",
+    emptyTitle: "No client alerts yet",
+    emptyDescription: "Create a reminder for this client to notify people.",
+    loadError: "Couldn't load client alerts.",
+    openAllAlerts: "Open all alerts",
   },
   files: {
     title: "Files",

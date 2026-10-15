@@ -26,6 +26,26 @@ export const projectAlertsQueryKey = (
     },
   ] as const;
 
+export const clientAlertsQueryKey = (
+  clientId: number,
+  params: Pick<
+    TGetMyAlertsParams,
+    "page" | "pageSize" | "liveOnly" | "entityType"
+  > = {},
+) =>
+  [
+    "alert",
+    "mine",
+    "client",
+    {
+      clientId,
+      entityType: params.entityType,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? DEFAULT_PAGE_SIZE,
+      liveOnly: params.liveOnly ?? false,
+    },
+  ] as const;
+
 export const alertEmployeesQueryKey = (
   params: TGetAlertEmployeesParams = {},
 ) => ["alert", "employees", params] as const;

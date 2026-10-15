@@ -32,7 +32,17 @@ const clients = {
     sections: {
       overview: "نظرة عامة",
       files: "الملفات",
+      alerts: "التنبيهات",
     },
+  },
+  alerts: {
+    subtitle: "تذكيرات مرتبطة بهذا العميل.",
+    create: "إنشاء تنبيه",
+    listTitle: "تنبيهات العميل",
+    emptyTitle: "لا توجد تنبيهات للعميل بعد",
+    emptyDescription: "أنشئ تذكيرًا لهذا العميل لإشعار الأشخاص.",
+    loadError: "تعذر تحميل تنبيهات العميل.",
+    openAllAlerts: "فتح كل التنبيهات",
   },
   files: {
     title: "الملفات",

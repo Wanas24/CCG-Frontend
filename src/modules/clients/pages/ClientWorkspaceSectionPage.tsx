@@ -1,4 +1,5 @@
 import { Navigate, useOutletContext, useParams } from "react-router";
+import ClientAlertsPanel from "../components/ClientAlertsPanel";
 import ClientFilesPanel from "../components/ClientFilesPanel";
 import ClientOverviewPanel from "../components/ClientOverviewPanel";
 import {
@@ -33,6 +34,10 @@ const ClientWorkspaceSectionPage = () => {
 
   if (section === "files") {
     return <ClientFilesPanel key={clientId} clientId={clientId} />;
+  }
+
+  if (section === "alerts") {
+    return <ClientAlertsPanel key={client.id} client={client} />;
   }
 
   return (

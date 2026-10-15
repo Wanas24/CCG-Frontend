@@ -1,4 +1,8 @@
-export const CLIENT_WORKSPACE_SECTIONS = ["overview", "files"] as const;
+export const CLIENT_WORKSPACE_SECTIONS = [
+  "overview",
+  "files",
+  "alerts",
+] as const;
 
 export type TClientWorkspaceSection =
   (typeof CLIENT_WORKSPACE_SECTIONS)[number];
@@ -9,6 +13,7 @@ export const CLIENT_WORKSPACE_DEFAULT_SECTION: TClientWorkspaceSection =
 export const CLIENT_WORKSPACE_READY_SECTIONS = [
   "overview",
   "files",
+  "alerts",
 ] as const satisfies readonly TClientWorkspaceSection[];
 
 export const isClientWorkspaceSection = (
