@@ -2,7 +2,7 @@ import { useMemo, useState, type UIEvent } from "react";
 import { useDebounce } from "use-debounce";
 import { useTranslation } from "react-i18next";
 import { AppDropDownSelect } from "@/shared/ANTD_UIComponents";
-import { useGetClientsInfinite } from "../api/hooks/useGetClientsInfinite";
+import { useGetClientsInfinite } from "@/modules/clients/api/hooks/useGetClientsInfinite";
 
 type Props = {
   value?: number;

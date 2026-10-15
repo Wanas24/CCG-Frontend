@@ -61,5 +61,3 @@ export const PROJECT_TYPE_OPTIONS = [
 ] as const;
 
 export type TProjectQuickFilter = "all" | "active" | "pending" | "draft";
-
-export { CLIENT_LOOKUP_PAGE_SIZE } from "@/modules/clients/constants/clientList";
