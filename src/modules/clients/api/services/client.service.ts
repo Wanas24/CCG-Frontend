@@ -10,6 +10,13 @@ import type {
   TUpdateClientRequest,
   TUpdateClientResponse,
 } from "../../types/client";
+import type {
+  TDeleteClientFileResponse,
+  TDownloadClientFileResponse,
+  TGetClientFilesResponse,
+  TUploadClientFilesRequest,
+  TUploadClientFilesResponse,
+} from "../../types/clientFile";
 
 const toListQueryParams = (params: TGetClientsParams = {}) => ({
   Page: params.page ?? 1,
@@ -41,5 +48,39 @@ export const clientService = {
   delete: (clientId: number) =>
     callEndpoint<TDeleteClientResponse>(clientEndpoints.delete, {
       queryParams: { clientId },
+    }),
+
+  files: (clientId: number) =>
+    callEndpoint<TGetClientFilesResponse>(clientEndpoints.files, {
+      pathParams: { id: clientId },
+    }),
+
+  uploadFiles: ({
+    clientId,
+    files,
+    names,
+    descriptions,
+  }: TUploadClientFilesRequest) => {
+    const body = new FormData();
+    files.forEach((file, index) => {
+      body.append("Files", file);
+      body.append("Names", names[index] ?? "");
+      body.append("Descriptions", descriptions[index] ?? "");
+    });
+
+    return callEndpoint<TUploadClientFilesResponse, FormData>(
+      clientEndpoints.uploadFile,
+      { queryParams: { id: clientId }, body },
+    );
+  },
+
+  downloadFile: (fileId: number) =>
+    callEndpoint<TDownloadClientFileResponse>(clientEndpoints.downloadFile, {
+      pathParams: { fileId },
+    }),
+
+  deleteFile: (fileId: number) =>
+    callEndpoint<TDeleteClientFileResponse>(clientEndpoints.deleteFile, {
+      pathParams: { fileId },
     }),
 };

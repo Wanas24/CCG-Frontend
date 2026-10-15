@@ -1,4 +1,5 @@
 import { Navigate, useOutletContext, useParams } from "react-router";
+import ClientFilesPanel from "../components/ClientFilesPanel";
 import ClientOverviewPanel from "../components/ClientOverviewPanel";
 import {
   CLIENT_WORKSPACE_DEFAULT_SECTION,
@@ -28,6 +29,10 @@ const ClientWorkspaceSectionPage = () => {
 
   if (section === "overview") {
     return <ClientOverviewPanel key={client.id} client={client} />;
+  }
+
+  if (section === "files") {
+    return <ClientFilesPanel key={clientId} clientId={clientId} />;
   }
 
   return (

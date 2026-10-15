@@ -19,8 +19,15 @@ export const clientsInfiniteQueryKey = (search: string) =>
 export const clientDetailQueryKey = (id: number) =>
   [...clientQueryRootKey, "detail", id] as const;
 
+export const clientFilesQueryKey = (clientId: number) =>
+  [...clientQueryRootKey, "files", clientId] as const;
+
 export const removeClientDetailQuery = (clientId: number) => {
   queryClient.removeQueries({ queryKey: clientDetailQueryKey(clientId) });
+};
+
+export const removeClientFilesQuery = (clientId: number) => {
+  queryClient.removeQueries({ queryKey: clientFilesQueryKey(clientId) });
 };
 
 export const invalidateClientListQueries = async () => {
@@ -30,6 +37,13 @@ export const invalidateClientListQueries = async () => {
   });
   await queryClient.invalidateQueries({
     queryKey: [...clientQueryRootKey, "infinite"],
+    refetchType: "all",
+  });
+};
+
+export const invalidateClientFiles = async (clientId: number) => {
+  await queryClient.invalidateQueries({
+    queryKey: clientFilesQueryKey(clientId),
     refetchType: "all",
   });
 };
@@ -50,5 +64,6 @@ export const invalidateAfterClientUpdate = async () => {
 
 export const invalidateAfterClientDelete = async (clientId: number) => {
   removeClientDetailQuery(clientId);
+  removeClientFilesQuery(clientId);
   await invalidateClientListQueries();
 };
