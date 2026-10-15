@@ -105,7 +105,7 @@ export const useReportLayoutStudio = () => {
   const [sampleTitle, setSampleTitle] = useState("");
   const [sampleSubtitle, setSampleSubtitle] = useState("");
   const [contentKind, setContentKind] = useState<TContentKind>(CONTENT_KIND.Table);
-  const [autoPdf, setAutoPdf] = useState(false);
+  const [autoPdf, setAutoPdf] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [pdfLoading, setPdfLoading] = useState(false);

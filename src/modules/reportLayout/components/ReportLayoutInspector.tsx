@@ -109,7 +109,24 @@ const FieldControl = ({
   };
 
   let control: ReactNode;
-  if (field.kind === "bool") {
+  if (field.kind === "image") {
+    const imageValue = typeof value === "string" ? value : "";
+    control = (
+      <SignatureImageField
+        value={imageValue}
+        label={label}
+        help={field.helpKey ? layoutText(t, field.helpKey) : undefined}
+        onChange={(imageUrl) =>
+          onPatch({ [field.key]: imageUrl } as Partial<TLayoutDraft>)
+        }
+        onRemoved={(imageUrl) => {
+          if (imageValue.trim() === imageUrl.trim()) {
+            onPatch({ [field.key]: null } as Partial<TLayoutDraft>);
+          }
+        }}
+      />
+    );
+  } else if (field.kind === "bool") {
     control = (
       <label className="flex items-center gap-2.5 rounded-[10px] border border-(--Grey300) bg-(--app-surface) px-2.5 py-2 text-[12.5px] font-semibold">
         <Switch
@@ -256,7 +273,7 @@ const FieldControl = ({
     <div className={clsx(field.fullWidth && "col-span-2", !active && "opacity-45")}>
       {control}
       <FieldError message={error} />
-      {field.helpKey ? (
+      {field.helpKey && field.kind !== "image" ? (
         <p className="mt-1 text-[11px] leading-snug text-(--Grey500)">{layoutText(t, field.helpKey)}</p>
       ) : null}
       {!active && field.whyKey ? (

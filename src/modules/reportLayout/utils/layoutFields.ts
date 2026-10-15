@@ -21,7 +21,8 @@ export type TFieldKind =
   | "color"
   | "bool"
   | "select"
-  | "font";
+  | "font"
+  | "image";
 
 export type TSelectKind =
   | "paper"
@@ -96,7 +97,7 @@ export const LAYOUT_FIELDS: TLayoutField[] = [
   { key: "headerCenterText", section: "header", kind: "area", labelKey: "reportLayout.fields.headerCenter", maxLength: 2000, tokens: true, fullWidth: true, helpKey: "reportLayout.help.headerCenter", visible: (draft) => draft.showHeader },
   { key: "headerRightText", section: "header", kind: "area", labelKey: "reportLayout.fields.headerRight", maxLength: 2000, tokens: true, fullWidth: true, visible: (draft) => draft.showHeader },
   { key: "showLogo", section: "header", kind: "bool", labelKey: "reportLayout.fields.showLogo", fullWidth: true, visible: (draft) => draft.showHeader },
-  { key: "logoUrl", section: "header", kind: "text", labelKey: "reportLayout.fields.logoUrl", maxLength: 1000, mono: true, fullWidth: true, helpKey: "reportLayout.help.logoUrl", visible: (draft) => draft.showHeader && draft.showLogo },
+  { key: "logoUrl", section: "header", kind: "image", labelKey: "reportLayout.fields.logoUrl", maxLength: 1000, fullWidth: true, helpKey: "reportLayout.help.logoUrl", visible: (draft) => draft.showHeader && draft.showLogo },
   { key: "logoPosition", section: "header", kind: "select", options: "logo", labelKey: "reportLayout.fields.logoPosition", visible: (draft) => draft.showHeader && draft.showLogo },
   { key: "logoWidthMm", section: "header", kind: "number", labelKey: "reportLayout.fields.logoWidth", min: 2, max: 150, step: 1, visible: (draft) => draft.showHeader && draft.showLogo },
   { key: "logoHeightMm", section: "header", kind: "number", labelKey: "reportLayout.fields.logoHeight", min: 2, max: 120, step: 1, helpKey: "reportLayout.help.logoHeight", visible: (draft) => draft.showHeader && draft.showLogo },
