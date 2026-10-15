@@ -1,0 +1,3 @@
+export const CLIENTS_PAGE_SIZE = 10;
+
+export const CLIENT_LOOKUP_PAGE_SIZE = CLIENTS_PAGE_SIZE;

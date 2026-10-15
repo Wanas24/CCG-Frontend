@@ -48,6 +48,17 @@ export const PermissionsList = {
     Download: "Project.Download",
     DeleteFile: "Project.DeleteFile",
   },
+  Client: {
+    Get: "Client.Get",
+    Create: "Client.Create",
+    Edit: "Client.Edit",
+    Delete: "Client.Delete",
+    Export: "Client.Export",
+    GetFiles: "Client.GetFiles",
+    Upload: "Client.Upload",
+    Download: "Client.Download",
+    DeleteFile: "Client.DeleteFile",
+  },
   ProjectEmployee: {
     GetActiveProjects: "ProjectEmployee.GetActiveProjects",
     SetProjects: "ProjectEmployee.SetProjects",
