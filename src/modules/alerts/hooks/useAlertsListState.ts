@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import type { TAlertUiStatus, TGetMyAlertsParams } from "../types";
 
 export type AlertsViewMode = "board" | "timeline";
 
 const SEARCH_DEBOUNCE_MS = 300;
-const BOARD_PAGE_SIZE = 100;
+const ALERTS_PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 export const useAlertsListState = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -32,7 +33,7 @@ export const useAlertsListState = () => {
   const params: TGetMyAlertsParams = useMemo(
     () => ({
       page: 1,
-      pageSize: BOARD_PAGE_SIZE,
+      pageSize: ALERTS_PAGE_SIZE,
       liveOnly: false,
       ...(debouncedSearch ? { search: debouncedSearch } : {}),
     }),

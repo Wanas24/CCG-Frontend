@@ -42,6 +42,17 @@ const shared = {
   "upload": {
     "dragText": "Click or drag file to this area to upload",
     "dragHint": "Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files."
+  },
+  "filePreview": {
+    "title": "File preview",
+    "loading": "Loading preview…",
+    "unavailableTitle": "Preview unavailable",
+    "unavailableDescription":
+      "This file type can't be previewed here. Download it or open it with your device's default app.",
+    "loadFailed": "Couldn't load a preview for this file.",
+    "download": "Download",
+    "openExternally": "Open file",
+    "close": "Close"
   }
 } as const;
 

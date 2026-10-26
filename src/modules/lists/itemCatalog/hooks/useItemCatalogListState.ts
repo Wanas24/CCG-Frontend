@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { useAppTablePagination } from "@/shared/ANTD_UIComponents/AppTable/useAppTablePagination";
 import type { TGetItemCategoriesParams } from "../types/itemCategory";
 
 const SEARCH_DEBOUNCE_MS = 300;
-const MIX_PAGE_SIZE = 100;
 
 export const useItemCatalogListState = () => {
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [unitId, setUnitId] = useState<number | undefined>(undefined);
   const [type, setType] = useState<number | undefined>(undefined);
-  const { page, pageSize, onChange, resetPage } = useAppTablePagination();
+  const { page, pageSize, onChange, resetPage } =
+    useAppTablePagination(DEFAULT_PAGE_SIZE);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -46,14 +47,6 @@ export const useItemCatalogListState = () => {
     [page, pageSize, sharedFilters, type],
   );
 
-  const mixParams: TGetItemCategoriesParams = useMemo(
-    () => ({
-      page: 1,
-      pageSize: MIX_PAGE_SIZE,
-    }),
-    [],
-  );
-
   return {
     searchInput,
     setSearchInput,
@@ -76,6 +69,5 @@ export const useItemCatalogListState = () => {
       onChange,
     },
     params,
-    mixParams,
   };
 };

@@ -2,6 +2,7 @@ import { callEndpoint } from "@/lib/api/callEndpoint";
 import { employeeEndpoints } from "../endPoints/employee.endpoints";
 import { toPagedQueryParams } from "./toPagedQueryParams";
 import type {
+  TGetEmployeeStatisticsResponse,
   TGetEmployeesParams,
   TGetEmployeesResponse,
   TRecruitEmployeeRequest,
@@ -38,6 +39,9 @@ export const employeeService = {
           : {}),
       },
     }),
+
+  statistics: () =>
+    callEndpoint<TGetEmployeeStatisticsResponse>(employeeEndpoints.statistics),
 
   recruit: (body: TRecruitEmployeeRequest) =>
     callEndpoint<TRecruitEmployeeResponse, TRecruitEmployeeRequest>(

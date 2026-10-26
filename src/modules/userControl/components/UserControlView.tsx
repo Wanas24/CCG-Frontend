@@ -40,8 +40,6 @@ import {
 } from "./userControlDrag";
 import "../styles/userControl.css";
 
-type View = "board" | "matrix" | "map";
-
 type Props = {
   userControl: UserControlModel;
 };
@@ -147,7 +145,7 @@ const UnassignZone = ({ active }: { active: boolean }) => {
 
 const UserControlView = ({ userControl }: Props) => {
   const { t } = useTranslation();
-  const [view, setView] = useState<View>("board");
+  const { view, setView } = userControl;
   const [drag, setDrag] = useState<UserControlDragPayload | null>(null);
   const [absorbDrop, setAbsorbDrop] = useState(false);
   const sensors = useSensors(
@@ -160,8 +158,12 @@ const UserControlView = ({ userControl }: Props) => {
 
   const onDragStart = (event: DragStartEvent) => {
     setAbsorbDrop(false);
-    if (isUserControlDragPayload(event.active.data.current))
-      setDrag(event.active.data.current);
+    if (!isUserControlDragPayload(event.active.data.current)) return;
+    const payload = event.active.data.current;
+    setDrag(payload);
+    if (payload.type === "perm" || payload.type === "group") {
+      userControl.prefetchRoleDetails();
+    }
   };
 
   const finishDrag = (event: DragEndEvent) => {
