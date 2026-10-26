@@ -63,3 +63,4 @@ export const clientEndpoints = {
     permissions: [PermissionsList.Client.DeleteFile],
   }),
 };
+
