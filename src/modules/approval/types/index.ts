@@ -48,6 +48,25 @@ export type TGetPendingApprovalRequestsResponse = TSimpleResult<
   TApprovalPagedResult<TApprovalPendingRequest>
 >;
 
+export type TGetEntityApprovalRequestsParams = {
+  entityType: string;
+  entityId: string;
+  take?: number;
+};
+
+export type TGetEntityApprovalRequestsResponse = TSimpleResult<
+  TApprovalPendingRequest[] | TApprovalPagedResult<TApprovalPendingRequest>
+>;
+
+export type TGetActiveEntityApprovalRequestParams = {
+  entityType: string;
+  entityId: string;
+};
+
+export type TGetActiveEntityApprovalRequestResponse = TSimpleResult<
+  TApprovalPendingRequest | null
+>;
+
 export type TSaveApprovalWorkflowResponse = TSimpleResult<TApprovalWorkflow>;
 
 export type TDeactivateApprovalWorkflowResponse = TSimpleResult;

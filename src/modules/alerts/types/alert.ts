@@ -3,6 +3,12 @@ import type {
   TApiPagedResult,
   TPagedQueryParams,
 } from "@/modules/userControl/types";
+import {
+  AlertEntityType,
+  type TAlertEntityType,
+} from "../constants/alertEntityType";
+
+export { AlertEntityType, type TAlertEntityType };
 
 export type TAlertUiStatus = "live" | "scheduled" | "done" | "canceled";
 
@@ -40,7 +46,7 @@ export type TAlertEmployee = {
 };
 
 export type TAlertEntityContext = {
-  entityType?: string | number;
+  entityType?: TAlertEntityType | string | number;
   entityId?: number;
   projectId?: number;
 };
@@ -54,15 +60,18 @@ export type TCreateGeneralAlertRequest = {
 };
 
 export type TCreateAlertRequest = TCreateGeneralAlertRequest & {
-  ProjectId?: number;
-  EntityId?: number;
-  EntityType?: string | number;
+  projectId?: number;
+  entityId?: number;
+  entityType?: string | number;
 };
 
 export type TGetMyAlertsParams = TPagedQueryParams & {
   liveOnly?: boolean;
   isDone?: boolean;
   isCanceled?: boolean;
+  projectId?: number;
+  entityId?: number;
+  entityType?: string | number;
 };
 
 export type TGetAlertEmployeesParams = TPagedQueryParams & {

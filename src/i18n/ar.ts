@@ -4,6 +4,8 @@ import ai from "@/modules/ai/locales/ar";
 import approval from "@/modules/approval/locales/ar";
 import lists from "@/modules/lists/locales/ar";
 import alerts from "@/modules/alerts/locales/ar";
+import projects from "@/modules/projects/locales/ar";
+import clients from "@/modules/clients/locales/ar";
 import reportLayout from "@/modules/reportLayout/locales/ar";
 import user from "@/modules/user/locales/ar";
 import userControl from "@/modules/userControl/locales/ar";
@@ -18,6 +20,8 @@ const ar = {
   approval,
   lists,
   alerts,
+  projects,
+  clients,
   reportLayout,
   user,
   userControl,

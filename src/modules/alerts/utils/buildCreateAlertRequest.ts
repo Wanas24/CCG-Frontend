@@ -30,18 +30,18 @@ export const buildCreateAlertRequest = ({
   };
 
   if (entityContext?.projectId !== undefined) {
-    body.ProjectId = entityContext.projectId;
+    body.projectId = entityContext.projectId;
   }
 
   if (entityContext?.entityId !== undefined) {
-    body.EntityId = entityContext.entityId;
+    body.entityId = entityContext.entityId;
   }
 
   if (
     entityContext?.entityType !== undefined &&
     entityContext.entityType !== ""
   ) {
-    body.EntityType = entityContext.entityType;
+    body.entityType = entityContext.entityType;
   }
 
   return body;

@@ -23,6 +23,20 @@ export const approvalWorkflowEndpoints = {
     permissions: [PermissionsList.ApprovalWorkflow.GetPendingRequests],
     skipToast: true,
   }),
+  entityRequests: createEndpoint({
+    method: "GET",
+    path: `/ApprovalWorkflow/requests`,
+    auth: "required",
+    permissions: [PermissionsList.ApprovalWorkflow.GetEntityRequests],
+    skipToast: true,
+  }),
+  activeEntityRequest: createEndpoint({
+    method: "GET",
+    path: `/ApprovalWorkflow/requests/active`,
+    auth: "required",
+    permissions: [PermissionsList.ApprovalWorkflow.GetActiveEntityRequest],
+    skipToast: true,
+  }),
   create: createEndpoint({
     method: "POST",
     path: `/ApprovalWorkflow`,

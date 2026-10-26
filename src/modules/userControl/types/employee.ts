@@ -26,6 +26,15 @@ export type TGetEmployeesParams = TPagedQueryParams & {
 
 export type TGetEmployeesResponse = TSimpleResult<TApiPagedResult<TEmployee>>;
 
+export type TEmployeeStatistics = {
+  employeeCount: number;
+  managerCount: number;
+  blockedCount: number;
+  firedCount: number;
+};
+
+export type TGetEmployeeStatisticsResponse = TSimpleResult<TEmployeeStatistics>;
+
 export type TRecruitEmployeeRequest = {
   employeeEmail: string;
 };

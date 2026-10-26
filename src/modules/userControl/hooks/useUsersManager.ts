@@ -9,6 +9,7 @@ import { useAuthStore } from "@/modules/authentication/store/authStore";
 import { PermissionsList } from "@/modules/user/permissions/PermissionsList";
 import { usePermissions } from "@/modules/user/hooks/usePermissions";
 import { useGetEmployees } from "../api/hooks/useGetEmployees";
+import { useGetEmployeeStatistics } from "../api/hooks/useGetEmployeeStatistics";
 import { useGetApplicationRoles } from "../api/hooks/useGetApplicationRoles";
 import { useGetActiveProjects } from "../api/hooks/useGetActiveProjects";
 import { readAllPages } from "../api/hooks/userControlPaging";
@@ -21,7 +22,6 @@ import { projectEmployeeService } from "../api/services/projectEmployee.service"
 import { ApplicationRoleVisibility } from "../types";
 import type { TEmployee, TGetEmployeesParams } from "../types";
 import type { TEmployeeFile } from "../types/employeeFiles";
-import { USERS_MANAGER_TEMPORARY_STATS } from "../constants/usersManagerTemporaryStats";
 import { readApiMessage } from "../utils/readApiMessage";
 
 export type UsersManagerFileAction = {
@@ -36,7 +36,11 @@ export type UsersManagerFilter =
   | "fired"
   | "managers";
 
-export type UsersManagerStatKey = keyof typeof USERS_MANAGER_TEMPORARY_STATS;
+export type UsersManagerStatKey =
+  | "people"
+  | "managers"
+  | "blocked"
+  | "fired";
 
 export const USERS_MANAGER_PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
@@ -139,6 +143,7 @@ export const useUsersManager = () => {
   const workspaceCatalogEnabled = hiring || selectedId !== null;
 
   const peopleQuery = useGetEmployees(listParams, enabled);
+  const statisticsQuery = useGetEmployeeStatistics(enabled);
 
   const rolesQuery = useGetApplicationRoles(
     {
@@ -178,7 +183,34 @@ export const useUsersManager = () => {
     );
   }, [people, selectedId, selectedSnapshot]);
 
-  const stats = USERS_MANAGER_TEMPORARY_STATS;
+  const stats = useMemo(() => {
+    const data = statisticsQuery.data?.isSuccess
+      ? statisticsQuery.data.data
+      : null;
+    if (!data) return null;
+    return {
+      people: data.employeeCount,
+      managers: data.managerCount,
+      blocked: data.blockedCount,
+      fired: data.firedCount,
+    };
+  }, [statisticsQuery.data]);
+
+  const statsError = useMemo(() => {
+    if (statisticsQuery.data && !statisticsQuery.data.isSuccess) {
+      return (
+        statisticsQuery.data.message ||
+        t("userControl.usersManager.errors.statsLoad")
+      );
+    }
+    if (statisticsQuery.isError) {
+      return readApiMessage(
+        statisticsQuery.error,
+        t("userControl.usersManager.errors.statsLoad"),
+      );
+    }
+    return null;
+  }, [statisticsQuery.data, statisticsQuery.error, statisticsQuery.isError, t]);
 
   const selectStat = (key: UsersManagerStatKey) => {
     setFilter(statKeyToFilter(key));
@@ -579,6 +611,8 @@ export const useUsersManager = () => {
     saving,
     uploading,
     stats,
+    isStatsLoading: enabled && statisticsQuery.isPending,
+    statsError,
     selectStat,
     filter,
     setFilter,

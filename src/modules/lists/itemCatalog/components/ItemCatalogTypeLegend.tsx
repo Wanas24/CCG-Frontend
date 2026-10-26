@@ -1,11 +1,11 @@
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { typeHue } from "../../utils/listColors";
-import type { TItemCategory, TItemCategoryType } from "../types/itemCategory";
+import { TEMP_ITEM_CATALOG_TYPE_MIX_COUNT } from "../constants/tempItemCatalogTypeMix";
+import type { TItemCategoryType } from "../types/itemCategory";
 
 type Props = {
   types: TItemCategoryType[];
-  items: TItemCategory[];
   totalCount: number;
   activeType?: number;
   onSelectType: (type: number | undefined) => void;
@@ -13,19 +13,17 @@ type Props = {
 
 const ItemCatalogTypeLegend = ({
   types,
-  items,
   totalCount,
   activeType,
   onSelectType,
 }: Props) => {
   const { t } = useTranslation();
-  const total = items.length || 1;
-  const segments = types
-    .map((type) => ({
-      ...type,
-      count: items.filter((item) => item.type === type.value).length,
-    }))
-    .filter((segment) => segment.count > 0);
+  const segmentCount = TEMP_ITEM_CATALOG_TYPE_MIX_COUNT;
+  const total = Math.max(types.length * segmentCount, 1);
+  const segments = types.map((type) => ({
+    ...type,
+    count: segmentCount,
+  }));
 
   return (
     <div className="flex flex-col gap-3 mb-3">
@@ -67,7 +65,7 @@ const ItemCatalogTypeLegend = ({
           <b className="font-bold tabular-nums">{totalCount}</b>
         </button>
         {types.map((type) => {
-          const count = items.filter((item) => item.type === type.value).length;
+          const count = TEMP_ITEM_CATALOG_TYPE_MIX_COUNT;
           const active = activeType === type.value;
           return (
             <button

@@ -1,14 +1,18 @@
 import { callEndpoint } from "@/lib/api/callEndpoint";
 import { approvalWorkflowEndpoints } from "../endPoints/approvalWorkflow.endpoints";
 import type {
+  TApprovalDecision,
   TDeactivateApprovalWorkflowResponse,
   TForceDecideApprovalRequestResponse,
+  TGetActiveEntityApprovalRequestParams,
+  TGetActiveEntityApprovalRequestResponse,
   TGetApprovalEntityTypesResponse,
   TGetApprovalWorkflowsResponse,
+  TGetEntityApprovalRequestsParams,
+  TGetEntityApprovalRequestsResponse,
   TGetPendingApprovalRequestsResponse,
   TSaveApprovalWorkflowBody,
   TSaveApprovalWorkflowResponse,
-  TApprovalDecision,
 } from "../../types";
 
 export const approvalWorkflowService = {
@@ -37,6 +41,29 @@ export const approvalWorkflowService = {
           page: params?.page ?? 1,
           pageSize: params?.pageSize ?? 50,
           sortDescending: params?.sortDescending ?? true,
+        },
+      },
+    ),
+
+  getEntityRequests: (params: TGetEntityApprovalRequestsParams) =>
+    callEndpoint<TGetEntityApprovalRequestsResponse>(
+      approvalWorkflowEndpoints.entityRequests,
+      {
+        queryParams: {
+          entityType: params.entityType,
+          entityId: params.entityId,
+          take: params.take ?? 50,
+        },
+      },
+    ),
+
+  getActiveEntityRequest: (params: TGetActiveEntityApprovalRequestParams) =>
+    callEndpoint<TGetActiveEntityApprovalRequestResponse>(
+      approvalWorkflowEndpoints.activeEntityRequest,
+      {
+        queryParams: {
+          entityType: params.entityType,
+          entityId: params.entityId,
         },
       },
     ),

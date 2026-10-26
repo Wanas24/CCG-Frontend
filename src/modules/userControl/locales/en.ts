@@ -283,6 +283,7 @@ const userControl = {
       download: "Couldn't download the file.",
       removeProject: "Couldn't remove that person.",
       load: "Couldn't load people.",
+      statsLoad: "Couldn't load people statistics.",
     },
   },
 } as const;

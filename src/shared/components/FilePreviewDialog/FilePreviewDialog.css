@@ -1,0 +1,16 @@
+.file-preview-dialog .ant-modal-body {
+  max-height: min(70vh, 640px);
+  overflow: auto;
+  padding-top: 16px;
+}
+
+.file-preview-dialog .ant-modal {
+  max-width: 92vw;
+}
+
+.file-preview-dialog .ant-modal-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-inline-end: 28px;
+}

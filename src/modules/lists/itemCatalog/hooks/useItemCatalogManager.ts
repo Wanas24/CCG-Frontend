@@ -65,6 +65,11 @@ export const useItemCatalogManager = () => {
   const [fileAction, setFileAction] = useState<ItemCategoryFileAction | null>(
     null,
   );
+  const [previewFile, setPreviewFile] = useState<TItemCategoryFile | null>(
+    null,
+  );
+  const [previewSourceUrl, setPreviewSourceUrl] = useState<string | null>(null);
+  const [previewResolving, setPreviewResolving] = useState(false);
 
   const form = useForm<ItemCategoryFormValues>({
     resolver: zodResolver(itemCategoryFormSchema),
@@ -199,13 +204,34 @@ export const useItemCatalogManager = () => {
     };
   };
 
+  const closePreview = () => {
+    setPreviewFile(null);
+    setPreviewSourceUrl(null);
+    setPreviewResolving(false);
+  };
+
   const viewFile = async (file: TItemCategoryFile) => {
     if (fileAction) return;
     setFileAction({ fileId: file.fileId, kind: "view" });
+    setPreviewFile(file);
+    setPreviewSourceUrl(null);
+    setPreviewResolving(true);
     try {
       const resolved = await resolveFileUrl(file);
-      if (!resolved) return;
-      window.open(resolved.url, "_blank", "noopener,noreferrer");
+      if (!resolved?.url) {
+        toast.error(t("lists.itemCatalog.downloadError"));
+        closePreview();
+        return;
+      }
+      setPreviewFile({
+        ...file,
+        fileName: resolved.fileName || file.fileName,
+      });
+      setPreviewSourceUrl(resolved.url);
+      setPreviewResolving(false);
+    } catch {
+      toast.error(t("lists.itemCatalog.downloadError"));
+      closePreview();
     } finally {
       setFileAction(null);
     }
@@ -250,6 +276,9 @@ export const useItemCatalogManager = () => {
     deletingItem,
     deletingFile,
     fileAction,
+    previewFile,
+    previewSourceUrl,
+    previewResolving,
     isSaving: createMutation.isPending || updateMutation.isPending,
     isDeleting: deleteMutation.isPending,
     isUploading: uploadMutation.isPending,
@@ -266,6 +295,7 @@ export const useItemCatalogManager = () => {
     closeDeleteFile,
     confirmDeleteFile,
     viewFile,
+    closePreview,
     downloadFile,
   };
 };

@@ -1,19 +1,24 @@
-import { Input, Pagination, Select } from "antd";
+import { useState } from "react";
+import { Input, Pagination } from "antd";
 import { useTranslation } from "react-i18next";
 import { Lock, Package, SearchX } from "lucide-react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/api/pagination";
 import { AppButton } from "@/shared/ANTD_UIComponents";
 import AppErrorContainer from "@/shared/ANTD_UIComponents/AppErrorContainer/AppErrorContainer";
 import AppEmptyState from "@/shared/ANTD_UIComponents/AppEmptyView/AppEmptyState";
+import FilePreviewDialog from "@/shared/components/FilePreviewDialog";
 import { DesignTokens } from "@/AntdTheme/DesignTokens";
 import { useGetMeasurements } from "../../units/api/hooks/useGetMeasurements";
 import { useGetItemCategories } from "../api/hooks/useGetItemCategories";
 import { useGetItemCategoryTypes } from "../api/hooks/useGetItemCategoryTypes";
+import { TEMP_ITEM_CATALOG_TYPE_MIX_COUNT } from "../constants/tempItemCatalogTypeMix";
 import { useItemCatalogListState } from "../hooks/useItemCatalogListState";
 import { useItemCatalogManager } from "../hooks/useItemCatalogManager";
 import ItemCatalogBoard from "./ItemCatalogBoard";
 import ItemCatalogContentSkeleton from "./ItemCatalogContentSkeleton";
 import ItemCatalogTypeLegend from "./ItemCatalogTypeLegend";
 import ItemCategoryDrawer from "./ItemCategoryDrawer";
+import MeasurementSelect from "./MeasurementSelect";
 import {
   ItemCategoryDeleteDialog,
   ItemCategoryFileDeleteDialog,
@@ -27,16 +32,18 @@ const ItemCatalogList = ({ className }: Props) => {
   const { t } = useTranslation();
   const listState = useItemCatalogListState();
   const manager = useItemCatalogManager();
+  const [filterUnitLabel, setFilterUnitLabel] = useState<string | null>(null);
+  const canLookupUnits =
+    manager.canGet || manager.canCreate || manager.canEdit;
 
   const categoriesQuery = useGetItemCategories(
     listState.params,
     manager.canGet,
   );
-  const mixQuery = useGetItemCategories(listState.mixParams, manager.canGet);
   const typesQuery = useGetItemCategoryTypes(manager.canGet);
-  const unitsQuery = useGetMeasurements(
-    { page: 1, pageSize: 100 },
-    manager.canGet || manager.canCreate || manager.canEdit,
+  const unitsBootstrapQuery = useGetMeasurements(
+    { page: 1, pageSize: DEFAULT_PAGE_SIZE },
+    canLookupUnits,
   );
 
   const pageData = categoriesQuery.data?.isSuccess
@@ -44,21 +51,18 @@ const ItemCatalogList = ({ className }: Props) => {
     : undefined;
   const items = pageData?.data ?? [];
   const totalCount = pageData?.totalCount ?? 0;
-  const mixItems =
-    mixQuery.data?.isSuccess && Array.isArray(mixQuery.data.data?.data)
-      ? mixQuery.data.data.data
-      : [];
-  const mixTotalCount = mixQuery.data?.isSuccess
-    ? (mixQuery.data.data?.totalCount ?? mixItems.length)
-    : 0;
   const types =
     typesQuery.data?.isSuccess && Array.isArray(typesQuery.data.data)
       ? typesQuery.data.data
       : [];
-  const units =
-    unitsQuery.data?.isSuccess && Array.isArray(unitsQuery.data.data?.data)
-      ? unitsQuery.data.data.data
-      : [];
+  const legendAllTotal =
+    listState.type === undefined
+      ? totalCount
+      : types.length * TEMP_ITEM_CATALOG_TYPE_MIX_COUNT;
+  const hasUnits =
+    (unitsBootstrapQuery.data?.isSuccess
+      ? (unitsBootstrapQuery.data.data?.totalCount ?? 0)
+      : 0) > 0;
 
   const isResultsError =
     categoriesQuery.isError ||
@@ -117,12 +121,8 @@ const ItemCatalogList = ({ className }: Props) => {
             !listState.hasFilters && manager.canCreate ? (
               <AppButton
                 onClick={() => manager.openCreate()}
-                disabled={units.length === 0}
-                title={
-                  units.length === 0
-                    ? t("lists.itemCatalog.needUnit")
-                    : undefined
-                }
+                disabled={!hasUnits}
+                title={!hasUnits ? t("lists.itemCatalog.needUnit") : undefined}
               >
                 {t("lists.itemCatalog.newItem")}
               </AppButton>
@@ -170,8 +170,7 @@ const ItemCatalogList = ({ className }: Props) => {
         {types.length > 0 ? (
           <ItemCatalogTypeLegend
             types={types}
-            items={mixItems}
-            totalCount={mixTotalCount}
+            totalCount={legendAllTotal}
             activeType={listState.type}
             onSelectType={listState.setType}
           />
@@ -212,29 +211,24 @@ const ItemCatalogList = ({ className }: Props) => {
           aria-label={t("lists.itemCatalog.searchPlaceholder")}
           className="w-full! lg:max-w-xs!"
         />
-        <Select
+        <MeasurementSelect
           allowClear
+          enabled={canLookupUnits}
           value={listState.unitId}
-          onChange={(value) =>
-            listState.setUnitId(typeof value === "number" ? value : undefined)
-          }
+          selectedLabel={filterUnitLabel}
+          onChange={(unitId, label) => {
+            listState.setUnitId(unitId);
+            setFilterUnitLabel(label ?? null);
+          }}
           placeholder={t("lists.itemCatalog.unitFilter")}
           aria-label={t("lists.itemCatalog.unitFilter")}
           className="w-full! lg:w-48!"
-          options={units.map((unit) => ({
-            value: unit.id,
-            label: unit.unit,
-          }))}
-          showSearch
-          optionFilterProp="label"
         />
         {manager.canCreate ? (
           <AppButton
             onClick={() => manager.openCreate()}
-            disabled={units.length === 0}
-            title={
-              units.length === 0 ? t("lists.itemCatalog.needUnit") : undefined
-            }
+            disabled={!hasUnits}
+            title={!hasUnits ? t("lists.itemCatalog.needUnit") : undefined}
             className="w-full! lg:w-fit!"
           >
             {t("lists.itemCatalog.newItem")}
@@ -248,7 +242,7 @@ const ItemCatalogList = ({ className }: Props) => {
             {t("lists.itemCatalog.title")}
           </h2>
           <span className="rounded-full border border-(--Grey300) bg-(--Grey100) px-2 py-0.5 text-[11px] font-bold text-(--Grey600)">
-            {mixTotalCount || totalCount}
+            {legendAllTotal || totalCount}
           </span>
           {listState.type !== undefined || listState.hasFilters ? (
             <span className={`text-xs ${DesignTokens.typography.muted}`}>
@@ -270,7 +264,6 @@ const ItemCatalogList = ({ className }: Props) => {
         editingItem={manager.editingItem}
         activeItemId={manager.activeItemId}
         types={types}
-        units={units}
         canEdit={manager.canEdit}
         canCreate={manager.canCreate}
         canDelete={manager.canDelete}
@@ -315,6 +308,30 @@ const ItemCatalogList = ({ className }: Props) => {
           void manager.confirmDeleteFile();
         }}
         onClose={manager.closeDeleteFile}
+      />
+
+      <FilePreviewDialog
+        open={Boolean(manager.previewFile)}
+        fileName={manager.previewFile?.fileName ?? ""}
+        sourceUrl={manager.previewSourceUrl}
+        mimeHint={manager.previewFile?.fileType}
+        resolvingSource={manager.previewResolving}
+        canDownload={manager.canDownload}
+        downloading={
+          manager.previewFile != null &&
+          manager.fileAction?.fileId === manager.previewFile.fileId &&
+          manager.fileAction.kind === "download"
+        }
+        onDownload={
+          manager.canDownload
+            ? () => {
+                const file = manager.previewFile;
+                if (!file) return;
+                void manager.downloadFile(file);
+              }
+            : undefined
+        }
+        onClose={manager.closePreview}
       />
     </div>
   );
